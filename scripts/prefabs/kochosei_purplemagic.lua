@@ -1,8 +1,7 @@
 local assets = {
    Asset("ANIM", "anim/kochosei_purplemagic.zip"),
    Asset("ANIM", "anim/swap_kochosei_purplemagic.zip"),
-   Asset("ATLAS", "images/inventoryimages/kochosei_purplemagic.xml"),
-   Asset("IMAGE", "images/inventoryimages/kochosei_purplemagic.tex")
+
 }
 
 local function onremovefire(fire)
@@ -34,7 +33,7 @@ local function HealFunc3(inst, target, pos)
       caster = target or caster
    end
    if not caster:HasTag("kochosei") then
-      caster.components.talker:Say("Maybe kochosei knows how to use this")
+      caster.components.talker:Say("Maybe Kochosei knows how to use this")
       return
    end
 
@@ -46,13 +45,14 @@ local function HealFunc3(inst, target, pos)
    if check <= TUNING.KOCHOSEI_SLAVE_COST then
       caster.components.talker:Say("Not enough sanity")
    else
-      local puff = SpawnPrefab("collapse_small")
+     -- local puff = SpawnPrefab("collapse_small")
       local xu = CreateEntity()
       xu.entity:AddTransform()
       xu.Transform:SetPosition(pos.x, 0, pos.z)
       caster.components.sanity:DoDelta(-TUNING.KOCHOSEI_SLAVE_COST)
       local pos = xu:GetPosition()
       caster.components.petleash:SpawnPetAt(pos.x, 0, pos.z, "kochosei_enemy")
+	 
    end
 
 
@@ -147,8 +147,6 @@ local function fn()
    inst.components.equippable.dapperness = (0.033)
 
    inst:AddComponent("inventoryitem")
-   inst.components.inventoryitem.imagename = "kochosei_purplemagic"
-   inst.components.inventoryitem.atlasname = "images/inventoryimages/kochosei_purplemagic.xml"
 
    return inst
 end

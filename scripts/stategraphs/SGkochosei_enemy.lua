@@ -1,8 +1,62 @@
 require("stategraphs/commonstates")
+local function DetachFX(fx)
+	fx.Transform:SetPosition(fx.Transform:GetWorldPosition())
+	fx.entity:SetParent(nil)
+end
 
+local function DoDespawnFX(inst)
+	--shadow_despawn is in the air => detaches from sinking boats
+	--shadow_glob_fx is on ground => dies with sinking boats
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local fx1 = SpawnPrefab("shadow_despawn")
+	local fx2 = SpawnPrefab("shadow_glob_fx")
+	fx2.AnimState:SetScale(math.random() < .5 and -1.3 or 1.3, 1.3, 1.3)
+	local platform = inst:GetCurrentPlatform()
+	if platform ~= nil then
+		fx1.entity:SetParent(platform.entity)
+		fx2.entity:SetParent(platform.entity)
+		fx1:ListenForEvent("onremove", function() DetachFX(fx1) end, platform)
+		x, y, z = platform.entity:WorldToLocalSpace(x, y, z)
+	end
+	fx1.Transform:SetPosition(x, y, z)
+	fx2.Transform:SetPosition(x, y, z)
+end
+
+local function TrySplashFX(inst, size)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	if TheWorld.Map:IsOceanAtPoint(x, 0, z) then
+		SpawnPrefab("ocean_splash_"..(size or "med")..tostring(math.random(2))).Transform:SetPosition(x, 0, z)
+		return true
+	end
+end
+
+local function TryStepSplash(inst)
+	local t = GetTime()
+	if (inst.sg.mem.laststepsplash == nil or inst.sg.mem.laststepsplash + .1 < t) and TrySplashFX(inst) then
+		inst.sg.mem.laststepsplash = t
+	end
+end
+
+local function DoSound(inst, sound)
+	inst.SoundEmitter:PlaySound(sound)
+end
+
+local function NotBlocked(pt)
+	return not TheWorld.Map:IsGroundTargetBlocked(pt)
+end
+
+local function IsNearTarget(inst, target, range)
+	return inst:IsNear(target, range + target:GetPhysicsRadius(0))
+end
+
+local function IsLeaderNear(inst, leader, target, range)
+	--leader is in range of us or our target
+	return inst:IsNear(leader, range) or (target ~= nil and IsNearTarget(leader, target, range))
+end
 
 local actionhandlers =
-{    
+{
+	ActionHandler(ACTIONS.PICKUP, "pickup"),
     ActionHandler(ACTIONS.CHOP,
         function(inst)
             if not inst.sg:HasStateTag("prechop") then
@@ -11,8 +65,8 @@ local actionhandlers =
                     or "chop_start"
             end
         end),
-    ActionHandler(ACTIONS.MINE, 
-        function(inst) 
+    ActionHandler(ACTIONS.MINE,
+        function(inst)
             if not inst.sg:HasStateTag("premine") then
                 return inst.sg:HasStateTag("mining")
                     and "mine"
@@ -34,20 +88,176 @@ local events =
     CommonHandlers.OnLocomote(true, false),
     CommonHandlers.OnAttacked(),
     CommonHandlers.OnDeath(),
-    CommonHandlers.OnAttack(), 
+	CommonHandlers.OnHop(),
+    CommonHandlers.OnAttack(),
+    EventHandler("dance", function(inst)
+        if not (inst.sg:HasStateTag("dancing") or inst.sg:HasStateTag("busy")) then
+            inst.sg:GoToState("dance")
+        end
+    end),
+    EventHandler("no", function(inst)
+        if not (inst.sg:HasStateTag("dancing") or inst.sg:HasStateTag("busy")) then
+            inst.sg:GoToState("no")
+        end
+    end),
 }
 
 local states =
 {
+
+	 State{
+        name = "pickup",
+        tags = {"busy"},
+        onenter = function(inst)
+            if inst.components.locomotor then
+                inst.components.locomotor:StopMoving()
+            end
+            inst.AnimState:PlayAnimation("pickup")
+        end,
+
+        timeline =
+        {
+            TimeEvent(5 * FRAMES, function(inst)
+                inst:PerformBufferedAction()
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover",
+                function(inst)
+                    inst.sg:GoToState("idle")
+                end),
+        },
+    },
+	State{
+		name = "spawn",
+		tags = { "busy", "noattack", "temp_invincible" },
+
+		onenter = function(inst, mult)
+			inst.Physics:Stop()
+			ToggleOffCharacterCollisions(inst)
+			inst.AnimState:PlayAnimation("minion_spawn")
+			
+           -- inst.SoundEmitter:PlaySound("maxwell_rework/shadow_worker/spawn")
+			mult = mult or .8 + math.random() * .2
+			inst.AnimState:SetDeltaTimeMultiplier(mult)
+
+			mult = 1 / mult
+			inst.sg.statemem.tasks =
+
+			{
+                inst:DoTaskInTime(0 * FRAMES * mult, DoSound, "maxwell_rework/shadow_worker/spawn"),
+				inst:DoTaskInTime(0 * FRAMES * mult, TrySplashFX),
+				inst:DoTaskInTime(20 * FRAMES * mult, TrySplashFX),
+				inst:DoTaskInTime(44 * FRAMES * mult, TrySplashFX, "small"),
+			}
+			inst.sg:SetTimeout(70 * FRAMES * mult)
+		end,
+
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle")
+				end
+			end),
+		}
+
+
+
+	},
+
+	State{
+		name = "quickspawn",
+
+		onenter = function(inst)
+			SpawnPrefab("statue_transition_2").Transform:SetPosition(inst.Transform:GetWorldPosition())
+			inst.sg:GoToState("idle")
+		end,
+	},
+
+	State{
+		name = "quickdespawn",
+
+		onenter = function(inst)
+			DoDespawnFX(inst)
+			if inst.sg.mem.laststepsplash ~= GetTime() then
+				TrySplashFX(inst)
+			end
+			inst:Remove()
+		end,
+	},
+
     State{
         name = "idle",
         tags = {"idle", "canrotate"},
 
         onenter = function(inst, pushanim)
+
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("idle_loop", true)
+			if inst.components.timer ~= nil and not inst.components.timer:TimerExists("shadowstrike_cd") then
+				inst.components.combat:SetRange(5)
+			end
         end,
     },
+
+	State{
+		name = "ready_pre",
+		tags = { "idle", "canrotate" },
+
+		onenter = function(inst)
+			inst.Physics:Stop()
+			inst.AnimState:PlayAnimation("ready_stance_pre")
+			if inst.components.timer ~= nil and not inst.components.timer:TimerExists("shadowstrike_cd") then
+				inst.components.combat:SetRange(5)
+			end
+		end,
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("ready")
+				end
+			end),
+		},
+	},
+
+	State{
+		name = "ready",
+		tags = { "idle", "canrotate" },
+
+		onenter = function(inst)
+			inst.AnimState:PlayAnimation("ready_stance_loop", true)
+		end,
+
+		onupdate = function(inst)
+			if not inst.components.combat:HasTarget() then
+				inst.sg:GoToState("ready_pst")
+			end
+		end,
+	},
+
+	State{
+		name = "ready_pst",
+		tags = { "idle", "canrotate" },
+
+		onenter = function(inst)
+			inst.AnimState:PlayAnimation("ready_stance_pst")
+		end,
+
+		events =
+		{
+			EventHandler("animover", function(inst)
+				if inst.AnimState:AnimDone() then
+					inst.sg:GoToState("idle")
+				end
+			end),
+		},
+	},
 
     State{
         name = "run_start",
@@ -69,7 +279,9 @@ local states =
 
         timeline =
         {
-            TimeEvent(4*FRAMES, function(inst)
+			TimeEvent(1 * FRAMES, TryStepSplash),
+			TimeEvent(3 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/maxwell/shadowmax_step")
             end),
         },
     },
@@ -88,15 +300,28 @@ local states =
 
         timeline =
         {
+			TimeEvent(5 * FRAMES, TryStepSplash),
             TimeEvent(7 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/maxwell/shadowmax_step")
+				inst.sg.mem.laststepsplash = GetTime()
             end),
+			TimeEvent(13 * FRAMES, TryStepSplash),
             TimeEvent(15 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/maxwell/shadowmax_step")
+				inst.sg.mem.laststepsplash = GetTime()
             end),
         },
 
         ontimeout = function(inst)
+			inst.sg.statemem.running = true
             inst.sg:GoToState("run")
         end,
+
+		onexit = function(inst)
+			if not inst.sg.statemem.running then
+				TryStepSplash(inst)
+			end
+		end,
     },
 
     State{
@@ -118,6 +343,7 @@ local states =
         },
     },
 
+
     State{
         name = "attack",
         tags = {"attack", "notalking", "abouttoattack", "busy"},
@@ -127,6 +353,7 @@ local states =
             inst.components.combat:StartAttack()
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("atk")
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_nightsword")
 
             if inst.components.combat.target ~= nil and inst.components.combat.target:IsValid() then
                 inst:FacePoint(inst.components.combat.target.Transform:GetWorldPosition())
@@ -154,23 +381,28 @@ local states =
         },
     },
 
-    State{
+     State{
         name = "death",
         tags = {"busy"},
 
         onenter = function(inst)
             inst.Physics:Stop()
-            inst.AnimState:Hide("swap_arm_carry")
+            --FixupWorkerCarry(inst, nil)
             inst.AnimState:PlayAnimation("death")
         end,
+
+		timeline =
+		{
+			TimeEvent(13 * FRAMES, TrySplashFX),
+			TimeEvent(38 * FRAMES, TrySplashFX),
+		},
 
         events =
         {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    local x, y, z = inst.Transform:GetWorldPosition()
-                    SpawnPrefab("shadow_despawn").Transform:SetPosition(x, y, z)
-                    SpawnPrefab("statue_transition_2").Transform:SetPosition(x, y, z)					
+					DoDespawnFX(inst)
+					TrySplashFX(inst)
                     inst:Remove()
                 end
             end),
@@ -243,36 +475,105 @@ local states =
         },
     },
 
-    State{
+  State{
         name = "chop",
-        tags = {"prechop", "chopping", "working"},
+        tags = { "prechop", "chopping", "working" },
 
         onenter = function(inst)
-            local buffaction = inst:GetBufferedAction()
-            inst.sg.statemem.target = buffaction ~= nil and buffaction.target or nil
-
-            inst.AnimState:PlayAnimation("chop_loop")
+            inst.sg.statemem.action = inst:GetBufferedAction()
+            inst.sg.statemem.iswoodcutter = inst:HasTag("woodcutter")
+            inst.AnimState:PlayAnimation(inst.sg.statemem.iswoodcutter and "woodie_chop_loop" or "chop_loop")
         end,
 
         timeline =
         {
+            ----------------------------------------------
+            --Woodcutter chop
+
             TimeEvent(2 * FRAMES, function(inst)
-                inst:PerformBufferedAction()
+                if inst.sg.statemem.iswoodcutter then
+                    inst:PerformBufferedAction()
+                end
             end),
 
-            TimeEvent(13 * FRAMES, function(inst)
-                inst.sg:RemoveStateTag("prechop")
+            TimeEvent(5 * FRAMES, function(inst)
+                if inst.sg.statemem.iswoodcutter then
+                    inst.sg:RemoveStateTag("prechop")
+                end
             end),
 
-            TimeEvent(16*FRAMES, function(inst)
-                inst.sg:RemoveStateTag("chopping")
+            TimeEvent(10 * FRAMES, function(inst)
+                if inst.sg.statemem.iswoodcutter and
+                    inst.components.playercontroller ~= nil and
+                    inst.components.playercontroller:IsAnyOfControlsPressed(
+                        CONTROL_PRIMARY,
+                        CONTROL_ACTION,
+                        CONTROL_CONTROLLER_ACTION) and
+                    inst.sg.statemem.action ~= nil and
+                    inst.sg.statemem.action:IsValid() and
+                    inst.sg.statemem.action.target ~= nil and
+                    inst.sg.statemem.action.target.components.workable ~= nil and
+                    inst.sg.statemem.action.target.components.workable:CanBeWorked() and
+                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action) and
+                    CanEntitySeeTarget(inst, inst.sg.statemem.action.target) then
+                    inst:ClearBufferedAction()
+                    inst:PushBufferedAction(inst.sg.statemem.action)
+                end
+            end),
+
+            TimeEvent(12 * FRAMES, function(inst)
+                if inst.sg.statemem.iswoodcutter then
+                    inst.sg:RemoveStateTag("chopping")
+                end
+            end),
+
+            ----------------------------------------------
+            --Normal chop
+
+            TimeEvent(2 * FRAMES, function(inst)
+                if not inst.sg.statemem.iswoodcutter then
+                    inst:PerformBufferedAction()
+                end
+            end),
+
+            TimeEvent(9 * FRAMES, function(inst)
+                if not inst.sg.statemem.iswoodcutter then
+                    inst.sg:RemoveStateTag("prechop")
+                end
+            end),
+
+            TimeEvent(14 * FRAMES, function(inst)
+                if not inst.sg.statemem.iswoodcutter and
+                    inst.components.playercontroller ~= nil and
+                    inst.components.playercontroller:IsAnyOfControlsPressed(
+                        CONTROL_PRIMARY,
+                        CONTROL_ACTION,
+                        CONTROL_CONTROLLER_ACTION) and
+                    inst.sg.statemem.action ~= nil and
+                    inst.sg.statemem.action:IsValid() and
+                    inst.sg.statemem.action.target ~= nil and
+                    inst.sg.statemem.action.target.components.workable ~= nil and
+                    inst.sg.statemem.action.target.components.workable:CanBeWorked() and
+                    inst.sg.statemem.action.target:IsActionValid(inst.sg.statemem.action.action) and
+                    CanEntitySeeTarget(inst, inst.sg.statemem.action.target) then
+                    inst:ClearBufferedAction()
+                    inst:PushBufferedAction(inst.sg.statemem.action)
+                end
+            end),
+
+            TimeEvent(16 * FRAMES, function(inst)
+                if not inst.sg.statemem.iswoodcutter then
+                    inst.sg:RemoveStateTag("chopping")
+                end
             end),
         },
 
         events =
         {
+            EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
+                    --We don't have a chop_pst animation
                     inst.sg:GoToState("idle")
                 end
             end),
@@ -317,13 +618,7 @@ local states =
             TimeEvent(7 * FRAMES, function(inst)
                 local buffaction = inst:GetBufferedAction()
                 if buffaction ~= nil then
-                    local target = buffaction.target
-                    if target ~= nil and target:IsValid() then
-                        if target.Transform ~= nil then
-                            SpawnPrefab("mining_fx").Transform:SetPosition(target.Transform:GetWorldPosition())
-                        end
-                        inst.SoundEmitter:PlaySound(target:HasTag("frozen") and "dontstarve_DLC001/common/iceboulder_hit" or "dontstarve/wilson/use_pick_rock")
-                    end
+                    PlayMiningFX(inst, buffaction.target)
                     inst:PerformBufferedAction()
                 end
             end),
@@ -335,9 +630,9 @@ local states =
 
         events =
         {
-            EventHandler("animover", function(inst) 
+            EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-                    inst.AnimState:PlayAnimation("pickaxe_pst") 
+                    inst.AnimState:PlayAnimation("pickaxe_pst")
                     inst.sg:GoToState("idle", true)
                 end
             end),
@@ -381,6 +676,7 @@ local states =
         {
             TimeEvent(15 * FRAMES, function(inst)
                 inst:PerformBufferedAction()
+                inst.SoundEmitter:PlaySound("dontstarve/wilson/dig")
             end),
 
             TimeEvent(35 * FRAMES, function(inst)
@@ -398,6 +694,143 @@ local states =
             end),
         },
     },
+
+    State{
+        name = "dance",
+        tags = {"idle", "dancing"},
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst:ClearBufferedAction()
+            if inst.AnimState:IsCurrentAnimation("run_pst") then
+                inst.AnimState:PushAnimation("emoteXL_pre_dance0")
+            else
+                inst.AnimState:PlayAnimation("emoteXL_pre_dance0")
+            end
+            inst.AnimState:PushAnimation("emoteXL_loop_dance0", true)
+        end,
+    },
+
+    State{
+        name = "no",
+        tags = {"idle", "no"},
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst:ClearBufferedAction()
+            if inst.AnimState:IsCurrentAnimation("run_pst") then
+                inst.AnimState:PushAnimation("emoteXL_annoyed")
+            else
+                inst.AnimState:PlayAnimation("emoteXL_annoyed")
+            end
+            inst.AnimState:PushAnimation("emoteXL_annoyed", true)
+        end,
+    },
+
+    State{
+        name = "facepalm",
+        tags = {"idle", "facepalm"},
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst:ClearBufferedAction()
+            if inst.AnimState:IsCurrentAnimation("run_pst") then
+                inst.AnimState:PushAnimation("emoteXL_facepalm")
+            else
+                inst.AnimState:PlayAnimation("emoteXL_facepalm")
+            end
+            inst.AnimState:PushAnimation("emoteXL_facepalm", true)
+        end,
+    },
+
+    State{
+        name = "cry",
+        tags = {"idle", "cry"},
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst:ClearBufferedAction()
+            if inst.AnimState:IsCurrentAnimation("run_pst") then
+                inst.AnimState:PushAnimation("emoteXL_sad")
+            else
+                inst.AnimState:PlayAnimation("emoteXL_sad")
+            end
+            inst.AnimState:PushAnimation("emoteXL_sad", true)
+        end,
+    },
+
+
+    State{
+        name = "joy",
+        tags = {"idle", "joy"},
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst:ClearBufferedAction()
+            if inst.AnimState:IsCurrentAnimation("run_pst") then
+                inst.AnimState:PushAnimation("research")
+            else
+                inst.AnimState:PlayAnimation("research")
+            end
+            inst.AnimState:PushAnimation("research", true)
+        end,
+    },
+
+    State{
+        name = "jumpout",
+        tags = { "busy", "canrotate", "jumping" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("jumpout")
+            inst.Physics:SetMotorVel(4, 0, 0)
+            inst.Physics:ClearCollisionMask()
+            inst.Physics:CollidesWith(COLLISION.GROUND)
+        end,
+
+        timeline =
+        {
+            TimeEvent(10 * FRAMES, function(inst)
+                inst.Physics:SetMotorVel(3, 0, 0)
+            end),
+            TimeEvent(15 * FRAMES, function(inst)
+                inst.Physics:SetMotorVel(2, 0, 0)
+            end),
+            TimeEvent(15.2 * FRAMES, function(inst)
+                inst.sg.statemem.physicson = true
+                inst.Physics:ClearCollisionMask()
+                inst.Physics:CollidesWith(COLLISION.WORLD)
+                inst.Physics:CollidesWith(COLLISION.CHARACTERS)
+                inst.Physics:CollidesWith(COLLISION.GIANTS)
+            end),
+            TimeEvent(17 * FRAMES, function(inst)
+                inst.Physics:SetMotorVel(1, 0, 0)
+            end),
+            TimeEvent(18 * FRAMES, function(inst)
+                inst.Physics:Stop()
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if not inst.sg.statemem.physicson then
+                inst.Physics:ClearCollisionMask()
+                inst.Physics:CollidesWith(COLLISION.WORLD)
+                inst.Physics:CollidesWith(COLLISION.CHARACTERS)
+                inst.Physics:CollidesWith(COLLISION.GIANTS)
+            end
+        end,
+    },
 }
+CommonStates.AddHopStates(states, true, { pre = "boat_jump_pre", loop = "boat_jump_loop", pst = "boat_jump_pst"})
+
 
 return StateGraph("kochosei_enemy", states, events, "idle", actionhandlers)

@@ -1,8 +1,7 @@
 local assets = {
     Asset("ANIM", "anim/kocho_purplesword.zip"),
     Asset("ANIM", "anim/swap_kocho_purplesword.zip"),
-    Asset("ATLAS", "images/inventoryimages/kocho_purplesword.xml"),
-    Asset("IMAGE", "images/inventoryimages/kocho_purplesword.tex")
+
 }
 
 local function OnEquip(inst, owner)
@@ -68,9 +67,6 @@ local function fn()
     inst.components.equippable.dapperness = (0.033)
 
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem.imagename = "kocho_purplesword"
-    inst.components.inventoryitem.atlasname = "images/inventoryimages/kocho_purplesword.xml"
-
 
 
     MakeHauntableLaunch(inst)

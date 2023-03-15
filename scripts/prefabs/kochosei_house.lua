@@ -8,7 +8,7 @@ local kochosei_house_assets =
 -----------------------------------------------------------------------
 --For regular tents
 local SCALE = 1.5
-
+local music = TUNING.KOCHOSEI_TURNOFFMUSIC
 
 local function TurnOn(inst)
 	if  inst:HasTag("burnt") then
@@ -19,7 +19,11 @@ local function TurnOn(inst)
     inst:Remove()
 	else
 	inst.AnimState:PlayAnimation("sleep_loop", true)
+	if music ~= nil then
+		if music == 1 then
 	inst.SoundEmitter:PlaySound(inst.songToPlay, "kochosei_streetlight1_musicbox/play")
+		end
+	end
 	--if not inst:HasTag("burnt") then
 	inst:PushEvent("turnedon")
 	
@@ -31,6 +35,7 @@ local function TurnOn(inst)
 	end
 end 
 
+
 local function TurnOff(inst)
 	if  inst:HasTag("burnt") then
 	 inst.components.lootdropper:DropLoot()
@@ -41,7 +46,7 @@ local function TurnOff(inst)
 	else
 	inst.AnimState:PlayAnimation("idle", true)
 	inst.SoundEmitter:KillSound("kochosei_streetlight1_musicbox/play")
-    inst.SoundEmitter:PlaySound("kochosei_streetlight1_musicbox/end")
+ --   inst.SoundEmitter:PlaySound("kochosei_streetlight1_musicbox/end")
 	inst:RemoveComponent("sanityaura")
 	inst:PushEvent("turnedoff")
 	inst.on = false 

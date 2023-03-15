@@ -16,62 +16,32 @@ TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.KOCHOSEI = {
     "cutgrass",
     "cutgrass",
     "kochosei_hat2",
-    "kochosei_lantern"
+    "kochosei_lantern",
+	"kochosei_apple"
 }
 
 TUNING.STARTING_ITEM_IMAGE_OVERRIDE.kochosei_lantern = {
-    atlas = "images/inventoryimages/kochosei_lantern.xml",
+   -- atlas = "images/inventoryimages/kochosei_inv.xml",
     image = "kochosei_lantern.tex"
 }
 
 TUNING.STARTING_ITEM_IMAGE_OVERRIDE.kochosei_hat2 = {
-    atlas = "images/inventoryimages/kochosei_hat2.xml",
+  -- atlas = "images/inventoryimages/kochosei_inv.xml",
     image = "kochosei_hat2.tex"
 }
+
+TUNING.STARTING_ITEM_IMAGE_OVERRIDE.kochosei_apple = {
+  -- atlas = "images/inventoryimages/kochosei_inv.xml",
+    image = "kochosei_apple.tex"
+}
+
 local start_inv = {}
 for k, v in pairs(TUNING.GAMEMODE_STARTING_ITEMS) do
     start_inv[string.lower(k)] = v.KOCHOSEI
 end
 local prefabs = FlattenTree(start_inv, true)
 
-local function DoEffects(pet)
-    local x, y, z = pet.Transform:GetWorldPosition()
-    SpawnPrefab("statue_transition_2").Transform:SetPosition(x, y, z)
-end
 
-local function KillPet(pet)
-    pet.components.health:Kill()
-end
-
-local function OnSpawnPet(inst, pet)
-    if pet:HasTag("kochosei_enemy") then
-        --Delayed in case we need to relocate for migration spawning
-        pet:DoTaskInTime(0, DoEffects)
-
-        if not (inst.components.health:IsDead() or inst:HasTag("playerghost")) then
-            if not inst.components.builder.freebuildmode then
-                inst.components.sanity:AddSanityPenalty(
-                    pet,
-                    TUNING.SHADOWWAXWELL_SANITY_PENALTY[string.upper(pet.prefab)]
-                )
-            end
-            inst:ListenForEvent("onremove", inst._onpetlost, pet)
-        elseif pet._killtask == nil then
-            pet._killtask = pet:DoTaskInTime(math.random(), KillPet)
-        end
-    elseif inst._OnSpawnPet ~= nil then
-        inst:_OnSpawnPet(pet)
-    end
-end
-
-local function OnDespawnPet(inst, pet)
-    if pet:HasTag("kochosei_enemy") then
-        DoEffects(pet)
-        pet:Remove()
-    elseif inst._OnDespawnPet ~= nil then
-        inst:_OnDespawnPet(pet)
-    end
-end
 
 -- When the character is revived from human
 local function onbecamehuman(inst)
@@ -98,7 +68,7 @@ end
 
 local function onpick(inst, data)
     if data.object.prefab == "flower" or data.object:HasTag("flower") then
-        inst.components.sanity:DoDelta(-20)
+        inst.components.sanity:DoDelta(-15)
     end
 end
 
@@ -177,7 +147,7 @@ local function OnTaskTick(inst)
     local ents = TheSim:FindEntities(x, y, z, 8, {"player"}, {"playerghost"})
     for i, v in ipairs(ents) do
         if v.components.health ~= nil and v.components.health:GetPercent() < 1 and not v.components.health:IsDead() then
-            v.components.health:DoDelta(1, true, "kochosei")
+            v.components.health:DoDelta(1.2, false, "kochosei")
         end
     end
 end
@@ -200,6 +170,8 @@ local function anvaochetnguoiay(inst, food)
     end
     return true
 end
+
+
 ---------------------------Kén ăn------------------
 
 -- This initializes for both the server and client. Tags can be added here.
@@ -208,6 +180,7 @@ local common_postinit = function(inst)
     inst:AddTag("kochosei")
     inst:AddTag("summonerally")
     inst:AddTag("puppeteer")
+
     inst.MiniMapEntity:SetIcon("kochosei.tex")
     inst.AnimState:AddOverrideBuild("wendy_channel")
     inst.AnimState:AddOverrideBuild("player_idles_wendy")
@@ -308,6 +281,7 @@ local function onemote(inst, data)
 end
 
 ---------------------------------------------------------------------------------------------------------------
+--[[
 local lootlist = {
     dragonfly = {
         {
@@ -316,11 +290,11 @@ local lootlist = {
         }
     }
 }
-
+--]]
 -------------Bướm chết ở gần bị trừ sanity----------------------
 
 -- Credit to Ultroman  https://forums.kleientertainment.com/forums/topic/110716-coding-killing-mobs-penalty/
-local WATCH_WORLD_HOUNDS_DIST_SQ = 15 * 15
+local WATCH_WORLD_HOUNDS_DIST_SQ = 10 * 10
 
 function contains(list, x)
     for _, v in pairs(list) do
@@ -337,7 +311,7 @@ local trungphatgietbuom = {
 local function apdungtrungphat(inst, data)
     if data and data.inst and contains(trungphatgietbuom, data.inst.prefab) then
         if inst:IsNear(data.inst, WATCH_WORLD_HOUNDS_DIST_SQ) then
-            inst.components.sanity:DoDelta(-20)
+            inst.components.sanity:DoDelta(-2, false)
         end
     end
 end
@@ -347,12 +321,12 @@ local function onkilled(inst, data)
     --    local victim = data.victim
     if data ~= nil and data.victim ~= nil and data.victim:HasTag("butterfly") then
         print("test butterfly")
-        inst.components.sanity:DoDelta(-200)
+        inst.components.sanity:DoDelta(-50, false)
         --        inst.components.hunger:DoDelta(-100)
-        inst.components.health:DoDelta(-100, true, "Giết đồng loại")
+        inst.components.health:DoDelta(-100, false, "Punishment from God!")
         inst.components.talker:Say("What are you doingggggg!!!")
         TheWorld:PushEvent("ms_sendlightningstrike", inst:GetPosition())
-        TheNet:Announce("Tội đồ " .. inst:GetDisplayName() .. " đã giết đồng loại của mình và đã phải trả giá!!!")
+        TheNet:Announce("A punishment from God have been release to " .. inst:GetDisplayName() .. " because of the worst guilty a Kochosei can make")
     end
 
     if data ~= nil and data.victim ~= nil and data.victim:HasTag("frog") then
@@ -365,7 +339,7 @@ local function onkilled(inst, data)
         if math == 1 then
             TheWorld:PushEvent("ms_sendlightningstrike", inst:GetPosition())
             TheNet:Announce(
-                "Truyền thuyết kể rằng có một onii-chan " .. inst:GetDisplayName() .. " đã tàn sát rất nhiều ếch"
+                "Legend has it that onii-chan " .. inst:GetDisplayName() .. " was very very very luckily to get the jackpot from the God."
             )
         end
     end
@@ -460,24 +434,28 @@ local function ontalk(inst, data)
         KochoseiSound(inst, ghosttalklist)
     end
 end
+
 -----------------------------------------------------------------------------
 local function OnEquipCustom(inst, data)
-    if data.item.prefab == "kochosei_hat1" or "kochosei_hat2" then
+    local hat_prefabs = {"kochosei_hat1", "kochosei_hat2", "kochosei_hat3"}
+    if table.contains(hat_prefabs, data.item.prefab) then
         if inst:HasTag("scarytoprey") then
             inst:RemoveTag("scarytoprey")
         end
     end
 end
---------------- Bỏ tag scarytoprey (o゜▽゜)o☆(o゜▽゜)o☆(o゜▽゜)o☆----------------
+
 local function OnUnequipCustom(inst, data)
     if data.item ~= nil then
-        if data.item.prefab == "kochosei_hat1" or "kochosei_hat2" then
+        local hat_prefabs = {"kochosei_hat1", "kochosei_hat2", "kochosei_hat3"}
+        if table.contains(hat_prefabs, data.item.prefab) then
             if not inst:HasTag("scarytoprey") then
                 inst:AddTag("scarytoprey")
             end
         end
     end
 end
+
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
 local function in_fire(inst)
@@ -487,7 +465,7 @@ local function in_fire(inst)
         for i, v in ipairs(ents) do
             if v.components.burnable ~= nil and v.components.burnable:IsBurning() then
                 if TheWorld.state.isnight then
-                    inst.components.sanity:DoDelta(2)
+                    inst.components.sanity:DoDelta(5, false)
                 end
             end
         end
@@ -499,25 +477,29 @@ end
 local function haru(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     local spell = SpawnPrefab("crab_king_icefx")
-    spell.Transform:SetPosition(x, y, z)
+    spell.Transform:SetPosition(x - .11, y, z + .1)
 end
-
-stop = 0
 
 local function harulevel(inst)
   if inst.components.health:IsDead() or inst:HasTag("playerghost") then
         return
     end
+
+    if inst.kochostop == nil then
+        inst.kochostop = 0
+    end
+
     if not inst.components.locomotor.wantstomoveforward then
-        stop = stop + 1
-    
-	else 
-		stop = 0
-	end
-    if stop >= 60 then
+        inst.kochostop = inst.kochostop + 1
+    else 
+        inst.kochostop = 0
+    end
+
+    if inst.kochostop >= 60 then
         haru(inst)
     end
 end
+
 
 local master_postinit = function(inst)
     -- Set starting inventory
@@ -539,23 +521,23 @@ local master_postinit = function(inst)
     inst.components.combat.damagemultiplier = TUNING.KOCHOSEI_DAMAGE
     inst.components.sanity.dapperness = -5 / 60
 
-    inst:AddComponent("petleash")
-    inst.components.petleash:SetMaxPets(TUNING.KOCHOSEI_SLAVE_MAX)
+
+    inst.components.petleash:SetMaxPets(TUNING.KOCHOSEI_SLAVE_MAX_FIX)
 
     inst:DoPeriodicTask(1, OnTaskTick, 1)
-    inst:DoPeriodicTask(5, in_fire, 1)
-	inst:DoPeriodicTask(1, harulevel, 1)
+    inst:DoPeriodicTask(5, in_fire)
+	inst:DoPeriodicTask(1, harulevel)
 	 
   
 
     -- Damage multiplier (optional)
 
     -- Hunger rate (optional)
-    inst.components.hunger.hungerrate = 1 * TUNING.WILSON_HUNGER_RATE
+    inst.components.hunger.hungerrate =  TUNING.WILSON_HUNGER_RATE
     inst.components.eater.PrefersToEat = anvaochetnguoiay
     inst.customidleanim = "idle_wendy"
     inst.OnLoad = onload
-    inst.OnNewSpawn = onload
+
     inst:ListenForEvent("emote", onemote)
     ------------
     inst:ListenForEvent("equip", OnEquipCustom)
@@ -564,10 +546,8 @@ local master_postinit = function(inst)
 
     inst:ListenForEvent("ms_respawnedfromghost", onbecamehuman)
     inst:ListenForEvent("death", onbecameghost)
-    inst:ListenForEvent(
-        "death",
-        function(inst, data)
-            if
+    inst:ListenForEvent("death",function(inst, data)
+	if
                 data and data.afflicter and data.afflicter:IsValid() and data.afflicter.components.health and
                     not data.afflicter.components.health:IsDead()
              then
@@ -581,9 +561,7 @@ local master_postinit = function(inst)
             end
         end
     )
-    inst:ListenForEvent(
-        "healthdelta",
-        function(inst, data)
+    inst:ListenForEvent("healthdelta", function(inst, data)
             if
                 data and data.afflicter and data.afflicter:IsValid() and data.afflicter.components.health and
                     not data.afflicter.components.health:IsDead()
@@ -621,6 +599,7 @@ local master_postinit = function(inst)
     end
     inst:ListenForEvent("entity_death", inst._onentitydeathfn, TheWorld)
     -------------Bướm chết ở gần bị trừ sanity----------------------
+    
 end
 
 return MakePlayerCharacter("kochosei", prefabs, assets, common_postinit, master_postinit, prefabs)

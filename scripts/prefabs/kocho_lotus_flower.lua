@@ -2,12 +2,6 @@ local assets =
 {
 	Asset("ANIM", "anim/kocho_lotus.zip"),
 	Asset("SOUND", "sound/common.fsb"),
-	
-	Asset( "IMAGE", "images/inventoryimages/kocho_lotus_flower.tex" ),
-	Asset( "ATLAS", "images/inventoryimages/kocho_lotus_flower.xml" ),
-	
-	Asset( "IMAGE", "images/inventoryimages/kocho_lotus_flower_cooked.tex" ),
-	Asset( "ATLAS", "images/inventoryimages/kocho_lotus_flower_cooked.xml" ),
 }
 
 local function fn()
@@ -64,9 +58,7 @@ local function fn()
     ----------------------
     
     inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.imagename = "kocho_lotus_flower"
-    inst.components.inventoryitem.atlasname = "images/inventoryimages/kocho_lotus_flower.xml"
-	
+
 	
     inst:AddComponent("tradable")
 
@@ -129,9 +121,7 @@ local function fncooked()
     MakeSmallPropagator(inst)
     
     inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.imagename = "kocho_lotus_flower_cooked"
-    inst.components.inventoryitem.atlasname = "images/inventoryimages/kocho_lotus_flower_cooked.xml"
-	
+
     inst:AddComponent("tradable")
     
     

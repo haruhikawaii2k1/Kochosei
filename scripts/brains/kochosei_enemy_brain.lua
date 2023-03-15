@@ -1,7 +1,5 @@
-require "behaviours/wander"
 require "behaviours/faceentity"
 require "behaviours/chaseandattack"
-require "behaviours/panic"
 require "behaviours/follow"
 require "behaviours/attackwall"
 require "behaviours/standstill"
@@ -31,7 +29,8 @@ local STOP_KITING_DIST = 5
 local KEEP_DANCING_DIST = 3
 
 
-local DIG_TAGS = { "stump", "grave" }
+local DIG_TAGS = { "stump", "grave", "farm_debris", "snowpile" }
+local CHOP_TAGS = { "evergreens", "deciduoustree" }
 
 local function GetLeader(inst)
     return inst.components.follower.leader
@@ -105,6 +104,32 @@ local function ShouldDanceParty(inst)
   return leader ~= nil and leader.sg:HasStateTag("dancing")
 end
 
+local function PickUpAction(inst)
+	if not inst.components.container then 
+		return nil
+	end
+	if inst.components.container:IsFull()then 
+		return nil
+	end
+	
+    local leader = inst.components.follower and inst.components.follower.leader or nil
+    if leader == nil or leader.components.trader == nil then -- Trader component is needed for ACTIONS.GIVEALLTOPLAYER
+        return nil
+    end
+
+    if not leader:HasTag("player") then -- Stop Polly Rogers from trying to help non-players due to trader mechanics.
+        return nil
+    end
+
+    local item = FindPickupableItem(leader, TUNING.POLLY_ROGERS_RANGE, true)
+    if item == nil then
+        return nil
+    end
+
+    return BufferedAction(inst, item, ACTIONS.PICKUP)
+end
+
+
 
 
 function kochosei_enemy_brain:OnStart()
@@ -126,12 +151,15 @@ function kochosei_enemy_brain:OnStart()
                             RunAway(self.inst, { fn = ShouldKite, tags = { "_combat", "_health" }, notags = { "INLIMBO" } }, KITING_DIST, STOP_KITING_DIST)),
                         ChaseAndAttack(self.inst),
                 }, .25)),
-               -- IfNode(function() return self.inst.prefab == "kochosei_enemy" end, "Keep Chopping",
-                --    DoAction(self.inst, function() return FindEntityToWorkAction(self.inst, ACTIONS.CHOP) end)),
+				DoAction(self.inst, PickUpAction, nil, true),
+                IfNode(function() return self.inst.prefab == "kochosei_enemy" end, "Keep Chopping",
+                   DoAction(self.inst, function() return FindEntityToWorkAction(self.inst, ACTIONS.CHOP, CHOP_TAGS) end)),
               --  IfNode(function() return self.inst.prefab == "kochosei_enemy" end, "Keep Mining",
                --     DoAction(self.inst, function() return FindEntityToWorkAction(self.inst, ACTIONS.MINE) end)),
                 IfNode(function() return self.inst.prefab == "kochosei_enemy" end, "Keep Digging",
                     DoAction(self.inst, function() return FindEntityToWorkAction(self.inst, ACTIONS.DIG, DIG_TAGS) end)),
+					
+					
         }, .25)),
 
         Follow(self.inst, GetLeader, MIN_FOLLOW_DIST, TARGET_FOLLOW_DIST, MAX_FOLLOW_DIST),

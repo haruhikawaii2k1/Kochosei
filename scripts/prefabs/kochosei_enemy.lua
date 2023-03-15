@@ -1,15 +1,16 @@
 local assets = {
     Asset("ANIM", "anim/kochosei.zip"),
-	 Asset("ANIM", "anim/kochosei_snowmiku_skin1.zip"),
+    Asset("ANIM", "anim/kochosei_snowmiku_skin1.zip"),
     Asset("SOUND", "sound/maxwell.fsb")
 }
 
 local brain = require "brains/kochosei_enemy_brain"
-
 local prefabs = {
     "shadow_despawn",
     "statue_transition_2"
 }
+
+
 local function haru(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     local spell = SpawnPrefab("crab_king_icefx")
@@ -17,54 +18,89 @@ local function haru(inst)
 end
 
 
-local function ShouldAcceptItem(inst, item, giver)
-    if
-        item.prefab == "kocho_miku_cos"  or item.components.equippable and
-            (item.components.equippable.equipslot == EQUIPSLOTS.HEAD or
-                item.components.equippable.equipslot == EQUIPSLOTS.HANDS or
-                item.components.equippable.equipslot == EQUIPSLOTS.BODY) and
-            not item.components.projectile
-     then
-        return true
-    end
+local items = { -- a local table to store the item names
+  kocho_miku_cos = true,
+  kocho_miku_back = true,
+  dragon_scales = true,
+  deerclops_eyeball = true
+}
+
+local function NhanItemCuaDinhCute(inst, item)
+  local dinh = item.prefab
+  return items[dinh] or -- check if the item name is in the table
+         item.components.equippable and -- check if the item is equippable
+         (item.components.equippable.equipslot == EQUIPSLOTS.HEAD or -- check if the equipslot is HEAD
+          item.components.equippable.equipslot == EQUIPSLOTS.HANDS or -- check if the equipslot is HANDS
+          item.components.equippable.equipslot == EQUIPSLOTS.BODY) and -- check if the equipslot is BODY
+         not item.components.projectile -- check if the item is not a projectile
 end
 
+local function m_killPet(inst)
+	if inst.components.health and not inst.components.health:IsDead() then
+		inst.components.health:Kill()
+	end
+end
 
 local function doiskin(inst)
-  
     inst.AnimState:SetBuild("kochosei_snowmiku_skin1")
-	haru(inst)
+    haru(inst)
 end
 
-
-
+local function SlaveDeoNhanDoRaidenFuckYou(inst, item)
+    inst.sg:GoToState("facepalm")
+    inst.components.talker:Say("I dont take this, my master! You give me wrong thing! Please try again!", 5, false)
+end
 
 local function OnGetItemFromPlayer(inst, giver, item)
-	
-    if
-        item.components.equippable ~= nil and
-            (item.components.equippable.equipslot == EQUIPSLOTS.HEAD or
-                item.components.equippable.equipslot == EQUIPSLOTS.HANDS or
-                item.components.equippable.equipslot == EQUIPSLOTS.BODY)
-     then
-        local newslot = item.components.equippable.equipslot
+    if not NhanItemCuaDinhCute(inst, item) then
+        SlaveDeoNhanDoRaidenFuckYou(inst, item)
+        return
+    end
+    
+    local equippable = item.components.equippable
+    if equippable and (equippable.equipslot == EQUIPSLOTS.HEAD or equippable.equipslot == EQUIPSLOTS.HANDS or equippable.equipslot == EQUIPSLOTS.BODY) then
+        local newslot = equippable.equipslot
         local current = inst.components.inventory:GetEquippedItem(newslot)
         if current then
             inst.components.inventory:DropItem(current)
         end
-
         inst.components.inventory:Equip(item)
     end
-	if item.prefab == "kocho_miku_cos" then 
-	doiskin(inst)
-	
-	end
+
+    if item.prefab == "kocho_miku_cos" then
+        doiskin(inst)
+    elseif giver.prefab == "kochosei" then
+        local x, y, z = inst.Transform:GetWorldPosition()
+
+        if item.prefab == "kocho_miku_back" then
+           
+			 giver.components.petleash:DespawnPet(inst)
+            giver.components.petleash:SpawnPetAt(x, y, z, "kochosei_enemyb")
+        elseif item.prefab == "dragon_scales" then
+          	 giver.components.petleash:DespawnPet(inst)
+            local df = giver.components.petleash:SpawnPetAt(x, y, z, "kochodragonfly")
+            local rot = inst.Transform:GetRotation()
+            if df then
+                df.Transform:SetPosition(x, y, z)
+                df.components.follower:SetLeader(giver)
+                df.Transform:SetRotation(rot)
+                df.sg:GoToState("land")
+            end
+        elseif item.prefab == "deerclops_eyeball" then
+           	 giver.components.petleash:DespawnPet(inst)
+            local deer = giver.components.petleash:SpawnPetAt(x, y, z, "kochodeerclops")
+            local rot = inst.Transform:GetRotation()
+            if deer then
+                deer.Transform:SetPosition(x, y, z)
+                deer.components.follower:SetLeader(giver)
+                deer.Transform:SetRotation(rot)
+                deer.sg:GoToState("taunt")
+            end
+        end
+    end
 end
 
 
-local function OnRefuseItem(inst, giver, item)
-    inst.components.talker:Say("Huh?")
-end
 
 local function linktoplayer(inst, player)
     inst.components.lootdropper:SetLoot(LOOT)
@@ -78,10 +114,6 @@ local function linktoplayer(inst, player)
     player:ListenForEvent("onremove", unlink, inst)
 end
 
-local function m_killPet(inst)
-    inst.components.health:Kill()
-end
-
 local function m_checkLeaderExisting(inst)
     local leader = inst.components.follower:GetLeader()
     if
@@ -90,16 +122,16 @@ local function m_checkLeaderExisting(inst)
      then
         return
     elseif inst._killtask == nil then
-        inst._killtask = inst:DoTaskInTime(math.random(), m_killPet)
+        inst._killtask = inst:ResumeTask(2, m_killPet)
+        inst.sg:GoToState("cry")
+
     end
 end
 
 local function OnAttacked(inst, data)
     if data.attacker ~= nil then
         if data.attacker.components.petleash ~= nil and data.attacker.components.petleash:IsPet(inst) then
-
-			 m_killPet(inst)
-            data.attacker.components.petleash:DespawnPet(inst)
+            m_killPet(inst)
         elseif data.attacker.components.combat ~= nil then
             inst.components.combat:SuggestTarget(data.attacker)
         end
@@ -139,17 +171,21 @@ local function spearfn(inst)
     return inst
 end
 
-local function nokeeptargetfn(inst)
-    return false
+local function OnEnterWater(inst)
+    inst.hop_distance = inst.components.locomotor.hop_distance
+    inst.components.locomotor.hop_distance = 4
+
+    inst.AnimState:SetBuild("spider_water_water")
 end
 
-local function noncombatantfn(inst)
-    inst.components.combat:SetKeepTargetFunction(nokeeptargetfn)
+local function OnExitWater(inst)
+    if inst.hop_distance then
+        inst.components.locomotor.hop_distance = inst.hop_distance
+    end
+
+    inst.AnimState:SetBuild("spider_water")
 end
 
-local function nodebrisdmg(inst, amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb)
-    return afflicter ~= nil and afflicter:HasTag("quakedebris")
-end
 
 local function MakeMinion(prefab, tool, hat, master_postinit)
     local assets = {}
@@ -161,9 +197,10 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
         inst.entity:AddAnimState()
         inst.entity:AddSoundEmitter()
         inst.entity:AddNetwork()
-		inst.entity:AddDynamicShadow()
+        inst.entity:AddDynamicShadow()
 
-        MakeGhostPhysics(inst, 1, 0.5)
+        --MakeCharacterPhysics(inst, 550, 1)
+		MakeGiantCharacterPhysics(inst, 50, .7)
 
         inst.Transform:SetFourFaced(inst)
 
@@ -171,9 +208,9 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
         --inst.Transform:SetScale(1.75, 1.75, 1.75)
 
         inst.AnimState:SetBank("wilson")
-         --bank名称是Spriter文件的名称。
+        --bank名称是Spriter文件的名称。
         inst.AnimState:SetBuild("kochosei")
-         --build名称是Spriter中动画文件夹的名称。
+        --build名称是Spriter中动画文件夹的名称。
         inst.AnimState:PlayAnimation("idle")
         inst.AnimState:SetScale(0.8, 0.8)
 
@@ -199,9 +236,10 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
         end
 
         inst:AddTag("scarytoprey")
-        inst:AddTag("NOBLOCK")
+       -- inst:AddTag("NOBLOCK")
         inst:AddTag("summonerally")
         inst:AddTag("kochosei_enemy")
+		inst:AddTag("woodcutter")
 
         inst:SetPrefabNameOverride("kochosei_enemy")
 
@@ -210,20 +248,20 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
         if not TheWorld.ismastersim then
             return inst
         end
+			inst:AddTag("woodcutter")
         inst:AddComponent("inspectable")
+		
         inst:AddComponent("locomotor")
         inst.components.locomotor.runspeed = 8
-        inst.components.locomotor.pathcaps = {ignorecreep = true}
         inst.components.locomotor:SetSlowMultiplier(.6)
-
+		inst.components.locomotor:SetAllowPlatformHopping(true)
+		
+		inst:AddComponent("embarker")
+		
         inst:AddComponent("health")
         inst.components.health:SetMaxHealth(TUNING.KOCHOSEI_SLAVE_HP)
-        inst.components.health.nofadeout = true
-        inst.components.health.redirect = nodebrisdmg
 
         inst:AddComponent("sanity")
-
-        -- inst:AddComponent("sanity")
 
         function inst.components.sanity:DoDelta(delta, overtime)
             return
@@ -241,11 +279,10 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
         inst:AddComponent("inventory")
 
         inst:AddComponent("trader")
-        inst.components.trader:SetAcceptTest(ShouldAcceptItem)
+        inst.components.trader:SetAcceptTest(NhanItemCuaDinhCute)
         inst.components.trader.deleteitemonaccept = false
         inst.components.trader.onaccept = OnGetItemFromPlayer
-        inst.components.trader.onrefuse = OnRefuseItem
-        inst.components.trader:Enable()
+        inst.components.trader.onrefuse = SlaveDeoNhanDoRaidenFuckYou
 
         inst:AddComponent("follower")
         inst.components.follower:KeepLeaderOnAttacked()
@@ -256,10 +293,7 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
         inst:AddComponent("talker")
 
         inst:SetBrain(brain)
-       -- inst:SetStateGraph("SGkochosei_enemy")
-
-        inst:SetStateGraph("SGshadowwaxwell")
-        -- inst:SetStateGraph("SGwilson")
+        inst:SetStateGraph("SGkochosei_enemy")
 
         inst:ListenForEvent("attacked", OnAttacked)
 
@@ -274,7 +308,7 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
     end
 
     STRINGS.NAMES.KOCHOSEI_ENEMY = "Kochosei Clone"
-    STRINGS.CHARACTERS.GENERIC.DESCRIBE.KOCHOSEI_ENEMY = "Why are you so cute~!, 500k  đê bạn ơi"
+    STRINGS.CHARACTERS.GENERIC.DESCRIBE.KOCHOSEI_ENEMY = "ヾ(•ω•`)o"
 
     return Prefab(prefab, fn, assets, prefabs)
 end

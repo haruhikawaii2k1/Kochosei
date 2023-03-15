@@ -1,3 +1,4 @@
+
 GLOBAL.setmetatable(env,{__index=function(t,k) return GLOBAL.rawget(GLOBAL,k) end})
 
 require("map/terrain")
@@ -25,119 +26,12 @@ Layouts["KochoseiIsland"] = StaticLayout.Get("map/kochosei_island",
 	end)
 
 
-if false then
-	AddStartLocation(			--设置初始
-		"EmptyStart",
-		{
-			name = STRINGS.UI.SANDBOXMENU.DEFAULTSTART,
-			location = "forest",
-			start_setpeice = "KochoseiIsland",
-			start_node = "Blank"
-		}
-	)
-
-	AddTask(
-		"EmptyMap",
-		{
-			locks = {},
-			keys_given = {},
-			room_choices = {
-				["Blank"] = 1
-			},
-			room_bg = GROUND.IMPASSABLE,
-			background_room = "Blank",
-			colour = {r = 0, g = 1, b = 0, a = 1}
-		}
-	)
-
-	AddTaskSet(
-		"emptytaskset",
-		{
-			name = "",
-			location = "forest",
-			tasks = {
-				"EmptyMap"
-			},
-			numoptionaltasks = 0,
-			optionaltasks = {},
-			valid_start_tasks = {"EmptyMap"},
-			set_pieces = {},
-			ocean_prefill_setpieces = {},
-			ocean_population = {}
-		}
-	)
-
-	local extraoverrides = {
-		start_location = "EmptyStart",
-		task_set = "emptytaskset",
-		wormhole_prefab = "wormhole",
-		islands = "never",
-		layout_mode = "LinkNodesByKeys",
-		keep_disconnected_tiles = true,
-		-- layout_mode = "RestrictNodesByKey",
-		--weather  =  "never",
-		creepyeyes = "always",
-		boons = "never",
-		deerclops = "never",
-		dragonfly = "never",
-		bearger = "never",
-		birds = "never",
-		goosemoose = "never",
-		hounds = "never",
-		world_size = "small",
-
-		-- day = "onlynight", --"onlynight",onlyday
-		-- autumn = "noseason",
-		-- winter = "noseason",
-		-- spring = "noseason",
-		-- summer = "default",
-		-- season_start = "summer",
-
-		wildfires = "never",
-		has_ocean = true,
-		roads = "never",
-		regrowth = "never",
-		krampus = "never",
-		weather = "never"
-	}
-
-	local function Task(Level)
-		local overrides = Level.overrides or {}
-		for k, v in pairs(extraoverrides) do
-			overrides[k] = v
-		end
-		Level.overrides = overrides
-
-		return Level
-	end
-
-	AddGlobalClassPostConstruct(
-		"map/level",
-		"Level",
-		Task
-	)
-
-	-- fix world settings
-	local WorldSettings_Overrides = require("worldsettings_overrides")
-
-	local Pre = WorldSettings_Overrides.Pre
-	local Post = WorldSettings_Overrides.Post
-
-	for k, v in pairs(extraoverrides) do
-		local target = Pre
-		local oldfn = target[k]
-		if oldfn == nil then
-			target = Post
-			oldfn = target[k]
-		end
-		if oldfn then
-			target[k] = function(difficulty)
-				print("force overriding world setting", k, difficulty, "-->", v)
-				return oldfn(v)
-			end
-		end
-	end
-
+-- some math helpers
+local function mymathclamp(num, min, max)
+    return num <= min and min or (num >= max and max or num)
+end
+local function myround(num, idp)
+    return GLOBAL.tonumber(string.format("%." .. (idp or 0) .. "f", num))
 end
 
 
@@ -198,7 +92,16 @@ local function AddThingtoWorldGeneration(prefab,roomincrease)
         end
     end
 end
-	AddThingtoWorldGeneration("kochosei_lantern",{KochoseiIsland=0.4})
 
-GLOBAL.terrain.filter.kochosei_lantern = {GLOBAL.GROUND.ROAD, GLOBAL.GROUND.WOODFLOOR, GLOBAL.GROUND.CARPET, GLOBAL.GROUND.CHECKER, GLOBAL.GROUND.ROCKY, GLOBAL.GROUND.MARSH}
+if GetModConfigData("Kochosei's apple spawn rates") == "Default" then
+	AddThingtoWorldGeneration("kochosei_apple_tree",{BGDeciduous=0.4,DeepDeciduous=0.4,DeciduousMole=0.4,MolesvilleDeciduous=0.4,DeciduousClearing=0.4,MagicalDeciduous=0.4,BGForest=0.2,BGDeepForest=0.2,DeepForest=0.2,Forest=0.2,ForestMole=0.2,BGGrass=0.2,BGGrassBurnt=0.2})
+end
+if GetModConfigData("Kochosei's apple spawn rates") == "More" then
+	AddThingtoWorldGeneration("kochosei_apple_tree",{BGDeciduous=0.8,DeepDeciduous=0.8,DeciduousMole=0.8,MolesvilleDeciduous=0.8,DeciduousClearing=0.8,MagicalDeciduous=0.8,BGForest=0.4,BGDeepForest=0.4,DeepForest=0.4,Forest=0.4,ForestMole=0.4,BGGrass=0.4,BGGrassBurnt=0.4})
+end
+if GetModConfigData("Kochosei's apple spawn rates") == "Less" then
+	AddThingtoWorldGeneration("kochosei_apple_tree",{BGDeciduous=0.2,DeepDeciduous=0.2,DeciduousMole=0.2,MolesvilleDeciduous=0.2,DeciduousClearing=0.2,MagicalDeciduous=0.2,BGForest=0.1,BGDeepForest=0.1,DeepForest=0.1,Forest=0.1,ForestMole=0.1,BGGrass=0.1,BGGrassBurnt=0.1})
+end
+
+GLOBAL.terrain.filter.kochosei_apple_tree = {GLOBAL.GROUND.ROAD, GLOBAL.GROUND.WOODFLOOR, GLOBAL.GROUND.CARPET, GLOBAL.GROUND.CHECKER, GLOBAL.GROUND.ROCKY, GLOBAL.GROUND.MARSH}
 

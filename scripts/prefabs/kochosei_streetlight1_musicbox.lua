@@ -4,6 +4,7 @@ local assets = {
 }
 
 local SCALE = 1.25
+--local music = TUNING.KOCHOSEI_TURNOFFMUSIC
 
 local prefabs = {"collapse_small",}
 local PLANT_TAGS = {"tendable_farmplant"}
@@ -17,8 +18,14 @@ local function TendToPlantsAOE(inst)
 end
 
 local function TurnOn(inst)
+local music = TUNING.KOCHOSEI_TURNOFFMUSIC
+
 	inst.AnimState:PlayAnimation("idle_on", true)
+	if music ~= nil then
+		if music == 1 then
 	inst.SoundEmitter:PlaySound(inst.songToPlay, "kochosei_streetlight1_musicbox/play")
+		end
+	end
 	inst:PushEvent("turnedon")
 	inst:AddComponent("sanityaura")
 	inst.components.sanityaura.aura = TUNING.SANITYAURA_SMALL*1.2
@@ -32,7 +39,7 @@ end
 local function TurnOff(inst)
 	inst.AnimState:PlayAnimation("idle_off", true)
 	inst.SoundEmitter:KillSound("kochosei_streetlight1_musicbox/play")
-    inst.SoundEmitter:PlaySound("kochosei_streetlight1_musicbox/end")
+   -- inst.SoundEmitter:PlaySound("kochosei_streetlight1_musicbox/end")
 	inst:RemoveComponent("sanityaura")
 	inst:PushEvent("turnedoff")
 	inst.on = false 

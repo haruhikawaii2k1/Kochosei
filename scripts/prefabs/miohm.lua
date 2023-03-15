@@ -1,28 +1,8 @@
 local assets = {
     Asset("ANIM", "anim/miohm.zip"),
     Asset("ANIM", "anim/swap_miohm.zip"),
-    Asset("ATLAS", "images/inventoryimages/miohm.xml"),
-    Asset("IMAGE", "images/inventoryimages/miohm.tex")
+
 }
-
-local function onremovefire(fire)
-    fire.miohm.fire = nil
-end
-
-local function TurnOn(inst, owner)
-    if inst.fire == nil then
-        inst.fire = SpawnPrefab("miohammer_light")
-        inst.fire.miohm = inst
-        inst:ListenForEvent("onremove", onremovefire, inst.fire)
-    end
-    inst.fire.entity:SetParent(owner.entity)
-end
-
-local function TurnOff(inst, owner)
-    if inst.fire ~= nil then
-        inst.fire:Remove()
-    end
-end
 
 local function onattack(inst, attacker, target)
     --target could be killed or removed in combat damage phase
@@ -33,31 +13,74 @@ local function onattack(inst, attacker, target)
     end
 end
 
-local function OnEquip(inst, owner)
-    if owner:HasTag("kochosei") then
-        owner.AnimState:OverrideSymbol("swap_object", "swap_miohm", "swap_miohm")
-        owner.AnimState:Show("ARM_carry")
-        owner.AnimState:Hide("ARM_normal")
 
-        TurnOn(inst, owner)
-    else
-        inst:DoTaskInTime(0, function()
-                if owner and owner.components and owner.components.inventory then
-                    owner.components.inventory:DropItem(inst, true)
-                    if owner.components.talker then
-                        owner.components.talker:Say("This is Kochosei's item!!")
-                    end
-                end
-            end
-        )
+local function IsDay()
+    return TheWorld.state.isday
+end
+
+local function onremovefire(fire)
+    fire.miohm.fire = nil
+end
+local function TurnOn(inst)
+    local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
+    if owner ~= nil and owner:HasTag("player") then
+        if inst.fire == nil then
+            inst.fire = SpawnPrefab("miohammer_light")
+            inst.fire.miohm = inst
+            inst:ListenForEvent("onremove", onremovefire, inst.fire)
+        end
+        if not IsDay() then
+            inst.fire.entity:SetParent(owner.entity)
+        end
     end
+end
+
+local function TurnOff(inst)
+    local owner = inst.components.inventoryitem ~= nil and inst.components.inventoryitem.owner or nil
+    if owner ~= nil and owner:HasTag("player") then
+        if inst.fire ~= nil then
+            inst.fire:Remove()
+        end
+    end
+end
+
+
+local function OnEquip(inst, owner)
+    owner.AnimState:OverrideSymbol("swap_object", "swap_miohm", "swap_miohm")
+    owner.AnimState:Show("ARM_carry")
+    owner.AnimState:Hide("ARM_normal")
+    TurnOn(inst)
+
 end
 
 local function OnUnequip(inst, owner)
     owner.AnimState:Hide("ARM_carry")
     owner.AnimState:Show("ARM_normal")
-    TurnOff(inst, owner)
+
+    TurnOff(inst)
+
 end
+
+
+local function UpdateItemState(inst)
+    if TheWorld.state.isday ~= inst._is_day then
+        if TheWorld.state.isday then
+            TurnOff(inst)
+        else
+            TurnOn(inst)
+        end
+        inst._is_day = TheWorld.state.isday
+    end
+end
+
+
+local function OnUpdate(inst)
+    if inst.components.equippable and inst.components.equippable:IsEquipped() then
+        UpdateItemState(inst)
+    end
+end
+
+
 
 local function light_fn()
     local inst = CreateEntity()
@@ -93,52 +116,64 @@ local function freezeSpell(inst, target)
     if target.components.combat ~= nil then
         target.components.combat:SuggestTarget(attacker)
     end
-    if target.sg ~= nil and not target.sg:HasStateTag("frozen") then
-        target:PushEvent("attacked", {attacker = attacker, damage = 20, weapon = inst})
-    end
+
     if target.components.freezable ~= nil then
+        target:PushEvent("attacked", {attacker = attacker, damage = 20, weapon = inst})
         if target.components.health then
             target.components.health:DoDelta(-TUNING.MIOHM_DAMAGE_SPELL)
         end
         local x, y, z = target.Transform:GetWorldPosition()
         local spell = SpawnPrefab("deer_ice_flakes")
-        spell.Transform:SetPosition(x, y, z)
-        spell:DoTaskInTime(1, spell.KillFX)
-        SpawnPrefab("deer_ice_burst").Transform:SetPosition(x, y, z)
-        SpawnPrefab("superjump_fx").Transform:SetPosition(x, y, z)
-        SpawnPrefab("electricchargedfx").Transform:SetPosition(x, y, z)
+        if spell ~= nil then
+            spell.Transform:SetPosition(x, y, z)
+            spell:DoTaskInTime(1, spell.KillFX)
+            SpawnPrefab("deer_ice_burst").Transform:SetPosition(x, y, z)
+            SpawnPrefab("superjump_fx").Transform:SetPosition(x, y, z)
+            SpawnPrefab("electricchargedfx").Transform:SetPosition(x, y, z)
+        end
     end
 end
 
-local function SanityCheck(inst, level)
-    level = inst.components.sanity.current
-    if level > 50 then
-        return true
-    end
-    return false
-end
-
-local function HungerCheck(inst, level)
-    level = inst.components.hunger.current
-    if level > 50 then
-        return true
-    end
-    return false
-end
 
 local MIOHM_CANT_TAGS = {"DECOR", "FX", "INLIMBO", "NOCLICK", "playerghost", "player"}
 
-local function aoeSpell(inst, target)
+local crabking_running = false
+local crabking_task = nil
+local crabking_count = 0
+local function crabking_stop()
+    crabking_running = false
+    if crabking_task ~= nil then
+        crabking_task:Cancel()
+        crabking_task = nil
+    end
+end
+
+
+local function crabking_counter(inst)
+    crabking_count = crabking_count + 1
+    if crabking_count >= 10 then
+        crabking_stop()
+        crabking_count = 0
+    end
+end
+
+local function on_remove(inst)
+    crabking_stop()
+end
+
+local function aoeSpell(inst, target, caster)
+
     local caster = inst.components.inventoryitem.owner
     if not caster then
         caster = target or caster
     end
-    if not SanityCheck(caster) then
+
+    if caster.components.sanity.current <= 50 then
         inst.components.talker:Say("My sanity is not enough!!")
         return
     end
 
-    if not HungerCheck(caster) then
+    if caster.components.hunger.current <= 50 then
         inst.components.talker:Say("My hunger is not enough!!")
         return
     end
@@ -151,29 +186,36 @@ local function aoeSpell(inst, target)
     inst.components.talker:Say("Thunder attack!")
 
     inst.components.finiteuses:Use(10)
-    if caster.components.sanity then
-        caster.components.sanity:DoDelta(-10)
-    end
-    if caster.components.hunger then
-        caster.components.hunger:DoDelta(-10)
-    end
+    caster.components.sanity:DoDelta(-10)
+    caster.components.hunger:DoDelta(-10)
+
     local x, y, z = target.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, 7, {"freezable"}, MIOHM_CANT_TAGS)
-    for k, v in pairs(ents) do
+
+    local damage = target.components.health.maxhealth / 20
+
+    for i, v in ipairs(ents) do
         freezeSpell(inst, v)
     end
-	local healthtarget = target.components.health.maxhealth
-	local damage = healthtarget /100
-    if target.components.health and target.components.health.currenthealth > 50000 then
-	
-            target.components.health:DoDelta(-damage)
-        end
-    SpawnPrefab("lightning").Transform:SetPosition(x, y, z)
-    SpawnPrefab("crabking_feeze").Transform:SetPosition(x, y, z)
+
+	if target.components.health and target.components.health.currenthealth > 50000 then
+		target.components.health:DoDelta(-damage)
+	end
+    local lightning = SpawnPrefab("lightning")
+    lightning.Transform:SetPosition(x, y, z)
+
+	if not crabking_running then
+        crabking_running = true
+        crabking_task = inst:DoPeriodicTask(1, crabking_counter)
+        local freeze_fx = SpawnPrefab("crabking_feeze")
+        freeze_fx.Transform:SetPosition(x, y, z)
+    end
+
 end
 
+
 local function castFreeze(inst, target)
-    if target then
+    if target and target.components.health then
         aoeSpell(inst, target)
     end
 end
@@ -201,11 +243,11 @@ end
 
 local function OnGetItemFromPlayer(inst, giver, item)
     if item.prefab == "goldnugget" then
-        local doben = inst.components.finiteuses:GetUses() + TUNING.MIOHM_REPAIR
-        local doben2 = math.min(doben, TUNING.MIOHM_DURABILITY)
-        inst.components.finiteuses:SetUses(doben2)
+        local doben = inst.components.finiteuses:GetUses() + (TUNING.MIOHM_REPAIR * 2)
+        inst.components.finiteuses:SetUses(math.min(doben, TUNING.MIOHM_DURABILITY ))
     end
 end
+
 --Đau Lưng vaelu--
 local function OnRefuseItem(inst, giver, item)
     if item.prefab ~= "goldnugget" then
@@ -269,9 +311,6 @@ local function fn()
 
     inst:AddComponent("inventoryitem")
     inst.components.inventoryitem.keepondeath = true
-    inst.components.inventoryitem.imagename = "miohm"
-    inst.components.inventoryitem.atlasname = "images/inventoryimages/miohm.xml"
-
     inst.fxcolour = {21 / 255, 25 / 255, 242 / 255}
     inst:AddComponent("spellcaster")
     inst.components.spellcaster:SetSpellFn(castFreeze)
@@ -280,6 +319,7 @@ local function fn()
     inst.components.spellcaster.quickcast = true
 
     inst:AddComponent("equippable")
+	inst.components.equippable.restrictedtag = "kochosei"
     inst.components.equippable:SetOnEquip(OnEquip)
     inst.components.equippable:SetOnUnequip(OnUnequip)
     inst.components.inventoryitem.keepondeath = true
@@ -289,6 +329,8 @@ local function fn()
     inst.components.trader:SetAcceptTest(AcceptTest)
     inst.components.trader.onaccept = OnGetItemFromPlayer
     inst.components.trader.onrefuse = OnRefuseItem
+	inst:DoPeriodicTask(1, OnUpdate)
+	inst:ListenForEvent("onremove", on_remove)
 
     inst.lights = {}
 

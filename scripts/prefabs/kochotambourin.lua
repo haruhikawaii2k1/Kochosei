@@ -2,8 +2,7 @@ local assets = {
     Asset("ANIM", "anim/kochotambourin.zip"),
     Asset("ANIM", "anim/swap_kochotambourin.zip"),
     Asset("ANIM", "anim/lavaarena_heal_flowers_fx.zip"),
-    Asset("ATLAS", "images/inventoryimages/kochotambourin.xml"),
-    Asset("IMAGE", "images/inventoryimages/kochotambourin.tex")
+
 }
 local prefabs_healblooms = {
     "lavaarena_bloom_kocho",
@@ -98,7 +97,7 @@ local function HealFunc2(inst, target, pos) -- 范围回血 + 催眠 + 催熟
         )
         xu:DoTaskInTime(Zn, xu.Remove)
     else
-        inst.components.talker:Say("I need more sanity!")
+        caster.components.talker:Say("I need more sanity!")
     end
 end
 
@@ -120,24 +119,12 @@ local function onattack(inst, attacker, target)
 end
 
 local function OnEquip(inst, owner)
-    if owner:HasTag("kochosei") then
+   
         owner.AnimState:OverrideSymbol("swap_object", "swap_kochotambourin", "swap_kochotambourin")
         owner.AnimState:Show("ARM_carry")
         owner.AnimState:Hide("ARM_normal")
         TurnOn(inst, owner)
-    else
-        inst:DoTaskInTime(
-            0,
-            function()
-                if owner and owner.components and owner.components.inventory then
-                    owner.components.inventory:DropItem(inst, true)
-                    if owner.components.talker then
-                        owner.components.talker:Say("This is Kochosei's item!!")
-                    end
-                end
-            end
-        )
-    end
+   
 end
 
 local function OnUnequip(inst, owner)
@@ -214,14 +201,13 @@ local function fn()
     inst:AddComponent("tradable")
 
     inst:AddComponent("equippable")
+	inst.components.equippable.restrictedtag = "kochosei"
     inst.components.equippable:SetOnEquip(OnEquip)
     inst.components.equippable:SetOnUnequip(OnUnequip)
     inst.components.equippable.walkspeedmult = 1.25
     inst.components.equippable.dapperness = (0.033)
 
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem.imagename = "kochotambourin"
-    inst.components.inventoryitem.atlasname = "images/inventoryimages/kochotambourin.xml"
 
     inst.lights = {}
 

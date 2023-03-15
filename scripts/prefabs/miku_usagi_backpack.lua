@@ -3,8 +3,7 @@ local assets =
     Asset("ANIM", "anim/miku_usagi_backpack.zip"),
     Asset("ANIM", "anim/swap_miku_usagi_backpack.zip"),
 	Asset("ANIM", "anim/miku_usagi_backpack_2x4.zip"),
-  	Asset("ATLAS", "images/inventoryimages/miku_usagi_backpack.xml"),
-    Asset("IMAGE", "images/inventoryimages/miku_usagi_backpack.tex"),
+
 }
 
 local prefabs =
@@ -18,13 +17,16 @@ local function onequip(inst, owner)
 	  	owner.AnimState:OverrideSymbol("swap_body", "swap_miku_usagi_backpack", "usagi")
         owner.AnimState:OverrideSymbol("swap_body", "swap_miku_usagi_backpack", "swap_body")
 	
-		
+        owner:AddTag("fastpicker")  --蜘蛛快采
+		owner:AddTag("fastpick")    --成就快采
     if inst.components.container ~= nil then
         inst.components.container:Open(owner)
     end
 end
 
 local function onunequip(inst, owner)
+    owner:RemoveTag("fastpick")
+    owner:RemoveTag("fastpicker")
     local skin_build = inst:GetSkinBuild()
     if skin_build ~= nil then
         owner:PushEvent("unequipskinneditem", inst:GetSkinName())
@@ -70,9 +72,10 @@ local function fn()
 
     MakeInventoryPhysics(inst)
 
+	
     inst.AnimState:SetBank("miku_usagi_backpack")
     inst.AnimState:SetBuild("miku_usagi_backpack")
-    inst.AnimState:PlayAnimation("anim")
+    inst.AnimState:PlayAnimation("idle")
 
     inst:AddTag("miku_usagi_backpack")
 	inst:AddTag("fridge")
@@ -94,12 +97,11 @@ end
     inst:AddComponent("inspectable")
 
     inst:AddComponent("inventoryitem")
+	--inst.components.inventoryitem.imagename = "miku_usagi_backpack"
+  --  inst.components.inventoryitem.atlasname = "images/inventoryimages/miku_usagi_backpack.xml"
     inst.components.inventoryitem.cangoincontainer = false
 
-	--inst.components.inventoryitem.imagename = "miku_usagi_backpack"
-    --inst.components.inventoryitem.atlasname = "images/inventoryimages/miku_usagi_backpack.xml"
-	
-   
+
 
     inst:AddComponent("equippable")
     inst.components.equippable.equipslot = EQUIPSLOTS.BACK or EQUIPSLOTS.BODY

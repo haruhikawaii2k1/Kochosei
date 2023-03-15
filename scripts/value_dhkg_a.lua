@@ -3,6 +3,8 @@ local require = GLOBAL.require
 local STRINGS = GLOBAL.STRINGS
 local TUNING = GLOBAL.TUNING
 
+TUNING.KOCHOSEI_TURNOFFMUSIC =  GetModConfigData("turnoffmusic")
+
 -- Thông Số Cơ bản o((>ω< ))o
 TUNING.KOCHOSEI_HEALTH =  GetModConfigData("kocho_hp")
 TUNING.KOCHOSEI_HUNGER =  GetModConfigData("kocho_hunger")
@@ -12,7 +14,7 @@ TUNING.KOCHOSEI_DAMAGE =  GetModConfigData("kocho_damage")
 --Slave 
 TUNING.PURPLEMAGIC_DAMAGE = GetModConfigData("purplemagic_damage")
 TUNING.PURPLEMAGIC_DURABILITY = GetModConfigData("purplemagic_durability")
-TUNING.KOCHOSEI_SLAVE_MAX = GetModConfigData("kocho_slave_max")
+TUNING.KOCHOSEI_SLAVE_MAX_FIX = GetModConfigData("kocho_slave_max_fix")
 TUNING.KOCHOSEI_SLAVE_DAMAGE = GetModConfigData("kocho_slave_damage")
 TUNING.KOCHOSEI_SLAVE_HP = GetModConfigData("kocho_slave_hp")
 TUNING.KOCHOSEI_SLAVE_COST = GetModConfigData("kocho_slave_cost")
@@ -33,3 +35,15 @@ TUNING.KOCHO_HAT1_ABSORPTION = GetModConfigData("kocho_hat1_absorption")
 TUNING.KOCHO_TAMBOURIN_HEAL = GetModConfigData("kocho_tambourin_heal")
 --miku_usagi_backpack
 TUNING.MIKU_USAGI_BACKPACK = GetModConfigData("miku_usagi_backpack")
+
+TUNING.DEMONLORD_DURABILITY = GetModConfigData("demonlord_durability")
+TUNING.DEMONLORD_DAMAGE = GetModConfigData("demonlord_damage")
+
+--Boss slave health--
+TUNING.DRAGONFLY_SLAVE_HEALTH = GetModConfigData("dragonfly_slave_health")
+TUNING.DEERCLOPS_SLAVE_HEALTH = GetModConfigData("deerclops_slave_health")
+TUNING.STALKER_ALTRIUM_SLAVE_HEALTH = GetModConfigData("stalker_altrium_slave_health")
+--Boss slave damage--
+TUNING.DRAGONFLY_SLAVE_DAMAGE = GetModConfigData("dragonfly_slave_damage")
+TUNING.DEERCLOPS_SLAVE_DAMAGE = GetModConfigData("deerclops_slave_damage")
+TUNING.STALKER_ALTRIUM_SLAVE_DAMAGE = GetModConfigData("stalker_altrium_slave_damage")
