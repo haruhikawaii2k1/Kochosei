@@ -1,6 +1,4 @@
- local Ingredient = GLOBAL.Ingredient
-local RECIPETABS = GLOBAL.RECIPETABS
-local Recipe = GLOBAL.Recipe
+local Ingredient = GLOBAL.Ingredient
 local TECH = GLOBAL.TECH
 
 AddCharacterRecipe("miohm",
@@ -8,7 +6,7 @@ AddCharacterRecipe("miohm",
 		Ingredient("rope", 1),
 		Ingredient("hammer", 1)},
 		TECH.NONE,
-	{	atlas = "images/inventoryimages/miohm.xml",
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
 		image = "miohm.tex",
 		builder_tag = "kochosei"},
 	{	"CHARACTER" }
@@ -21,7 +19,7 @@ AddCharacterRecipe("kocho_purplesword",
 		Ingredient("axe", 1),
 		Ingredient("log", 15)},
 		TECH.NONE,
-	{	atlas = "images/inventoryimages/kocho_purplesword.xml",
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
 		image = "kocho_purplesword.tex",
 		builder_tag = "kochosei"},
 	{	"CHARACTER" }
@@ -35,7 +33,7 @@ AddCharacterRecipe("kochosei_purplemagic",
 		Ingredient("purplegem", 1),
 		Ingredient("petals", 5)},
 		TECH.NONE,
-	{	atlas = "images/inventoryimages/kochosei_purplemagic.xml",
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
 		image = "kochosei_purplemagic.tex",
 		builder_tag = "kochosei"},
 	{	"CHARACTER" }
@@ -47,8 +45,8 @@ AddCharacterRecipe("kochosei_demonlord",
 	{	Ingredient("shadowheart", 1),
 		Ingredient("skeletonhat", 1)},
 		TECH.MAGIC_THREE,
-	{	atlas = "images/inventoryimages/demonlord.xml",
-		image = "demonlord.tex",
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
+		image = "kochosei_demonlord.tex",
 		builder_tag = "kochosei"},
 
 			
@@ -63,7 +61,7 @@ AddCharacterRecipe("miku_usagi_backpack",
 		Ingredient("silk", 5),
 		Ingredient("gears", 1)},
 		TECH.NONE,
-	{	atlas = "images/inventoryimages/miku_usagi_backpack.xml",
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
 		image = "miku_usagi_backpack.tex",
 		builder_tag = "kochosei"},
 	{	"CHARACTER" }
@@ -75,30 +73,77 @@ AddCharacterRecipe("kochotambourin",
 		Ingredient("greengem", 1),
 		Ingredient("butterfly", 5)},
 		TECH.NONE,
-	{	atlas = "images/inventoryimages/kochotambourin.xml",
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
 		image = "kochotambourin.tex",
 		builder_tag = "kochosei"},
 	{	"CHARACTER" }
 	
 )
-
+--[[
 AddCharacterRecipe("kochosei_hat1",
 	{	Ingredient("silk", 3),
 		Ingredient("rope", 1),
 		Ingredient("pigskin", 1)},
 		TECH.NONE,
-	{	atlas = "images/inventoryimages/kochosei_hat1.xml",
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
 		image = "kochosei_hat1.tex",
 		builder_tag = "kochosei"},
 	{	"CHARACTER" }
 	
 )
 
+AddCharacterRecipe("kochosei_hat2",
+	{	Ingredient("silk", 3),
+		Ingredient("rope", 1),
+		Ingredient("pigskin", 1)},
+		TECH.NONE,
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
+		image = "kochosei_hat2.tex",
+		builder_tag = "kochosei"},
+	{	"CHARACTER" }
+	
+)
+
+AddCharacterRecipe("kochosei_hat3",
+	{	Ingredient("silk", 3),
+		Ingredient("rope", 1),
+		Ingredient("pigskin", 1)},
+		TECH.NONE,
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
+		image = "kochosei_hat3.tex",
+		builder_tag = "kochosei"},
+	{	"CHARACTER" }
+	
+)
+--]]
+
+MakeSkinnableRecipe( AddCharacterRecipe("kochosei_hat1",
+	{	Ingredient("silk", 3),
+		Ingredient("rope", 1),
+		Ingredient("pigskin", 1)},
+		TECH.NONE,
+    { builder_tag = "kochosei",
+		atlas = "images/inventoryimages/kochosei_inv.xml",
+		image = "kochosei_hat1.tex",},
+        {"CHARACTER", "WEAPONS"}),
+    {
+        ["kochosei_hat2"] = {
+		atlas = "images/inventoryimages/kochosei_inv.xml",
+		image = "kochosei_hat2.tex",
+        },
+	 ["kochosei_hat3"] = {
+		atlas = "images/inventoryimages/kochosei_inv.xml",
+		image = "kochosei_hat3.tex",
+        }
+    }
+)
+
+
 ----------------------
 AddCharacterRecipe("kochosei_house",
 	{	Ingredient("log",40)},
 		TECH.SCIENCE_ONE,
-	{	atlas = "images/inventoryimages/kochosei_house_icon.xml",
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
 		image = "kochosei_house_icon.tex",
 		builder_tag = "kochosei",
 		placer= "kochosei_house_placer"},
@@ -110,7 +155,7 @@ AddCharacterRecipe("kochosei_house",
 AddCharacterRecipe("kochosei_torigate",
 	{	Ingredient("log",20)},
 		TECH.SCIENCE_ONE,
-	{	atlas = "images/inventoryimages/kochosei_torigate.xml",
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
 		image = "kochosei_torigate.tex",
 		builder_tag = "kochosei",
 		placer= "kochosei_torigate_placer"},
@@ -122,7 +167,7 @@ AddCharacterRecipe("kochosei_torigate",
 AddCharacterRecipe("kochosei_wishlamp",
 	{	Ingredient("log",10)},
 		TECH.SCIENCE_ONE,
-	{	atlas = "images/inventoryimages/kochosei_wishlamp.xml",
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
 		image = "kochosei_wishlamp.tex",
 		builder_tag = "kochosei",
 		placer= "kochosei_wishlamp_placer"},
@@ -136,34 +181,12 @@ AddCharacterRecipe("kochosei_wishlamp",
 ------------------------------
 
 
-AddCharacterRecipe("kochosei_hat2",
-	{	Ingredient("silk", 3),
-		Ingredient("rope", 1),
-		Ingredient("pigskin", 1)},
-		TECH.NONE,
-	{	atlas = "images/inventoryimages/kochosei_hat2.xml",
-		image = "kochosei_hat2.tex",
-		builder_tag = "kochosei"},
-	{	"CHARACTER" }
-	
-)
 
-AddCharacterRecipe("kochosei_hat3",
-	{	Ingredient("silk", 3),
-		Ingredient("rope", 1),
-		Ingredient("pigskin", 1)},
-		TECH.NONE,
-	{	atlas = "images/inventoryimages/kochosei_hat3.xml",
-		image = "kochosei_hat3.tex",
-		builder_tag = "kochosei"},
-	{	"CHARACTER" }
-	
-)
 
 AddCharacterRecipe("kocho_lotus",
 	{	Ingredient("petals",20)},
 		TECH.SCIENCE_ONE,
-	{	atlas = "images/inventoryimages/kocho_lotus_flower.xml",
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
 		image = "kocho_lotus_flower.tex",
 		builder_tag = "kochosei"},
 
@@ -198,137 +221,13 @@ AddCharacterRecipe("messagebottleempty",
 	
 )
 
-AddCharacterRecipe("chum",
-	{	Ingredient("spoiled_food", 10)},
-		TECH.NONE,
-	{	builder_tag = "kochosei"},
-	{	"CHARACTER" }
-	
-)
-
-AddCharacterRecipe("oceanfishinglure_hermit_rain",
-	{	Ingredient("stinger", 5)},
-		TECH.NONE,
-	{	builder_tag = "kochosei"},
-	{	"CHARACTER" }
-	
-)
-
-AddCharacterRecipe("oceanfishinglure_hermit_snow",
-	{	Ingredient("stinger", 5)},
-		TECH.NONE,
-	{	builder_tag = "kochosei"},
-	{	"CHARACTER" }
-	
-)
-AddCharacterRecipe("oceanfishinglure_hermit_heavy",
-	{	Ingredient("stinger", 5)},
-		TECH.NONE,
-	{	builder_tag = "kochosei"},
-	{	"CHARACTER" }
-	
-)
-
-AddCharacterRecipe("oceanfishingbobber_oval",
-	{	Ingredient("log", 5)},
-		TECH.NONE,
-	{	builder_tag = "kochosei"},
-	{	"CHARACTER" }
-	
-)
-
-AddCharacterRecipe("oceanfishingrod",
-	{	Ingredient("log", 5)},
-		TECH.NONE,
-	{	builder_tag = "kochosei"},
-	{	"CHARACTER" }
-	
-)
-
-AddCharacterRecipe("book_fish",
-	{	Ingredient("log", 5)},
-		TECH.NONE,
-	{	builder_tag = "kochosei"},
-	{	"CHARACTER" }
-	
-)
-
-AddCharacterRecipe("book_rain",
-	{	Ingredient("log", 5)},
-		TECH.NONE,
-	{	builder_tag = "kochosei"},
-	{	"CHARACTER" }
-	
-)
-
-AddCharacterRecipe("book_moon",
-	{	Ingredient("log", 5)},
-		TECH.NONE,
-	{	builder_tag = "kochosei"},
-	{	"CHARACTER" }
-	
-)
-
-
-AddCharacterRecipe("darkin",
-	{	Ingredient("moonrocknugget",1)},
-		
-		TECH.ANCIENT_TWO,
-	{	atlas = "images/inventoryimages/raidenfu.xml",
-		image = "raidenfu.tex",
-		builder_tag = "kochosei"},
-
-			
-	{	"CHARACTER" }
-	
-)
-
-AddCharacterRecipe("book_fire",
-	{	Ingredient("log", 5)},
-		TECH.NONE,
-	{	builder_tag = "kochosei"},
-	{	"CHARACTER" }
-	
-)
-
-AddCharacterRecipe("polly_rogershat",
-	{	Ingredient("silk", 10)},
-		TECH.NONE,
-	{	builder_tag = "kochosei"},
-	{	"CHARACTER" }
-	
-)
-
-AddCharacterRecipe("antlionhat",
-	{	Ingredient("silk", 10)},
-		TECH.NONE,
-	{	builder_tag = "kochosei"},
-	{	"CHARACTER" }
-	
-)
-
-AddCharacterRecipe("honeycomb",
-	{	Ingredient("honey", 10)},
-		TECH.NONE,
-	{	builder_tag = "kochosei"},
-	{	"CHARACTER" }
-	
-)
-
-AddCharacterRecipe("compostwrap",
-	{	Ingredient("poop",3), Ingredient("spoiled_food",1)},
-		TECH.NONE,
-	{	builder_tag = "kochosei"},
-	{	"CHARACTER" }
-	
-)
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 AddCharacterRecipe("kochosei_lantern",
 	{	Ingredient("butterfly", 5),
 		Ingredient("twigs", 10)},
 		TECH.NONE,
-	{	atlas = "images/inventoryimages/kochosei_lantern.xml",
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
 		image = "kochosei_lantern.tex",
 		builder_tag = "kochosei"},
 	{	"CHARACTER" }
@@ -341,7 +240,7 @@ AddCharacterRecipe("kochosei_streetlight1_left",
 		Ingredient("rope",1),
 		Ingredient("petals",2)},
 		TECH.NONE,
-	{	atlas = "images/inventoryimages/kochosei_streetlight1_left.xml",
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
 		image = "kochosei_streetlight1_left.tex",
 		builder_tag = "kochosei",
 		placer= "kochosei_streetlight1_left_placer"},
@@ -355,7 +254,7 @@ AddCharacterRecipe("kochosei_streetlight1_right",
 		Ingredient("rope",1),
 		Ingredient("petals",2)},
 		TECH.SCIENCE_ONE,
-	{	atlas = "images/inventoryimages/kochosei_streetlight1_right.xml",
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
 		image = "kochosei_streetlight1_right.tex",
 		builder_tag = "kochosei",
 		placer= "kochosei_streetlight1_right_placer"},
@@ -369,7 +268,7 @@ AddCharacterRecipe("kochosei_streetlight1_musicbox",
 		Ingredient("rope",20),
 		Ingredient("petals",20)},
 		TECH.SCIENCE_ONE,
-	{	atlas = "images/inventoryimages/kochosei_streetlight1_musicbox.xml",
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
 		image = "kochosei_streetlight1_musicbox.tex",
 		builder_tag = "kochosei",
 		placer= "kochosei_streetlight1_musicbox_placer"},
@@ -381,7 +280,7 @@ AddCharacterRecipe("kochosei_streetlight1_musicbox",
 AddCharacterRecipe("kocho_miku_cos",
 	{	Ingredient("petals",1)},
 		TECH.SCIENCE_ONE,
-	{	atlas = "images/inventoryimages/kocho_miku_cos.xml",
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
 		image = "kocho_miku_cos.tex",
 		builder_tag = "kochosei"},
 
@@ -392,7 +291,7 @@ AddCharacterRecipe("kocho_miku_cos",
 AddCharacterRecipe("kocho_miku_back",
 	{	Ingredient("petals",1)},
 		TECH.SCIENCE_ONE,
-	{	atlas = "images/inventoryimages/kocho_miku_back.xml",
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
 		image = "kocho_miku_back.tex",
 		builder_tag = "kochosei"},
 
@@ -401,13 +300,27 @@ AddCharacterRecipe("kocho_miku_back",
 	
 )
 
+AddCharacterRecipe("kochobook",
+	{	Ingredient("opalpreciousgem",3),
+		Ingredient("goose_feather",15),
+		Ingredient("reviver",3)},
+		TECH.SCIENCE_TWO,
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
+		image = "kochobook.tex",
+		builder_tag = "kochosei"},
+			
+	{	"CHARACTER" }
+	
+)
+
+
 AddCharacterRecipe("kochosei_apple",
 	{	Ingredient("berries",1),
 		Ingredient("acorn",1),
 		Ingredient("spoiled_food",1)},
 		
 		TECH.SCIENCE_ONE,
-	{	atlas = "images/inventoryimages/kochosei_apple.xml",
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
 		image = "kochosei_apple.tex",
 		builder_tag = "kochosei"},
 
@@ -421,7 +334,7 @@ AddCharacterRecipe("kochosei_umbrella",
 		Ingredient("umbrella",1)},
 		
 		TECH.NONE,
-	{	atlas = "images/inventoryimages/kochosei_umbrella.xml",
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
 		image = "kochosei_umbrella.tex",
 		builder_tag = "kochosei"},
 

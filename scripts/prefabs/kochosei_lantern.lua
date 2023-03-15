@@ -2,7 +2,7 @@ local assets=
 {
 	Asset("ANIM", "anim/kochosei_lantern.zip"),
 	Asset("ANIM", "anim/swap_kochosei_lantern.zip"),
---    Asset("ANIM", "anim/swap_blacktessaiga.zip"),
+
 }
 
 
@@ -56,7 +56,7 @@ local function turnon(inst)
             inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_on")
             inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_LP", "loop")
 
-            inst.components.inventoryitem:ChangeImageName("kochosei_lantern")
+           -- inst.components.inventoryitem:ChangeImageName("kochosei_lantern")
         end
     end
 end
@@ -81,8 +81,6 @@ local function turnoff(inst)
 
     inst.SoundEmitter:KillSound("loop")
     inst.SoundEmitter:PlaySound("dontstarve/wilson/lantern_off")
-
-    inst.components.inventoryitem:ChangeImageName("kochosei_lantern")
 end
 
 local function OnLoad(inst, data)
@@ -209,10 +207,9 @@ local function fn()
     end
 	
     inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/kochosei_lantern.xml"
+  --  inst.components.inventoryitem.imagename = "kochosei_lantern"
+--	inst.components.inventoryitem.atlasname = "images/inventoryimages/kochosei_inv.xml"
     inst.components.inventoryitem:SetOnDroppedFn(ondropped)
-    --inst.components.inventoryitem:SetOnPickupFn(makesmalllight)
-    --inst.components.inventoryitem:SetOnActiveItemFn(makesmalllight)
     inst.components.inventoryitem:SetOnPutInInventoryFn(onputininventory)    
 
     

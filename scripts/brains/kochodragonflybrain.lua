@@ -11,17 +11,6 @@ local MIN_FOLLOW_DIST = 0
 local TARGET_FOLLOW_DIST = 20
 local MAX_FOLLOW_DIST = 20
 
-local START_FACE_DIST = 6
-local KEEP_FACE_DIST = 8
-
-local KEEP_WORKING_DIST = 14
-local SEE_WORK_DIST = 10
-
-local KITING_DIST = 3
-local STOP_KITING_DIST = 5
-
-
-local KEEP_DANCING_DIST = 3
 
 
 local function GetFaceTargetFn(inst)

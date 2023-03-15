@@ -88,6 +88,7 @@ local events =
     CommonHandlers.OnLocomote(true, false),
     CommonHandlers.OnAttacked(),
     CommonHandlers.OnDeath(),
+	CommonHandlers.OnHop(),
     CommonHandlers.OnAttack(),
     EventHandler("dance", function(inst)
         if not (inst.sg:HasStateTag("dancing") or inst.sg:HasStateTag("busy")) then
@@ -829,5 +830,7 @@ local states =
         end,
     },
 }
+CommonStates.AddHopStates(states, true, { pre = "boat_jump_pre", loop = "boat_jump_loop", pst = "boat_jump_pst"})
 
-return StateGraph("kochosei_enemy", states, events, "spawn", actionhandlers)
+
+return StateGraph("kochosei_enemy", states, events, "idle", actionhandlers)

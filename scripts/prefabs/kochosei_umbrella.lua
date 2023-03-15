@@ -2,8 +2,7 @@ local assets =
 {
    Asset("ANIM", "anim/kochosei_umbrella.zip"),
    Asset("ANIM", "anim/swap_kochosei_umbrella.zip"),
-       Asset("ATLAS", "images/inventoryimages/kochosei_umbrella.xml"),
-    Asset("IMAGE", "images/inventoryimages/kochosei_umbrella.tex")
+
 }
 
 local function onequip(inst, owner)
@@ -87,8 +86,6 @@ local function fn()
    inst:AddComponent("waterproofer")
    inst:AddComponent("inspectable")
    inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.imagename = "kochosei_umbrella"
-    inst.components.inventoryitem.atlasname = "images/inventoryimages/kochosei_umbrella.xml"
 
    inst:AddComponent("equippable")
    inst.components.equippable.dapperness = (0.033)

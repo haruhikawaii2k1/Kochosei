@@ -2,8 +2,7 @@ local assets = {
     Asset("ANIM", "anim/kochotambourin.zip"),
     Asset("ANIM", "anim/swap_kochotambourin.zip"),
     Asset("ANIM", "anim/lavaarena_heal_flowers_fx.zip"),
-    Asset("ATLAS", "images/inventoryimages/kochotambourin.xml"),
-    Asset("IMAGE", "images/inventoryimages/kochotambourin.tex")
+
 }
 local prefabs_healblooms = {
     "lavaarena_bloom_kocho",
@@ -209,8 +208,6 @@ local function fn()
     inst.components.equippable.dapperness = (0.033)
 
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem.imagename = "kochotambourin"
-    inst.components.inventoryitem.atlasname = "images/inventoryimages/kochotambourin.xml"
 
     inst.lights = {}
 

@@ -1,8 +1,7 @@
 local assets = {
    Asset("ANIM", "anim/kochosei_purplemagic.zip"),
    Asset("ANIM", "anim/swap_kochosei_purplemagic.zip"),
-   Asset("ATLAS", "images/inventoryimages/kochosei_purplemagic.xml"),
-   Asset("IMAGE", "images/inventoryimages/kochosei_purplemagic.tex")
+
 }
 
 local function onremovefire(fire)
@@ -148,8 +147,6 @@ local function fn()
    inst.components.equippable.dapperness = (0.033)
 
    inst:AddComponent("inventoryitem")
-   inst.components.inventoryitem.imagename = "kochosei_purplemagic"
-   inst.components.inventoryitem.atlasname = "images/inventoryimages/kochosei_purplemagic.xml"
 
    return inst
 end

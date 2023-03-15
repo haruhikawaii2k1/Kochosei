@@ -7,7 +7,7 @@ Thank you for using this mod, you can use the config button below and let me kno
 	
 ]]
 author = "Mio, dinhkarate, Haruhi Kawaii"
-version = "3.7.2" -- Raiden Fuck You
+version = "3.8.3" -- Raiden Fuck You
 forumthread = ""
 
 -- 1.4.5 fix tab
@@ -704,7 +704,6 @@ configuration_options =
 	hover = "Kochosei Miohm Durability",
 		options =	
 		{		
-			{description = "50", data = 50},
 			{description = "100", data = 100},
 			{description = "150", data = 150},
 			{description = "200", data = 200},
@@ -722,7 +721,7 @@ configuration_options =
 			
 			
 		},
-		default = 200,
+		default = 500,
     },
  
 	 {

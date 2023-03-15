@@ -65,8 +65,7 @@ local function commonfn(name, anim)
     ---NOTEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE -- Yeah that's is
 
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem.imagename = "" .. abc .. ""
-    inst.components.inventoryitem.atlasname = "images/inventoryimages/" .. name .. ".xml"
+
     -- The inventory WHich I have already solve fucking things --
 
     inst:AddComponent("inspectable")
@@ -138,9 +137,6 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.KOCHOSEI_APPLE = "An apple a day, keep docto
 STRINGS.NAMES.KOCHOSEI_APPLE_COOKED = "Kochosei's Cooked Apple"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.KOCHOSEI_APPLE_COOKED = "Looks nice!"
 
-return Prefab("kochosei_apple", kochosei_apple, assets, prefabs), Prefab(
-    "kochosei_apple_cooked",
-    kochosei_apple_cooked,
-    assets,
-    prefabs
-), MakePlacer("kochosei_apple_placer", "kochosei_apple_fruit", "kochosei_apple_fruit", "idle_planted")
+return Prefab("kochosei_apple", kochosei_apple, assets, prefabs), 
+		Prefab("kochosei_apple_cooked", kochosei_apple_cooked, assets, prefabs),
+		MakePlacer("kochosei_apple_placer", "kochosei_apple_fruit", "kochosei_apple_fruit", "idle_planted")

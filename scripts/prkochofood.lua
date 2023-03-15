@@ -13,7 +13,7 @@ local prkochofood =
 		hunger = 50,
 		perishtime = TUNING.PERISH_MED,
 		sanity = 20,
-		cooktime = .2,
+		cooktime = .3,
 		potlevel = "med", 
 
 
@@ -29,8 +29,8 @@ local prkochofood =
 		hunger = 80,
 		perishtime = TUNING.PERISH_MED,
 		sanity = 15,
-		cooktime = .3,
-		potlevel = "med",    
+		cooktime = 1,
+		potlevel = "low",    
 		temperature = TUNING.HOT_FOOD_BONUS_TEMP*2,
 		temperatureduration = TUNING.BUFF_FOOD_TEMP_DURATION,
 	},
@@ -45,7 +45,7 @@ local prkochofood =
 		hunger = 90,
 		perishtime = TUNING.PERISH_MED,
 		sanity = 50,
-		cooktime = .4,
+		cooktime = 1,
 		potlevel = "med",    
 	},
 	kochofood_cheese_shrimp =
@@ -71,7 +71,7 @@ local prkochofood =
 		hunger = 35,
 		perishtime = TUNING.PERISH_MED,
 		sanity = 20,
-		cooktime = .2,
+		cooktime = .7,
 		potlevel = "med",    
 	},
 	kochofood_fastfood =
@@ -84,7 +84,7 @@ local prkochofood =
 		hunger = TUNING.CALORIES_LARGE*2,
 		perishtime = TUNING.PERISH_MED,
 		sanity = TUNING.SANITY_MED,
-		cooktime = .4,
+		cooktime = 1,
 		potlevel = "high",    
 	},
 	kochofood_grape_juice =
@@ -97,7 +97,7 @@ local prkochofood =
 		hunger = TUNING.CALORIES_LARGE,
 		perishtime = TUNING.PERISH_MED,
 		sanity = TUNING.SANITY_MED*5,
-		cooktime = .2,
+		cooktime = .5,
 		potlevel = "med",    
 		temperature = TUNING.COLD_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.BUFF_FOOD_TEMP_DURATION,
@@ -118,7 +118,7 @@ local prkochofood =
 		hunger = TUNING.CALORIES_LARGE,
 		perishtime = TUNING.PERISH_MED,
 		sanity = TUNING.SANITY_MED*5,
-		cooktime = .2,
+		cooktime = .5,
 		potlevel = "med",    
 		temperature = TUNING.COLD_FOOD_BONUS_TEMP,
 		temperatureduration = TUNING.BUFF_FOOD_TEMP_DURATION,
@@ -139,10 +139,64 @@ local prkochofood =
 		hunger = TUNING.CALORIES_LARGE*2,
 		perishtime = TUNING.PERISH_MED,
 		sanity = TUNING.SANITY_MED*2,
-		cooktime = .3,
+		cooktime = 1,
 		potlevel = "med",    
 		temperature = TUNING.HOT_FOOD_BONUS_TEMP*2,
 		temperatureduration = TUNING.BUFF_FOOD_TEMP_DURATION,
+
+	},
+		kochofood_bunreal =
+	{
+		test = function(cooker, names, tags) return tags.veggie and tags.veggie >=2 and tags.fish and tags.fish >=1 and not tags.inedible end,
+
+		priority = 30,
+		foodtype = FOODTYPE.VEGGIE,
+		health = TUNING.HEALING_MED*2,
+		hunger = TUNING.CALORIES_LARGE*3,
+		perishtime = TUNING.PERISH_MED,
+		sanity = TUNING.SANITY_MED*3,
+		cooktime = 1,
+		potlevel = "low",    
+		temperature = TUNING.HOT_FOOD_BONUS_TEMP,
+		temperatureduration = TUNING.BUFF_FOOD_TEMP_DURATION,
+
+	},
+		kochofood_banhmi_2 =
+	{
+		test = function(cooker, names, tags) return (names.tomato or names.tomato_cooked) and tags.egg and  tags.meat end,
+
+		priority = 30,
+		foodtype = FOODTYPE.VEGGIE,
+		health = TUNING.HEALING_MED,
+		hunger = TUNING.CALORIES_LARGE*2,
+		perishtime = TUNING.PERISH_MED,
+		sanity = TUNING.SANITY_MED*2,
+		cooktime = 1,
+		potlevel = "med",    
+
+	},
+		kochofood_cafe =
+	{
+		test = function(cooker, names, tags) return tags.frozen and tags.frozen >= 3 and tags.sweetener and not tags.meat and not tags.egg end,
+
+		priority = 30,
+		foodtype = FOODTYPE.VEGGIE,
+		health = TUNING.HEALING_MED,
+		hunger = TUNING.CALORIES_LARGE,
+		perishtime = TUNING.PERISH_MED,
+		sanity = TUNING.SANITY_MED*5,
+		cooktime = 1,
+		potlevel = "med",    
+		temperature = - TUNING.HOT_FOOD_BONUS_TEMP,
+		temperatureduration = TUNING.BUFF_FOOD_TEMP_DURATION,
+		oneatenfn = function(inst, eater)
+			if eater.components.freezable~=nil then
+					eater.components.freezable:AddColdness(2)
+					eater:AddDebuff("sweettea_buff", "sweettea_buff")
+				
+			end
+
+		end,
 
 	},
 	
@@ -156,7 +210,7 @@ local prkochofood =
 		hunger = TUNING.CALORIES_LARGE,
 		perishtime = TUNING.PERISH_MED,
 		sanity = TUNING.SANITY_MED,
-		cooktime = .2,
+		cooktime = 1,
 		potlevel = "med",    
 
 	},

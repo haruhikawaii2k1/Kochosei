@@ -48,8 +48,6 @@ local function fn()
 	inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM---------------------
 	 inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.imagename = "kocho_lotus_flower"
-    inst.components.inventoryitem.atlasname = "images/inventoryimages/kocho_lotus_flower.xml"
 
     inst:AddComponent("deployable")
     inst.components.deployable.ondeploy = ondeploy

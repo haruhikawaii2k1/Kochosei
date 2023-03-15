@@ -21,17 +21,17 @@ TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.KOCHOSEI = {
 }
 
 TUNING.STARTING_ITEM_IMAGE_OVERRIDE.kochosei_lantern = {
-    atlas = "images/inventoryimages/kochosei_lantern.xml",
+   -- atlas = "images/inventoryimages/kochosei_inv.xml",
     image = "kochosei_lantern.tex"
 }
 
 TUNING.STARTING_ITEM_IMAGE_OVERRIDE.kochosei_hat2 = {
-    atlas = "images/inventoryimages/kochosei_hat2.xml",
+  -- atlas = "images/inventoryimages/kochosei_inv.xml",
     image = "kochosei_hat2.tex"
 }
 
 TUNING.STARTING_ITEM_IMAGE_OVERRIDE.kochosei_apple = {
-    atlas = "images/inventoryimages/kochosei_apple.xml",
+  -- atlas = "images/inventoryimages/kochosei_inv.xml",
     image = "kochosei_apple.tex"
 }
 
@@ -68,7 +68,7 @@ end
 
 local function onpick(inst, data)
     if data.object.prefab == "flower" or data.object:HasTag("flower") then
-        inst.components.sanity:DoDelta(-20)
+        inst.components.sanity:DoDelta(-15)
     end
 end
 
@@ -172,26 +172,6 @@ local function anvaochetnguoiay(inst, food)
 end
 
 
-
-
-local function GetIslandMap(inst)
-	local island = TheSim:FindFirstEntityWithTag("darkin")
-		if island ~= nil then
-			local x, y, z = island.Transform:GetWorldPosition()
---            if x > 0 and z > 0 then
-			    for x2 = x - 60, x + 60, 8 do
-				    for z2 = z - 60, z + 60, 8 do
-					    inst.player_classified.MapExplorer:RevealArea(x2, 0, z2)
-                    end
-			    end
---		    end
-	    end
-end
-
-local function RevealMap(inst)
-    inst:DoTaskInTime(0, GetIslandMap)
-end
-
 ---------------------------Kén ăn------------------
 
 -- This initializes for both the server and client. Tags can be added here.
@@ -200,6 +180,7 @@ local common_postinit = function(inst)
     inst:AddTag("kochosei")
     inst:AddTag("summonerally")
     inst:AddTag("puppeteer")
+
     inst.MiniMapEntity:SetIcon("kochosei.tex")
     inst.AnimState:AddOverrideBuild("wendy_channel")
     inst.AnimState:AddOverrideBuild("player_idles_wendy")
@@ -300,6 +281,7 @@ local function onemote(inst, data)
 end
 
 ---------------------------------------------------------------------------------------------------------------
+--[[
 local lootlist = {
     dragonfly = {
         {
@@ -308,7 +290,7 @@ local lootlist = {
         }
     }
 }
-
+--]]
 -------------Bướm chết ở gần bị trừ sanity----------------------
 
 -- Credit to Ultroman  https://forums.kleientertainment.com/forums/topic/110716-coding-killing-mobs-penalty/
@@ -452,24 +434,28 @@ local function ontalk(inst, data)
         KochoseiSound(inst, ghosttalklist)
     end
 end
+
 -----------------------------------------------------------------------------
 local function OnEquipCustom(inst, data)
-    if data.item.prefab == "kochosei_hat1" or "kochosei_hat2" or "kochosei_hat3" then
+    local hat_prefabs = {"kochosei_hat1", "kochosei_hat2", "kochosei_hat3"}
+    if table.contains(hat_prefabs, data.item.prefab) then
         if inst:HasTag("scarytoprey") then
             inst:RemoveTag("scarytoprey")
         end
     end
 end
---------------- Bỏ tag scarytoprey (o゜▽゜)o☆(o゜▽゜)o☆(o゜▽゜)o☆----------------
+
 local function OnUnequipCustom(inst, data)
     if data.item ~= nil then
-        if data.item.prefab == "kochosei_hat1" or "kochosei_hat2" or "kochosei_hat3" then
+        local hat_prefabs = {"kochosei_hat1", "kochosei_hat2", "kochosei_hat3"}
+        if table.contains(hat_prefabs, data.item.prefab) then
             if not inst:HasTag("scarytoprey") then
                 inst:AddTag("scarytoprey")
             end
         end
     end
 end
+
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
 local function in_fire(inst)
@@ -491,25 +477,29 @@ end
 local function haru(inst)
     local x, y, z = inst.Transform:GetWorldPosition()
     local spell = SpawnPrefab("crab_king_icefx")
-    spell.Transform:SetPosition(x, y, z)
+    spell.Transform:SetPosition(x - .11, y, z + .1)
 end
-
-kochostop = 0
 
 local function harulevel(inst)
   if inst.components.health:IsDead() or inst:HasTag("playerghost") then
         return
     end
+
+    if inst.kochostop == nil then
+        inst.kochostop = 0
+    end
+
     if not inst.components.locomotor.wantstomoveforward then
-        kochostop = kochostop + 1
-    
-	else 
-		kochostop = 0
-	end
-    if kochostop >= 60 then
+        inst.kochostop = inst.kochostop + 1
+    else 
+        inst.kochostop = 0
+    end
+
+    if inst.kochostop >= 60 then
         haru(inst)
     end
 end
+
 
 local master_postinit = function(inst)
     -- Set starting inventory
@@ -531,7 +521,7 @@ local master_postinit = function(inst)
     inst.components.combat.damagemultiplier = TUNING.KOCHOSEI_DAMAGE
     inst.components.sanity.dapperness = -5 / 60
 
-    inst:AddComponent("petleash")
+
     inst.components.petleash:SetMaxPets(TUNING.KOCHOSEI_SLAVE_MAX_FIX)
 
     inst:DoPeriodicTask(1, OnTaskTick, 1)
@@ -547,7 +537,7 @@ local master_postinit = function(inst)
     inst.components.eater.PrefersToEat = anvaochetnguoiay
     inst.customidleanim = "idle_wendy"
     inst.OnLoad = onload
-    inst.OnNewSpawn = RevealMap
+
     inst:ListenForEvent("emote", onemote)
     ------------
     inst:ListenForEvent("equip", OnEquipCustom)

@@ -25,75 +25,17 @@ local function onclose(inst)
 end
 
 
-local function haru(inst)
-    local x, y, z = inst.Transform:GetWorldPosition()
-    local spell = SpawnPrefab("crab_king_icefx")
-    spell.Transform:SetPosition(x, y, z)
-end
-
-
-local function ShouldAcceptItem(inst, item, giver)
-    if
-        item.prefab == "kocho_miku_cos" or  item.prefab == "kocho_miku_back" or item.components.equippable and
-            (item.components.equippable.equipslot == EQUIPSLOTS.HEAD or
-                item.components.equippable.equipslot == EQUIPSLOTS.HANDS or
-                item.components.equippable.equipslot == EQUIPSLOTS.BODY) and
-            not item.components.projectile
-     then
-        return true
-		
-	else
-	 return false
-    end
-end
 
 local function m_killPet(inst)
-	if inst.components.container ~= nil then
+	
+    if inst.components.container ~= nil then
         inst.components.container:DropEverything()
     end
-     inst:PushEvent("death")
-end
-
-local function doiskin(inst)
-    inst.AnimState:SetBuild("kochosei_snowmiku_skin1")
-	haru(inst)
-end
-
-
-
-local function OnGetItemFromPlayer(inst, giver, item)
-	
-    if
-        item.components.equippable ~= nil and
-            (item.components.equippable.equipslot == EQUIPSLOTS.HEAD or
-                item.components.equippable.equipslot == EQUIPSLOTS.HANDS or
-                item.components.equippable.equipslot == EQUIPSLOTS.BODY)
-     then
-        local newslot = item.components.equippable.equipslot
-        local current = inst.components.inventory:GetEquippedItem(newslot)
-        if current then
-            inst.components.inventory:DropItem(current)
-        end
-
-        inst.components.inventory:Equip(item)
-    end
-	if item.prefab == "kocho_miku_cos" then 
-	doiskin(inst)
-		end
-	if item.prefab == "kocho_miku_back" then 
-	local x, y, z = inst.Transform:GetWorldPosition()
-	m_killPet(inst)
-	giver.components.petleash:SpawnPetAt(x, y, z, "kochosei_enemyb")
+	if inst.components.health and not inst.components.health:IsDead() then
+		inst.components.health:Kill()
 	end
 end
 
-
-local function OnRefuseItem(inst, giver, item)
-
-		if not ShouldAcceptItem(inst, item, giver) then
-		inst.components.talker:Say("Huh?")
-		end
-end
 
 local function linktoplayer(inst, player)
     inst.components.lootdropper:SetLoot(LOOT)
@@ -107,63 +49,27 @@ local function linktoplayer(inst, player)
     player:ListenForEvent("onremove", unlink, inst)
 end
 
-
 local function m_checkLeaderExisting(inst)
     local leader = inst.components.follower:GetLeader()
-    if
-        leader ~= nil and leader.components.health ~= nil and
-            not (leader.components.health:IsDead() or leader:HasTag("playerghost"))
-     then
+    if leader ~= nil and leader.components.health ~= nil and not (leader.components.health:IsDead() or leader:HasTag("playerghost")) then
         return
-    elseif inst._killtask == nil then
-        inst._killtask = inst:DoTaskInTime(math.random(), m_killPet)
+    else
+        m_killPet(inst)
     end
 end
+
 
 local function OnAttacked(inst, data)
     if data.attacker ~= nil then
         if data.attacker.components.petleash ~= nil and data.attacker.components.petleash:IsPet(inst) then
-
 			 m_killPet(inst)
-            data.attacker.components.petleash:DespawnPet(inst)
-        elseif data.attacker.components.combat ~= nil then
-            inst.components.combat:SuggestTarget(data.attacker)
-        end
+
+		end
     end
 end
 
-local function retargetfn(inst)
-    local leader = inst.components.follower:GetLeader()
-    return leader ~= nil and
-        FindEntity(
-            leader,
-            TUNING.SHADOWWAXWELL_TARGET_DIST,
-            function(guy)
-                return guy ~= inst and (guy.components.combat:TargetIs(leader) or guy.components.combat:TargetIs(inst)) and
-                    inst.components.combat:CanTarget(guy)
-            end,
-            {"_combat"},
-            {"playerghost", "INLIMBO"}
-        ) or
-        nil
-end
 
-local function keeptargetfn(inst, target)
-    return inst.components.follower:IsNearLeader(14) and inst.components.combat:CanTarget(target) and
-        target.components.minigame_participator == nil
-end
 
-local function spearfn(inst)
-    inst.components.health:SetMaxHealth(TUNING.KOCHOSEI_SLAVE_HP)
-    inst.components.health:StartRegen(TUNING.SHADOWWAXWELL_HEALTH_REGEN, TUNING.SHADOWWAXWELL_HEALTH_REGEN_PERIOD)
-
-    inst.components.combat:SetDefaultDamage(TUNING.KOCHOSEI_SLAVE_DAMAGE)
-    inst.components.combat:SetAttackPeriod(TUNING.SHADOWWAXWELL_ATTACK_PERIOD)
-    inst.components.combat:SetRetargetFunction(2, retargetfn)
-    inst.components.combat:SetKeepTargetFunction(keeptargetfn)
-
-    return inst
-end
 
 
 local function balovali(inst)
@@ -173,7 +79,7 @@ local function balovali(inst)
     inst.AnimState:OverrideSymbol("swap_body", "swap_miku_usagi_backpack", "usagi")
     inst.AnimState:OverrideSymbol("swap_body", "swap_miku_usagi_backpack", "swap_body")
   
-			    inst:AddComponent("inventory")
+	inst:AddComponent("inventory")
     inst.components.inventory.maxslots = 0
     inst.components.inventory.GetOverflowContainer = function(self)
         return self.inst.components.container
@@ -193,19 +99,6 @@ local function balovali(inst)
     return inst
 end
 
-
-local function nokeeptargetfn(inst)
-    return false
-end
-
-local function noncombatantfn(inst)
-    inst.components.combat:SetKeepTargetFunction(nokeeptargetfn)
-end
-
-local function nodebrisdmg(inst, amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb)
-    return afflicter ~= nil and afflicter:HasTag("quakedebris")
-end
-
 local function MakeMinion(prefab, tool, hat, master_postinit)
     local assets = {}
 
@@ -218,8 +111,7 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
         inst.entity:AddNetwork()
 		inst.entity:AddDynamicShadow()
 
-        MakeGhostPhysics(inst, 1, 0.5)
-
+		MakeGiantCharacterPhysics(inst, 50, .7)
         inst.Transform:SetFourFaced(inst)
 
         --Scale of your kochosei_enemy.
@@ -234,8 +126,6 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
 
         inst.Transform:SetFourFaced(inst)
 
-        --This will turn your kochosei_enemy into a shadow.
-        --inst.AnimState:SetMultColour(0, 0, 0, .5)
 
         if tool ~= nil then
             inst.AnimState:OverrideSymbol("swap_object", tool, tool)
@@ -267,29 +157,23 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
 		inst.OnEntityReplicated = function(inst) inst.replica.container:WidgetSetup("chester") end
             return inst
         end
-		inst:AddTag("woodcutter")
+
         inst:AddComponent("inspectable")
         inst:AddComponent("locomotor")
         inst.components.locomotor.runspeed = 8
-        inst.components.locomotor.pathcaps = {ignorecreep = true}
+		inst.components.locomotor:SetTriggersCreep(false)
+		inst.components.locomotor.pathcaps = { allowocean = false }
         inst.components.locomotor:SetSlowMultiplier(.6)
+		inst.components.locomotor:SetAllowPlatformHopping(true)
+		
+		inst:AddComponent("embarker")
+		inst:AddComponent("drownable")
 
+
+	
         inst:AddComponent("health")
         inst.components.health:SetMaxHealth(TUNING.KOCHOSEI_SLAVE_HP)
-        inst.components.health.nofadeout = true
-        inst.components.health.redirect = nodebrisdmg
 
-        inst:AddComponent("sanity")
-
-        -- inst:AddComponent("sanity")
-
-        function inst.components.sanity:DoDelta(delta, overtime)
-            return
-        end
-
-        function inst.components.sanity:Recalc(self, dt)
-            return
-        end
 
         inst:AddComponent("combat")
         inst.components.combat.hiteffectsymbol = "torso"
@@ -298,13 +182,6 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
 
         inst:AddComponent("inventory")
 
-        inst:AddComponent("trader")
-        inst.components.trader:SetAcceptTest(ShouldAcceptItem)
-        inst.components.trader.deleteitemonaccept = false
-        inst.components.trader.onaccept = OnGetItemFromPlayer
-        inst.components.trader.onrefuse = OnRefuseItem
-        inst.components.trader:Enable()
-
         inst:AddComponent("follower")
         inst.components.follower:KeepLeaderOnAttacked()
         inst.components.follower.keepdeadleader = true
@@ -312,16 +189,16 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
 
         inst:AddComponent("lootdropper")
         inst:AddComponent("talker")
-
+	
         inst:SetBrain(brain)
         inst:SetStateGraph("SGkochosei_enemy")
 
-        --inst:SetStateGraph("SGshadowwaxwell")
-       -- inst:SetStateGraph("SGwilson")
-
         inst:ListenForEvent("attacked", OnAttacked)
+		
+		inst:ListenForEvent("death", m_killPet)
 
         inst:DoPeriodicTask(1, m_checkLeaderExisting)
+		
 
         inst.LinkToPlayer = linktoplayer
         if master_postinit ~= nil then

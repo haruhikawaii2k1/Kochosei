@@ -1,7 +1,5 @@
-require "behaviours/wander"
 require "behaviours/faceentity"
 require "behaviours/chaseandattack"
-require "behaviours/panic"
 require "behaviours/follow"
 require "behaviours/attackwall"
 require "behaviours/standstill"
@@ -31,7 +29,7 @@ local STOP_KITING_DIST = 5
 local KEEP_DANCING_DIST = 3
 
 
-local DIG_TAGS = { "stump", "grave", "farm_debris" }
+local DIG_TAGS = { "stump", "grave", "farm_debris", "snowpile" }
 local CHOP_TAGS = { "evergreens", "deciduoustree" }
 
 local function GetLeader(inst)

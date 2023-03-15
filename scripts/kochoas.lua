@@ -1,22 +1,15 @@
-Assets = {
-   
-   
-   
-   
-   
-    Asset("ATLAS", "images/inventoryimages/kochosei_wishlamp.xml"),
-	Asset("IMAGE", "images/inventoryimages/kochosei_wishlamp.tex"),
-    Asset("ATLAS", "images/inventoryimages/kochosei_torigate.xml"),
-    Asset("IMAGE", "images/inventoryimages/kochosei_torigate.tex"),	
+Assets = {   
+
 
 --------------------------------------------------------------------------------
 
 	Asset("ATLAS", "images/kochofood.xml"),
-	Asset("IMAGE", "images/kochofood.tex"),
-	Asset("ATLAS_BUILD","images/kochofood.xml", 256),
+
 	Asset("ATLAS", "images/inventoryimages/kochofood.xml"),
-	Asset("IMAGE", "images/inventoryimages/kochofood.tex"),
-	Asset("ATLAS_BUILD","images/inventoryimages/kochofood.xml", 256),
+	Asset("ATLAS", "images/inventoryimages/kochosei_inv.xml"),
+	Asset("ATLAS", "images/inventoryimages/kochospell.xml"),
+
+
 --------------------------------------------------------------------------------
 
   --------------------------------------------------------------------------------
@@ -44,40 +37,10 @@ Assets = {
    Asset("ATLAS", "images/names_gold_kochosei.xml"),
    Asset("IMAGE", "images/names_gold_kochosei.tex"),
    Asset("ATLAS", "images/names_gold_kochosei.xml"),
-   Asset("ATLAS", "images/inventoryimages/kochosei_hat1.xml"),
-   Asset("IMAGE", "images/inventoryimages/kochosei_hat1.tex"),
-   Asset("ATLAS", "images/inventoryimages/kochosei_hat2.xml"),
-   Asset("IMAGE", "images/inventoryimages/kochosei_hat2.tex"),
-   Asset("ATLAS", "images/inventoryimages/kochosei_hat3.xml"),
-   Asset("IMAGE", "images/inventoryimages/kochosei_hat3.tex"),
-
-   Asset("ATLAS", "images/inventoryimages/kochosei_streetlight1_left.xml"),
-   Asset("IMAGE", "images/inventoryimages/kochosei_streetlight1_left.tex"),
-   Asset("ATLAS", "images/inventoryimages/kochosei_streetlight1_right.xml"),
-   Asset("IMAGE", "images/inventoryimages/kochosei_streetlight1_right.tex"),
-   Asset("ATLAS", "images/inventoryimages/kochosei_streetlight1_musicbox.xml"),
-   Asset("IMAGE", "images/inventoryimages/kochosei_streetlight1_musicbox.tex"),
-   Asset("ATLAS", "images/inventoryimages/kochosei_house_icon.xml"),
-   Asset("IMAGE", "images/inventoryimages/kochosei_house_icon.tex"),
-   Asset("ATLAS", "images/inventoryimages/kochosei_lantern.xml"),
-   Asset("IMAGE", "images/inventoryimages/kochosei_lantern.tex"),
-   Asset("ATLAS", "images/inventoryimages/kocho_lotus_flower_cooked.xml"),
-   Asset("IMAGE", "images/inventoryimages/kocho_lotus_flower_cooked.tex"),
-   Asset("ATLAS", "images/inventoryimages/kocho_lotus_flower.xml"),
-   Asset("IMAGE", "images/inventoryimages/kocho_lotus_flower.tex"),
-   Asset("ATLAS", "images/inventoryimages/kocho_miku_cos.xml"),
-   Asset("IMAGE", "images/inventoryimages/kocho_miku_cos.tex"),
-   Asset("ATLAS", "images/inventoryimages/kocho_miku_back.xml"),
-	Asset("IMAGE", "images/inventoryimages/kocho_miku_back.tex"),
-
-   -- I have a pen and I have an apple Uhhhh apple pen --
    -- I have a pen and I have a pineapple Uhhhh pineapple pen --
    -- Apple pen, Pineapple pen --
    -- Pineapple, Apple pen --
-   Asset("ATLAS", "images/inventoryimages/kochosei_apple.xml"),
-   Asset("IMAGE", "images/inventoryimages/kochosei_apple.tex"),
-   Asset("ATLAS", "images/inventoryimages/kochosei_apple_cooked.xml"),
-   Asset("IMAGE", "images/inventoryimages/kochosei_apple_cooked.tex"),
+
 
    Asset("ATLAS", "images/map_icons/kochosei_apple_tree_stump.xml"),
    Asset("IMAGE", "images/map_icons/kochosei_apple_tree_stump.tex"),
@@ -87,23 +50,7 @@ Assets = {
 
    Asset("ATLAS", "images/map_icons/kochosei_apple_tree_icon.xml"),
    Asset("IMAGE", "images/map_icons/kochosei_apple_tree_icon.tex"),
-   -- Miohm --
-   Asset("ATLAS", "images/inventoryimages/miohm.xml"),
-   Asset("IMAGE", "images/inventoryimages/miohm.tex"),
-   --purplesword--
-   Asset("ATLAS", "images/inventoryimages/kocho_purplesword.xml"),
-   Asset("IMAGE", "images/inventoryimages/kocho_purplesword.tex"),
-   -- kochotambourin --
-   Asset("ATLAS", "images/inventoryimages/kochotambourin.xml"),
-   Asset("IMAGE", "images/inventoryimages/kochotambourin.tex"),
 
-   Asset("ATLAS", "images/inventoryimages/kochosei_purplemagic.xml"),
-   Asset("IMAGE", "images/inventoryimages/kochosei_purplemagic.tex"),
-
-   Asset("IMAGE", "images/inventoryimages/miku_usagi_backpack.tex"),
-   Asset("IMAGE", "images/inventoryimages/miku_usagi_backpack.xml"),
-   Asset("IMAGE", "images/inventoryimages/kochosei_umbrella.tex"),
-   Asset("IMAGE", "images/inventoryimages/kochosei_umbrella.xml"),
    -- TAB kochosei
    Asset("ATLAS", "images/hud/kochoseitab.xml"),
    Asset("IMAGE", "images/hud/kochoseitab.tex"),
@@ -130,20 +77,3 @@ AddMinimapAtlas("images/map_icons/kochosei_apple_tree_burnt.xml")
 AddMinimapAtlas("images/map_icons/kochosei_apple_tree_stump.xml")
 AddMinimapAtlas("images/map_icons/kochosei_apple_tree_icon.xml")
 
-local kochofood = {
-"kochofood_apple_cake",
-"kochofood_cheese_shrimp",
-"kochofood_beefsteak",
-"kochofood_grape_juice",
-"kochofood_fastfood",
-"kochofood_cheese_honey_cake",	
-"kochofood_apple_candy",
-"kochofood_kiwi_juice",	
-"kochofood_xienthit",
-"kochofood_seafood_soup",
-"kochofood_berry_cake"
-}
-
-for k, v in pairs(kochofood) do
-	RegisterInventoryItemAtlas("images/inventoryimages/kochofood.xml", v..".tex")
-end

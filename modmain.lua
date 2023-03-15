@@ -1,7 +1,4 @@
-require "debugkeys"
-
 GLOBAL.setmetatable(env, {__index = function(_, k)return GLOBAL.rawget(GLOBAL, k) end })
-
 local _G = GLOBAL
 local PREFAB_SKINS = _G.PREFAB_SKINS
 local PREFAB_SKINS_IDS = _G.PREFAB_SKINS_IDS
@@ -11,6 +8,61 @@ local cooking = require("cooking")
 local ingredients = cooking.ingredients
 local cookpot = {"cookpot"}
 local spicer = {"portablespicer"}
+local STRINGS = STRINGS
+
+-------------------Assets--------------
+modimport("scripts/kochoas")
+-------------------Assets--------------
+local kochofood = {
+"kochofood_apple_cake",
+"kochofood_cheese_shrimp",
+"kochofood_beefsteak",
+"kochofood_grape_juice",
+"kochofood_fastfood",
+"kochofood_cheese_honey_cake",	
+"kochofood_apple_candy",
+"kochofood_kiwi_juice",	
+"kochofood_xienthit",
+"kochofood_seafood_soup",
+"kochofood_berry_cake",
+"kochofood_cafe",
+"kochofood_bunreal",
+"kochofood_banhmi_2"
+}
+
+local listiteminv = {
+    "miohm",
+    "kocho_lotus_flower",
+	"kocho_lotus",
+    "kocho_lotus_flower_cooked",
+    "kochosei_purplemagic",
+    "miku_usagi_backpack",
+    "kocho_purplesword",
+    "kocho_miku_cos",
+    "kocho_miku_back",
+    "kochosei_umbrella",
+    "kochosei_demonlord",
+    "kochosei_hat1",
+    "kochosei_hat2",
+    "kochosei_hat3",
+    "kochotambourin",
+	"kochosei_lantern",
+	"kochosei_apple",
+	"kochosei_apple_cooked",
+	--"kochobook"
+}
+
+for _, prefab in ipairs(kochofood) do
+    local atlas = "images/inventoryimages/kochofood.xml"
+    local tex = prefab..".tex"
+    RegisterInventoryItemAtlas(GLOBAL.resolvefilepath(atlas), tex)
+end
+for _, prefab in ipairs(listiteminv) do
+    local atlas = "images/inventoryimages/kochosei_inv.xml"
+    local tex = prefab..".tex"
+    RegisterInventoryItemAtlas(GLOBAL.resolvefilepath(atlas), tex)
+end
+
 PrefabFiles = {
     "kochosei_apple_tree",
     "kochosei_apple_planted_tree",
@@ -19,6 +71,7 @@ PrefabFiles = {
     "kochosei",
     "kochosei_none",
     "miohm",
+--	"kochobook",
     "kochotambourin",
     "kochosei_hat",
     "kochosei_lantern",
@@ -45,40 +98,30 @@ PrefabFiles = {
 	"kochodeerclops",
 	"kochosei_umbrella",
 ---RAIDENFU---
-	"raidenfu",
-    "darkin",
-    "kocho_autodigturf",
-    "kocho_autoplaceturf",
-    "kocho_annoyingstuff",
-    "kochosei_demonlord",
+   "kochosei_demonlord",
 
 }
 
 
-modimport 'scripts/phapsubaclieu'
--------------------Assets--------------
-modimport("scripts/kochoas")
--------------------Assets--------------
-
 --------------------------------------
-GLOBAL.STRINGS.NAMES.LYDOCHET = "Cast Revive Kochotambourin"
-GLOBAL.STRINGS.NAMES.LYDOHOISINH = "Kochotambourin"
+STRINGS.NAMES.LYDOCHET = "Cast Revive Kochotambourin"
+STRINGS.NAMES.LYDOHOISINH = "Kochotambourin"
 ---------------------------------------
 
 -- The character select screen lines
-GLOBAL.STRINGS.CHARACTER_TITLES.kochosei = "Kochou no Sei"
-GLOBAL.STRINGS.CHARACTER_NAMES.kochosei = "Kochousei"
-GLOBAL.STRINGS.CHARACTER_DESCRIPTIONS.kochosei =
+STRINGS.CHARACTER_TITLES.kochosei = "Kochou no Sei"
+STRINGS.CHARACTER_NAMES.kochosei = "Kochousei"
+STRINGS.CHARACTER_DESCRIPTIONS.kochosei =
     "*Love Singing & friendly\n*Regen sanity + health herself and friends around after full sanity when she is singing\n*The plant on the field will be happy if she is singing near them"
-GLOBAL.STRINGS.CHARACTER_QUOTES.kochosei = '"<3 Hora hora"'
-GLOBAL.STRINGS.CHARACTER_SURVIVABILITY.kochosei = "CUTEEE!"
+STRINGS.CHARACTER_QUOTES.kochosei = '"<3 Hora hora"'
+STRINGS.CHARACTER_SURVIVABILITY.kochosei = "CUTEEE!"
 
 -- Custom speech strings
-GLOBAL.STRINGS.CHARACTERS.KOCHOSEI = require "speech_kochosei"
+STRINGS.CHARACTERS.KOCHOSEI = require "speech_kochosei"
 
 -- The character's name as appears in-game
-GLOBAL.STRINGS.NAMES.KOCHOSEI = "Kochousei"
-GLOBAL.STRINGS.SKIN_NAMES.kochosei_none = "Kochousei"
+STRINGS.NAMES.KOCHOSEI = "Kochousei"
+STRINGS.SKIN_NAMES.kochosei_none = "Kochousei"
 
 STRINGS.SKIN_NAMES.kochosei_none = "Kochosei"
 STRINGS.SKIN_NAMES.kochosei_snowmiku_skin1 = "Kochosei cosplay Miku"
@@ -102,13 +145,6 @@ local skin_modes = {
 AddModCharacter("kochosei", "FEMALE", skin_modes)
 
 
-RegisterInventoryItemAtlas(GLOBAL.resolvefilepath("images/inventoryimages/kochosei_hat1.xml"), "kochosei_hat1.tex")
-RegisterInventoryItemAtlas(GLOBAL.resolvefilepath("images/inventoryimages/kochosei_hat2.xml"), "kochosei_hat2.tex")
-RegisterInventoryItemAtlas(GLOBAL.resolvefilepath("images/inventoryimages/kochosei_hat3.xml"), "kochosei_hat3.tex")
-
-RegisterInventoryItemAtlas(
-    GLOBAL.resolvefilepath("images/inventoryimages/miku_usagi_backpack.xml"), "miku_usagi_backpack.tex"
-)
 -------------------------Skin-----------------------------------------------------Skin----------------------------
 
 keytonamngua = GetModConfigData("keykocho")
@@ -188,9 +224,15 @@ function containers.widgetsetup(container, prefab, data)
     end
 end
 
-modimport("scripts/vukhi")
+
 modimport("scripts/value_dhkg_a")
 modimport("scripts/skins_api")
+modimport("scripts/skin_items_api")
+PREFAB_SKINS["kochosei_hat1"] =
+{
+	"kochosei_hat2",
+	"kochosei_hat3",
+}
 
 PREFAB_SKINS["kochosei"] = {
     "kochosei_none",
@@ -210,22 +252,22 @@ for prefab, skins in pairs(PREFAB_SKINS) do
 end
 
 AddSkinnableCharacter("kochosei") --Hornet: The character youd like to skin, make sure you use the prefab name. And MAKE sure you run this function AFTER you import the skins_api file
+--------------------------------------------
+modimport("scripts/vukhi")
+--------------------------------------------
 
---Skin STRINGS
 
 
-AddPrefabPostInitAny( function(inst)
-        if not GLOBAL.TheWorld.ismastersim then
+AddPrefabPostInitAny(function(inst)
+		if not GLOBAL.TheWorld.ismastersim then
             return inst
         end
-        if
-            (inst.components.equippable and inst.components.armor and inst.components.inventoryitem) or inst.components.weapon or inst.prefab == "dragon_scales" or inst.prefab == "deerclops_eyeball" or
-                inst:HasTag("light") and not inst.components.tradeable
-         then
+    if (inst.components.equippable and inst.components.inventoryitem) or inst.components.armor or inst.components.weapon or inst.prefab == "dragon_scales" or inst.prefab == "deerclops_eyeball" or inst:HasTag("light") and not inst.components.tradeable then
+        if not inst.components.tradeable then
             inst:AddComponent("tradable")
         end
     end
-)
+end)
 
 -----------------------------
 
@@ -317,4 +359,13 @@ STRINGS.NAMES.KOCHOFOOD_KIWI_JUICE = "Kiwi Juice"
 STRINGS.NAMES.KOCHOFOOD_SEAFOOD_SOUP = "Súp"
 STRINGS.NAMES.KOCHOFOOD_XIENTHIT = "Xiên Thịt"
 STRINGS.NAMES.KOCHOFOOD_APPLE_CANDY = "Apple Candy"
+STRINGS.NAMES.KOCHOFOOD_BUNREAL = "Bún Real"
+STRINGS.NAMES.KOCHOFOOD_BANHMI_2 = "Bánh Mì"
+STRINGS.NAMES.KOCHOFOOD_CAFE = "Cà Phê Sữa Đá"
+STRINGS.SKIN_NAMES.kochosei_hat2 = "Kochosei Hat 2"
+STRINGS.SKIN_NAMES.kochosei_hat3 = "Kochosei Hat 3"
+STRINGS.SPELLS.KOCHO_1 ="Rain"
+STRINGS.SPELLS.KOCHO_2 ="Full Moon"
+STRINGS.SPELLS.KOCHO_3 ="Gardening"
+STRINGS.SPELLS.KOCHO_4 ="Respawn"
 -----------------------------------------------------------------------------------------------

@@ -294,17 +294,6 @@ return {
           visible = true,
           properties = {}
         },
-        {
-          name = "",
-          type = "darkin",
-          shape = "rectangle",
-          x = 1280,
-          y = 1280,
-          width = 64,
-          height = 64,
-          visible = true,
-          properties = {}
-        }
         }
       }
     }

@@ -3,8 +3,7 @@ local assets =
     Asset("ANIM", "anim/miku_usagi_backpack.zip"),
     Asset("ANIM", "anim/swap_miku_usagi_backpack.zip"),
 	Asset("ANIM", "anim/miku_usagi_backpack_2x4.zip"),
-  	Asset("ATLAS", "images/inventoryimages/miku_usagi_backpack.xml"),
-    Asset("IMAGE", "images/inventoryimages/miku_usagi_backpack.tex"),
+
 }
 
 local prefabs =
@@ -77,9 +76,9 @@ local function fn()
     inst.AnimState:SetBank("miku_usagi_backpack")
     inst.AnimState:SetBuild("miku_usagi_backpack")
     inst.AnimState:PlayAnimation("idle")
-	
-	inst:AddTag("backpack")
-  	inst:AddTag("fridge")
+
+    inst:AddTag("miku_usagi_backpack")
+	inst:AddTag("fridge")
     inst:AddTag("nocool")
 
     inst.MiniMapEntity:SetIcon("miku_usagi_backpack_icon.png")
@@ -98,12 +97,11 @@ end
     inst:AddComponent("inspectable")
 
     inst:AddComponent("inventoryitem")
+	--inst.components.inventoryitem.imagename = "miku_usagi_backpack"
+  --  inst.components.inventoryitem.atlasname = "images/inventoryimages/miku_usagi_backpack.xml"
     inst.components.inventoryitem.cangoincontainer = false
 
-	--inst.components.inventoryitem.imagename = "miku_usagi_backpack"
-    --inst.components.inventoryitem.atlasname = "images/inventoryimages/miku_usagi_backpack.xml"
-	
-   
+
 
     inst:AddComponent("equippable")
     inst.components.equippable.equipslot = EQUIPSLOTS.BACK or EQUIPSLOTS.BODY

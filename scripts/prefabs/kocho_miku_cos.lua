@@ -32,8 +32,6 @@ local function fn()
 	inst:AddComponent("inspectable")
 
 	inst:AddComponent("inventoryitem")
-	   inst.components.inventoryitem.imagename = "kocho_miku_cos"
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/kocho_miku_cos.xml"
 
 	inst:AddComponent("stackable")
 	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
@@ -73,8 +71,6 @@ local function fnback()
 	inst:AddComponent("inspectable")
 
 	inst:AddComponent("inventoryitem")
-	 inst.components.inventoryitem.imagename = "kocho_miku_back"
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/kocho_miku_back.xml"
 
 	inst:AddComponent("stackable")
 	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM

@@ -1535,4 +1535,4 @@ local states =
 
 CommonStates.AddSinkAndWashAsoreStates(states, {washashore = "taunt2_pst"})
 
-return StateGraph("SGstalker", states, events, "idle")
+return StateGraph("SGkochosei_stalker", states, events, "idle")

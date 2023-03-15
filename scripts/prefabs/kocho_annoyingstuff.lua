@@ -2,9 +2,7 @@ local assets =
 {
     Asset("ANIM", "anim/skinstick.zip"),
     Asset("ANIM", "anim/swap_skinstick.zip"),
-    Asset("ATLAS", "images/inventoryimages/raidenfu.xml"),
-    Asset("IMAGE", "images/inventoryimages/raidenfu.tex"),
-        Asset("ANIM", "anim/explode.zip")
+    Asset("ANIM", "anim/explode.zip")
 }
 
 local function onequip(inst, owner)
@@ -81,8 +79,6 @@ local function fn()
     end
 
 	inst:AddComponent('inventoryitem')
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/raidenfu.xml"
-	inst.components.inventoryitem.imagename = "raidenfu"
 
 	inst:AddComponent('inspectable')
     inst:AddComponent("complexprojectile")

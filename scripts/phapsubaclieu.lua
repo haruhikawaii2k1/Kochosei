@@ -5,18 +5,19 @@
 	local RECIPETABS = GLOBAL.RECIPETABS
 	local TECH = GLOBAL.TECH
 
-	AddComponentAction(
-		"EQUIPPED",
-		"phapsubaclieu",
-		function(inst, doer, target, actions, right)
-			if right then
-				if target:HasTag("character") then
-					table.insert(actions, GLOBAL.ACTIONS.PHAPSUBACLIEU)
+	AddComponentAction("INVENTORY",	"kochospellbook",
+		function(inst, doer, target, actions)
+			if doer.HUD ~= nil and doer.HUD:GetCurrentOpenSpellBook() == inst then
+				table.insert(actions, ACTIONS.CLOSESPELLBOOK)
+			elseif inst.components.kochospellbook:CanBeUsedBy(doer) and doer.replica.inventory:GetActiveItem() == nil and not inst:HasTag("fueldepleted") then
+				local inventoryitem = inst.replica.inventoryitem
+				if inventoryitem:IsGrandOwner(doer) then
+					table.insert(actions, ACTIONS.USESPELLBOOK)
 				end
 			end
 		end
 	)
-
+--[[
 	local PHAPSUBACLIEU = GLOBAL.Action({priority = 10, rmb = true, distance = 20, mount_valid = true})
 	PHAPSUBACLIEU.str = "Làm phép thuật nhé?"
 	PHAPSUBACLIEU.id = "PHAPSUBACLIEU"
@@ -31,3 +32,4 @@
 	AddAction(PHAPSUBACLIEU)
 	AddStategraphActionHandler("wilson", GLOBAL.ActionHandler(GLOBAL.ACTIONS.PHAPSUBACLIEU, "quickcastspell"))
 	AddStategraphActionHandler("wilson_client", GLOBAL.ActionHandler(GLOBAL.ACTIONS.PHAPSUBACLIEU, "quickcastspell"))
+	--]]

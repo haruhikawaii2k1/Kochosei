@@ -16,24 +16,13 @@ local prefabs =
 }
 
 local TARGET_DIST = 16
-local STRUCTURES_PER_HARASS = 5
-
-local function IsSated(inst)
-    return inst.structuresDestroyed >= STRUCTURES_PER_HARASS
-end
-
-local function WantsToLeave(inst)
-    return not inst.components.combat:HasTarget()
-        and inst:IsSated()
-        and inst:GetTimeAlive() >= 120
-end
 
 local function CalcSanityAura(inst)
     return inst.components.combat.target ~= nil and -TUNING.SANITYAURA_HUGE or -TUNING.SANITYAURA_LARGE
 end
 
 
-local RETARGET_MUST_TAGS = { "monster","epic" }
+local RETARGET_MUST_TAGS = { "monster" }
 local RETARGET_CANT_TAGS = { "prey", "smallcreature", "INLIMBO","player","structure" }
 local function RetargetFn(inst)
     local range = inst:GetPhysicsRadius(0) + 8
@@ -53,40 +42,6 @@ end
 
 local function KeepTargetFn(inst, target)
     return inst.components.combat:CanTarget(target)
-end
-
-
-local function ShouldSleep(inst)
-    return false
-end
-
-local function ShouldWake(inst)
-    return true
-end
-
-local function OnEntitySleep(inst)
-    if inst:WantsToLeave() then
-        inst.structuresDestroyed = 0 -- reset this for the stored version
-        TheWorld:PushEvent("storehassler", inst)
-        inst:Remove()
-    end
-end
-
-local function OnStopWinter(inst)
-    if inst:IsAsleep() then
-        TheWorld:PushEvent("storehassler", inst)
-        inst:Remove()
-    end
-end
-
-local function OnSave(inst, data)
-    data.structuresDestroyed = inst.structuresDestroyed
-end
-
-local function OnLoad(inst, data)
-    if data then
-        inst.structuresDestroyed = data.structuresDestroyed or inst.structuresDestroyed
-    end
 end
 
 
@@ -112,14 +67,6 @@ local function OnHitOther(inst, data)
     end
 end
 
-local function OnRemove(inst)
-    TheWorld:PushEvent("hasslerremoved", inst)
-end
-
-local function OnDead(inst)
-    AwardRadialAchievement("deerclops_killed", inst:GetPosition(), TUNING.ACHIEVEMENT_RADIUS_FOR_GIANT_KILL)
-    TheWorld:PushEvent("hasslerkilled", inst)
-end
 
 local function oncollapse(inst, other)
     if other:IsValid() and other.components.workable ~= nil and other.components.workable:CanBeWorked() then
@@ -146,7 +93,6 @@ local function OnNewState(inst, data)
     end
 end
 
-local loot = {"meat"}
 
 
 local function onPeriodicTask(inst)
@@ -204,12 +150,8 @@ local function fn()
     inst.DynamicShadow:SetSize(6, 3.5)
     inst.Transform:SetFourFaced()
 
-    inst:AddTag("epic")
-    inst:AddTag("monster")
-    inst:AddTag("hostile")
-    inst:AddTag("deerclops")
     inst:AddTag("scarytoprey")
-    inst:AddTag("largecreature")
+
 
     inst.AnimState:SetBank("deerclops")
 	inst.AnimState:SetBuild("deerclops_yule")
@@ -240,7 +182,8 @@ local function fn()
     inst.components.locomotor.walkspeed = 3
 
     ------------------------------------------
-    inst:SetStateGraph("SGdeerclops")
+   -- inst:SetStateGraph("SGdeerclops")
+	inst:SetStateGraph("SGkochosei_deerclops")
 
     ------------------------------------------
 
@@ -269,12 +212,6 @@ local function fn()
     inst:AddComponent("explosiveresist")
 
     ------------------------------------------
-
-    inst:AddComponent("sleeper")
-    inst.components.sleeper:SetResistance(4)
-    inst.components.sleeper:SetSleepTest(ShouldSleep)
-    inst.components.sleeper:SetWakeTest(ShouldWake)
-
     ------------------------------------------
 
     inst:AddComponent("lootdropper")
@@ -294,34 +231,18 @@ local function fn()
     inst.components.follower:KeepLeaderOnAttacked()
     inst.components.follower.keepdeadleader = true
 	inst.components.follower.keepleaderduringminigame = true
-    ------------------------------------------
-   -- inst:AddComponent("knownlocations")
+
     inst:SetBrain(brain)
 
-   -- inst:ListenForEvent("working", AfterWorking)
-  --  inst:ListenForEvent("entitysleep", OnEntitySleep)
-   -- inst:ListenForEvent("attacked", OnAttacked)
-    inst:ListenForEvent("onhitother", OnHitOther)
-    inst:ListenForEvent("death", OnDead)
-    inst:ListenForEvent("onremove", OnRemove)
-   -- inst:ListenForEvent("newcombattarget", OnNewTarget)
 
-   -- inst:WatchWorldState("stopwinter", OnStopWinter)
-       inst:DoPeriodicTask(1, onPeriodicTask)
+    inst:ListenForEvent("onhitother", OnHitOther)
+
+    inst:DoPeriodicTask(1, onPeriodicTask)
 	inst:DoPeriodicTask(1, m_checkLeaderExisting)
 	inst:ListenForEvent("attacked", OnAttacked)
 
     inst:ListenForEvent("stopfollowing", function(inst) inst.components.health:Kill()  end)
-	
-
-    --inst.OnSave = OnSave
-  -- inst.OnLoad = OnLoad
-   -- inst.IsSated = IsSated
-  --  inst.WantsToLeave = WantsToLeave
-
-        inst:AddComponent("timer")
-
-        inst:ListenForEvent("newstate", OnNewState)
+    --inst:ListenForEvent("newstate", OnNewState)
     
 
     return inst

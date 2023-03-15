@@ -1,8 +1,7 @@
 local assets = {
     Asset("ANIM", "anim/demonlord.zip"),
     Asset("ANIM", "anim/swap_demonlord.zip"),
-    Asset("ATLAS", "images/inventoryimages/demonlord.xml"),
-    Asset("IMAGE", "images/inventoryimages/demonlord.tex")
+
  }
  
  local function onremovefire(fire)
@@ -156,9 +155,7 @@ local assets = {
     inst.components.equippable.dapperness = (0.033)
  
     inst:AddComponent("inventoryitem")
-    inst.components.inventoryitem.imagename = "demonlord"
-    inst.components.inventoryitem.atlasname = "images/inventoryimages/demonlord.xml"
- 
+
     return inst
  end
  

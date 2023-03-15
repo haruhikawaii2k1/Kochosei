@@ -184,80 +184,7 @@ local function TryGetNewTarget(inst)
     end
 end
 
-local function ResetLavae(inst)
-    --Despawn all lavae
-    local lavae = inst.components.rampingspawner.spawns
-    for k, v in pairs(lavae) do
-        k.components.combat:SetTarget(nil)
-        k.components.locomotor:Clear()
-        k.reset = true
-    end
-end
 
-local function OnDeath(inst)
-    AwardRadialAchievement("dragonfly_killed", inst:GetPosition(), TUNING.ACHIEVEMENT_RADIUS_FOR_GIANT_KILL)
-    ResetLavae(inst)
-    SetEngaged(inst, false)
-end
-
-local function SoftReset(inst)
-    inst.SoftResetTask = nil
-    --Double check for nearby players & combat targets before reseting.
-    TryGetNewTarget(inst)
-    if inst.components.combat:HasTarget() then
-        return
-    end
-
-    --print(string.format("Dragonfly - Execute soft reset @ %2.2f", GetTime()))
-
-    ResetLavae(inst)
-    SetEngaged(inst, false)
-    inst.components.freezable:Unfreeze()
-    inst.components.freezable:SetExtraResist(0)
-    inst.components.sleeper:WakeUp()
-    inst.components.sleeper:SetExtraResist(0)
-    inst.components.health:SetCurrentHealth(inst.components.health.maxhealth)
-    inst.components.rampingspawner:Stop()
-    inst.components.rampingspawner:Reset()
-    TransformNormal(inst)
-    inst.components.stunnable.stun_threshold = TUNING.DRAGONFLY_STUN
-    inst.components.stunnable.stun_period = TUNING.DRAGONFLY_STUN_PERIOD
-end
-
-local function Reset(inst)
-    ResetLavae(inst)
-    --Fly off
-    inst.reset = true
-
-    --No longer start the respawn task here - was possible to duplicate this if the exiting failed.
-end
-
-local function DoDespawn(inst)
-    --Schedule new spawn time
-    --Called at the time the dragonfly actually leaves the world.
-    local home = inst.components.homeseeker ~= nil and inst.components.homeseeker.home or nil
-    if home ~= nil then
-        home.components.childspawner:GoHome(inst)
-        home.components.childspawner:StartSpawning()
-    else
-        inst:Remove() --Dragonfly was probably debug spawned in?
-    end
-end
-
-local function TrySoftReset(inst)
-    if inst.SoftResetTask == nil then
-        --print(string.format("Dragonfly - Start soft reset task @ %2.2f", GetTime()))
-        inst.SoftResetTask = inst:DoTaskInTime(10, SoftReset)
-    end
-end
-
-local function OnTargetDeathTask(inst)
-    inst._ontargetdeathtask = nil
-    TryGetNewTarget(inst)
-    if inst.components.combat.target == nil and inst.components.grouptargeter.num_targets <= 0 then
-        TrySoftReset(inst)
-    end
-end
 
 local function OnNewTarget(inst, data)
     if inst.SoftResetTask ~= nil then
@@ -299,60 +226,10 @@ local function RetargetFn(inst)
     return #nearplayers > 0 and nearplayers[math.random(#nearplayers)] or nil, true
 end
 
-local function GetLavaePos(inst)
-    local pos = inst:GetPosition()
-    local facingangle = inst.Transform:GetRotation() * DEGREES
-    pos.x = pos.x + 1.7 * math.cos(-facingangle)
-    pos.y = pos.y - .3
-    pos.z = pos.z + 1.7 * math.sin(-facingangle)
-    return pos
-end
-
-local function OnLavaeDeath(inst, data)
-    --If that was my last lavae & I'm out of lavaes to spawn then enrage.
-    if inst.components.rampingspawner:GetCurrentWave() <= 0 and data.remaining_spawns <= 0 then
-        --Blargh!
-        inst.components.rampingspawner:Stop()
-        inst.components.rampingspawner:Reset()
-        inst:PushEvent("transform", { transformstate = "fire" })
-    end
-end
-
-local function OnLavaeSpawn(inst, data)
-    --Lavae should pick the closest player and imprint on them.
-    --This allows players to pick a person to kite lavaes.
-    local lavae = data.newent
-    local targets = {}
-    for k, v in pairs(inst.components.grouptargeter:GetTargets()) do
-        table.insert(targets, k)
-    end
-    local target = GetClosest(lavae, targets) or inst.components.grouptargeter:SelectTarget()
-    lavae.components.entitytracker:TrackEntity("mother", inst)
-    lavae.LockTargetFn(lavae, target)
-end
-
-function OnMoistureDelta(inst, data)
-    if inst.enraged then
-        local break_threshold = inst.components.moisture.maxmoisture * 0.9
-        if (data.old < break_threshold and data.new >= break_threshold) then
-            TransformNormal(inst)
-        end
-    end
-end
-
 local function KeepTargetFn(inst, target)
     return inst.components.combat:CanTarget(target)
 end
 
-local function DoBreakOff(inst)
-    local player--[[, rangesq]] = inst:GetNearestPlayer()
-    LaunchAt(SpawnPrefab("dragon_scales"), inst, player, 1, 3, 1.5)
-end
-
-local function OnSave(inst, data)
-    --Check if the dragonfly is in combat with players so we can reset.
-    data.playercombat = inst._isengaged:value() or nil
-end
 
 --delayed until homeseeker is initialized (from dragonfly_spawner)
 local function OnInitEngaged(inst)
@@ -396,11 +273,6 @@ local function OnAttacked(inst, data)
             inst.components.combat:SetTarget(data.attacker)
         end
     end
-end
-
-local function OnHealthTrigger(inst)
-    inst:PushEvent("transform", { transformstate = "normal" })
-    inst.components.rampingspawner:Start()
 end
 
 local function ShouldSleep(inst)
@@ -471,11 +343,6 @@ local function fn()
     inst.AnimState:PlayAnimation("idle", true)
 	inst.AnimState:SetScale(0.6, 0.6)
 
-    inst:AddTag("epic")
-    inst:AddTag("noepicmusic")
-    inst:AddTag("monster")
-    inst:AddTag("hostile")
-    inst:AddTag("dragonfly")
     inst:AddTag("scarytoprey")
     inst:AddTag("largecreature")
     inst:AddTag("flying")
@@ -507,7 +374,6 @@ local function fn()
     inst:AddComponent("groundpounder")
     inst:AddComponent("combat")
     inst:AddComponent("explosiveresist")
-    inst:AddComponent("sleeper")
     inst:AddComponent("lootdropper")
     inst:AddComponent("inspectable")
     inst:AddComponent("locomotor")
@@ -518,8 +384,6 @@ local function fn()
     inst:AddComponent("damagetracker")
     inst:AddComponent("stunnable")
     inst:AddComponent("healthtrigger")
-    inst:AddComponent("rampingspawner")
-    inst:AddComponent("moisture")
     inst:SetStateGraph("SGdragonfly")
 	inst:AddComponent("follower")
 	
@@ -538,18 +402,11 @@ local function fn()
 
     -- Component Init
 
-    inst.components.damagetracker.damage_threshold = TUNING.DRAGONFLY_BREAKOFF_DAMAGE
-    inst.components.damagetracker.damage_threshold_fn = DoBreakOff
-
     inst.components.stunnable.stun_threshold = TUNING.DRAGONFLY_STUN
     inst.components.stunnable.stun_period = TUNING.DRAGONFLY_STUN_PERIOD
     inst.components.stunnable.stun_duration = TUNING.DRAGONFLY_STUN_DURATION
     inst.components.stunnable.stun_resist = TUNING.DRAGONFLY_STUN_RESIST
     inst.components.stunnable.stun_cooldown = TUNING.DRAGONFLY_STUN_COOLDOWN
-
-    inst.components.healthtrigger:AddTrigger(0.8, OnHealthTrigger)
-    inst.components.healthtrigger:AddTrigger(0.5, OnHealthTrigger)
-    inst.components.healthtrigger:AddTrigger(0.2, OnHealthTrigger)
 
     inst.components.health:SetMaxHealth(TUNING.DRAGONFLY_SLAVE_HEALTH)
     inst.components.health.nofadeout = true --Handled in death state instead
@@ -561,7 +418,7 @@ local function fn()
     inst.components.groundpounder.groundpounddamagemult = 0.5
     inst.components.groundpounder.groundpoundringfx = "firering_fx"
 
-    inst.components.combat:SetDefaultDamage(TUNING.DRAGONFLY_SLAVE_DAMAGE)
+    inst.components.combat:SetDefaultDamage(TUNING.DRAGONFLY_SLAVE_DAMAGE*2)
     inst.components.combat:SetAttackPeriod(1)
     inst.components.combat.playerdamagepercent = 0.5
     --inst.components.combat:SetAreaDamage(6, 0.8)
@@ -572,10 +429,7 @@ local function fn()
     inst.components.combat.hiteffectsymbol = "dragonfly_body"
     inst.components.combat:SetHurtSound("dontstarve_DLC001/creatures/dragonfly/hurt")
 
-    inst.components.sleeper:SetResistance(4)
-    inst.components.sleeper:SetSleepTest(ShouldSleep)
-    inst.components.sleeper:SetWakeTest(ShouldWake)
-    inst.components.sleeper.diminishingreturns = true
+
 
     inst.components.lootdropper:SetChanceLootTable("kochodragonfly")
 
@@ -586,29 +440,9 @@ local function fn()
     inst.components.locomotor.pathcaps = { ignorewalls = true, allowocean = true }
     inst.components.locomotor.walkspeed = TUNING.DRAGONFLY_SPEED
 
-    inst.components.rampingspawner.getspawnposfn = GetLavaePos
-    inst.components.rampingspawner.onstartfn = OnSpawnStart
-    inst.components.rampingspawner.onstopfn = OnSpawnStop
-
-    -- Event Watching
-
-    inst._ontargetdeathtask = nil
-    inst._ontargetdeath = function()
-        if inst._ontargetdeathtask == nil then
-            inst._ontargetdeathtask = inst:DoTaskInTime(2, OnTargetDeathTask)
-        end
-    end
-
-  --  inst:ListenForEvent("newcombattarget", OnNewTarget)
-    inst:ListenForEvent("moisturedelta", OnMoistureDelta)
+   
     inst:ListenForEvent("timerdone", OnTimerDone)
-    inst:ListenForEvent("attacked", OnAttacked)
-    inst:ListenForEvent("death", OnDeath) --Get rid of lavaes.
-
-    -- Variables
-
-  --  inst.OnSave = OnSave
-    --inst.OnLoad = OnLoad -- Reset fight if in combat with players.
+   
     inst.OnEntitySleep = ToggleDespawnOffscreen
     inst.OnEntityWake = ToggleDespawnOffscreen
   --  inst.Reset = Reset
