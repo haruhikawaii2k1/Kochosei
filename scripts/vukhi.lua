@@ -116,7 +116,7 @@ AddCharacterRecipe("kochosei_hat3",
 	
 )
 --]]
-
+--[[
 MakeSkinnableRecipe( AddCharacterRecipe("kochosei_hat1",
 	{	Ingredient("silk", 3),
 		Ingredient("rope", 1),
@@ -138,6 +138,19 @@ MakeSkinnableRecipe( AddCharacterRecipe("kochosei_hat1",
     }
 )
 
+--]]
+
+AddCharacterRecipe("kochosei_hat1",
+	{	Ingredient("silk", 3),
+		Ingredient("rope", 1),
+		Ingredient("pigskin", 1)},
+		TECH.NONE,
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
+		image = "kochosei_hat1.tex",
+		builder_tag = "kochosei",},			
+        {"CHARACTER", "WEAPONS"}
+	
+)
 
 ----------------------
 AddCharacterRecipe("kochosei_house",

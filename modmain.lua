@@ -1,67 +1,24 @@
 GLOBAL.setmetatable(env, {__index = function(_, k)return GLOBAL.rawget(GLOBAL, k) end })
 local _G = GLOBAL
-local PREFAB_SKINS = _G.PREFAB_SKINS
-local PREFAB_SKINS_IDS = _G.PREFAB_SKINS_IDS
-local SKIN_AFFINITY_INFO = GLOBAL.require("skin_affinity_info")
 local require = GLOBAL.require
 local cooking = require("cooking")
 local ingredients = cooking.ingredients
 local cookpot = {"cookpot"}
 local spicer = {"portablespicer"}
 local STRINGS = STRINGS
+local checkfile = GLOBAL.TUNING.KOCHOSEI_CHECKMOD
+local modID = "workshop-2812783478"
+if GLOBAL.KnownModIndex:IsModEnabled(modID) then
+GLOBAL.TUNING.KOCHOSEI_CHECKMOD_= 1
+    print("Mod với ID " .. modID .. " đã được bật.") 
 
+else
+    print("Mod với ID " .. modID .. " chưa được bật.")
+end
+print(checkfile)
 -------------------Assets--------------
 modimport("scripts/kochoas")
 -------------------Assets--------------
-local kochofood = {
-"kochofood_apple_cake",
-"kochofood_cheese_shrimp",
-"kochofood_beefsteak",
-"kochofood_grape_juice",
-"kochofood_fastfood",
-"kochofood_cheese_honey_cake",	
-"kochofood_apple_candy",
-"kochofood_kiwi_juice",	
-"kochofood_xienthit",
-"kochofood_seafood_soup",
-"kochofood_berry_cake",
-"kochofood_cafe",
-"kochofood_bunreal",
-"kochofood_banhmi_2"
-}
-
-local listiteminv = {
-    "miohm",
-    "kocho_lotus_flower",
-	"kocho_lotus",
-    "kocho_lotus_flower_cooked",
-    "kochosei_purplemagic",
-    "miku_usagi_backpack",
-    "kocho_purplesword",
-    "kocho_miku_cos",
-    "kocho_miku_back",
-    "kochosei_umbrella",
-    "kochosei_demonlord",
-    "kochosei_hat1",
-    "kochosei_hat2",
-    "kochosei_hat3",
-    "kochotambourin",
-	"kochosei_lantern",
-	"kochosei_apple",
-	"kochosei_apple_cooked",
-	--"kochobook"
-}
-
-for _, prefab in ipairs(kochofood) do
-    local atlas = "images/inventoryimages/kochofood.xml"
-    local tex = prefab..".tex"
-    RegisterInventoryItemAtlas(GLOBAL.resolvefilepath(atlas), tex)
-end
-for _, prefab in ipairs(listiteminv) do
-    local atlas = "images/inventoryimages/kochosei_inv.xml"
-    local tex = prefab..".tex"
-    RegisterInventoryItemAtlas(GLOBAL.resolvefilepath(atlas), tex)
-end
 
 PrefabFiles = {
     "kochosei_apple_tree",
@@ -71,7 +28,7 @@ PrefabFiles = {
     "kochosei",
     "kochosei_none",
     "miohm",
---	"kochobook",
+	"kochobook",
     "kochotambourin",
     "kochosei_hat",
     "kochosei_lantern",
@@ -129,23 +86,10 @@ STRINGS.SKIN_NAMES.kochosei_snowmiku_skin1 = "Kochosei cosplay Miku"
 STRINGS.SKIN_QUOTES.kochosei_snowmiku_skin1 = "Ai đó đã phải làm việc như trâu để có skin này. Congratulation"
 STRINGS.SKIN_DESCRIPTIONS.kochosei_snowmiku_skin1 = "o((>ω< ))o"
 
--- The skins shown in the cycle view window on the character select screen.
--- A good place to see what you can put in here is in skinutils.lua, in the function GetSkinModes
-local skin_modes = {
-    {
-        type = "ghost_skin",
-        anim_bank = "ghost",
-        idle_anim = "idle",
-        scale = 0.75,
-        offset = {0, -25}
-    }
-}
-
--- Add mod character to mod character list. Also specify a gender. Possible genders are MALE, FEMALE, ROBOT, NEUTRAL, and PLURAL.
-AddModCharacter("kochosei", "FEMALE", skin_modes)
 
 
--------------------------Skin-----------------------------------------------------Skin----------------------------
+
+-----------------Skin-----------------------------------------------------Skin----------------------------
 
 keytonamngua = GetModConfigData("keykocho")
 
@@ -223,39 +167,9 @@ function containers.widgetsetup(container, prefab, data)
         return pwidgetsetup(container, prefab, data)
     end
 end
-
-
 modimport("scripts/value_dhkg_a")
-modimport("scripts/skins_api")
-modimport("scripts/skin_items_api")
-PREFAB_SKINS["kochosei_hat1"] =
-{
-	"kochosei_hat2",
-	"kochosei_hat3",
-}
-
-PREFAB_SKINS["kochosei"] = {
-    "kochosei_none",
-    "kochosei_snowmiku_skin1"
-}
-
-SKIN_AFFINITY_INFO.kochosei = {
-    "kochosei_snowmiku_skin1" --Hornet: These skins will show up for the character when the Survivor filter is enabled
-}
-
-PREFAB_SKINS_IDS = {} --Make sure this is after you  change the PREFAB_SKINS["character"] table
-for prefab, skins in pairs(PREFAB_SKINS) do
-    PREFAB_SKINS_IDS[prefab] = {}
-    for k, v in pairs(skins) do
-        PREFAB_SKINS_IDS[prefab][v] = k
-    end
-end
-
-AddSkinnableCharacter("kochosei") --Hornet: The character youd like to skin, make sure you use the prefab name. And MAKE sure you run this function AFTER you import the skins_api file
 --------------------------------------------
 modimport("scripts/vukhi")
---------------------------------------------
-
 
 
 AddPrefabPostInitAny(function(inst)
@@ -369,3 +283,31 @@ STRINGS.SPELLS.KOCHO_2 ="Full Moon"
 STRINGS.SPELLS.KOCHO_3 ="Gardening"
 STRINGS.SPELLS.KOCHO_4 ="Respawn"
 -----------------------------------------------------------------------------------------------
+--------------------------------------------Glassic API--------------------------------------------
+GlassicAPI.InitCharacterAssets("kochosei", "female", Assets, true)
+GlassicAPI.RegisterItemAtlas("inventoryimages/kochosei_inv", Assets)
+GlassicAPI.RegisterItemAtlas("inventoryimages/kochofood", Assets)
+GLOBAL.setfenv(1, GLOBAL)
+
+ if not rawget(_G, "kochosei_hat1_clear_fn") then
+        kochosei_hat1_clear_fn = function(inst)
+            inst.AnimState:SetBank("kochosei_hat1")
+            GlassicAPI.SetFloatData(inst, { sym_build = "swap_hat" })
+            basic_clear_fn(inst, "kochosei_hat1")
+        end
+  
+    end
+
+
+ GlassicAPI.SkinHandler.AddModSkins({
+    kochosei = {
+        "kochosei_none",
+        "kochosei_snowmiku_skin1"
+    },
+	
+	 kochosei_hat1 = {
+        "kochosei_hat2",
+        "kochosei_hat3"
+    },
+})
+--------------------------------------------Glassic API--------------------------------------------

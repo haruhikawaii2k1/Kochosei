@@ -4,32 +4,42 @@ local Assets = {
    Asset("ANIM", "anim/kochosei_hat3.zip"),
 }
 
-local hats = {
-    kochosei_hat1 = "kochosei_hat1",
-    kochosei_hat2 = "kochosei_hat2",
-    kochosei_hat3 = "kochosei_hat3"
-}
-
 local function OnEquip(inst, owner)
-    local hat = hats[inst.prefab]
-    if hat then
-        owner.AnimState:OverrideSymbol("swap_hat", hat, "swap_hat")
-    end
 
-    -- Show/Hide some of the layers of the character while equipping the hat.
-    owner.AnimState:Show("HAT")
-    owner.AnimState:Show("HAIR")
-    owner.AnimState:Hide("HAIR_HAT")
-    owner.AnimState:Show("HAIR_NOHAT")
+   local skin_build = inst:GetSkinBuild()
+   if skin_build ~= nil then
+		owner:PushEvent("equipskinneditem", inst:GetSkinName())
+      owner.AnimState:OverrideItemSkinSymbol("swap_hat", skin_build, "swap_hat", inst.GUID, "kochosei_hat1")
+
+   else
+
+      owner.AnimState:OverrideSymbol("swap_hat", "kochosei_hat1", "swap_hat")
+   end
+   -- Show/Hide some of the layers of the character while equipping the hat.
+   owner.AnimState:Show("HAT")
+   owner.AnimState:Show("HAIR")
+   owner.AnimState:Hide("HAIR_HAT")
+   owner.AnimState:Show("HAIR_NOHAT")
+
 
    -- If the equipping guy is the player, do some additional stuff.
    if owner:HasTag("player") then
       owner.AnimState:Show("HEAD")
       owner.AnimState:Hide("HEAD_HAT")
    end
+
+   -- If we should lose usage percent over time while wearing the hat - start dropping the percentage when we're equipping the hat.
+   if inst.components.fueled ~= nil then
+      inst.components.fueled:StartConsuming()
+   end
 end
 
 local function OnUnequip(inst, owner)
+
+		local skin_build = inst:GetSkinBuild()
+	if skin_build ~= nil then
+		owner:PushEvent("unequipskinneditem", inst:GetSkinName())
+	end
    -- Clear the hat symbol from wearer's head.
    owner.AnimState:ClearOverrideSymbol("swap_hat")
 
@@ -45,11 +55,16 @@ local function OnUnequip(inst, owner)
       owner.AnimState:Hide("HEAD_HAT")
    end
 
+
+
+   -- Stop consuming usage percent if the hat is not equipped.
+   if inst.components.fueled ~= nil then
+      inst.components.fueled:StopConsuming()
+   end
 end
 
-
-local function MainFunction(bank, build, tag)
-
+local function MainFunction()
+   -- Functions which are performed both on Client and Server start here.
    local inst = CreateEntity()
 
    inst.entity:AddTransform()
@@ -59,11 +74,21 @@ local function MainFunction(bank, build, tag)
 
    MakeInventoryPhysics(inst)
 
-   inst.AnimState:SetBank(bank)
-   inst.AnimState:SetBuild(build)
+   -- Add minimap icon. Remember about its XML in modmain.lua!
+   local minimap = inst.entity:AddMiniMapEntity()
+   minimap:SetIcon("kochosei_hat1.tex")
 
+   --[[ ANIMSTATE ]]--
+   -- This is the name visible on the top of hierarchy in Spriter.
+   inst.AnimState:SetBank("kochosei_hat1")
+   -- This is the name of your compiled*.zip file.
+   inst.AnimState:SetBuild("kochosei_hat1")
+   -- This is the animation name while item is on the ground.
    inst.AnimState:PlayAnimation("anim")
-   inst:AddTag(tag)
+
+   --[[ TAGS ]]--
+   inst:AddTag("kochosei_hat1")
+   -- Waterproofer (from waterproofer component) - this tag can be removed, but it's here just in case, to make the game run better.
    inst:AddTag("waterproofer")
 
 
@@ -72,6 +97,8 @@ local function MainFunction(bank, build, tag)
    inst.entity:SetPristine()
 
    if not TheWorld.ismastersim then
+      -- If we're not the host - stop performing further functions.
+      -- Only server functions below.
       return inst
    end
    inst:AddTag("bramble_resistant")
@@ -80,9 +107,12 @@ local function MainFunction(bank, build, tag)
    inst:AddComponent("armor")
    inst.components.armor:InitCondition(TUNING.KOCHO_HAT1_DURABILITY, TUNING.KOCHO_HAT1_ABSORPTION)
 
+   -- Allow "trading" the hat - used for giving the hat to Pigmen.
    inst:AddComponent("tradable")
 
    inst:AddComponent("inventoryitem")
+   -- inst.components.inventoryitem.imagename = "kochosei_hat1"
+   -- inst.components.inventoryitem.atlasname = "images/inventoryimages/kochosei_hat1.xml"
 
 
    inst:AddComponent("equippable")
@@ -111,6 +141,4 @@ STRINGS.NAMES.KOCHOSEI_HAT3 = "Kochosei Hat"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.KOCHOSEI_HAT3 = "Its butterfly right? :>"
 STRINGS.RECIPE_DESC.KOCHOSEI_HAT3 = "Armor hat"
 
-return  Prefab("common/inventory/kochosei_hat1", function() return MainFunction("kochosei_hat1", "kochosei_hat1", "kochosei_hat1") end, Assets),
-Prefab("common/inventory/kochosei_hat2", function() return MainFunction("kochosei_hat2", "kochosei_hat2", "kochosei_hat2") end, Assets),
-Prefab("common/inventory/kochosei_hat3", function() return MainFunction("kochosei_hat3", "kochosei_hat3", "kochosei_hat3") end, Assets)
+return  Prefab("common/inventory/kochosei_hat1", MainFunction, Assets)

@@ -15,7 +15,7 @@ TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.KOCHOSEI = {
     "twigs",
     "cutgrass",
     "cutgrass",
-    "kochosei_hat2",
+    "kochosei_hat1",
     "kochosei_lantern",
 	"kochosei_apple"
 }
@@ -23,11 +23,6 @@ TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.KOCHOSEI = {
 TUNING.STARTING_ITEM_IMAGE_OVERRIDE.kochosei_lantern = {
    -- atlas = "images/inventoryimages/kochosei_inv.xml",
     image = "kochosei_lantern.tex"
-}
-
-TUNING.STARTING_ITEM_IMAGE_OVERRIDE.kochosei_hat2 = {
-  -- atlas = "images/inventoryimages/kochosei_inv.xml",
-    image = "kochosei_hat2.tex"
 }
 
 TUNING.STARTING_ITEM_IMAGE_OVERRIDE.kochosei_apple = {
@@ -535,7 +530,7 @@ local master_postinit = function(inst)
     -- Hunger rate (optional)
     inst.components.hunger.hungerrate =  TUNING.WILSON_HUNGER_RATE
     inst.components.eater.PrefersToEat = anvaochetnguoiay
-    inst.customidleanim = "idle_wendy"
+    inst.customidleanim = "idle_wilson"
     inst.OnLoad = onload
 
     inst:ListenForEvent("emote", onemote)

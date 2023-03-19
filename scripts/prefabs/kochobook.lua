@@ -182,7 +182,7 @@ local SPELLSKOCHO =
 	{
 		label = STRINGS.SPELLS.KOCHO_1,
 		onselect = function(inst)
-			inst.components.kochospellbook:SetSpellName(STRINGS.SPELLS.KOCHO_1)
+			inst.components.spellbook:SetSpellName(STRINGS.SPELLS.KOCHO_1)
 			inst.components.aoetargeting:SetDeployRadius(0)
 			inst.components.aoetargeting:SetShouldRepeatCastFn(nil)
 			inst.components.aoetargeting.reticule.reticuleprefab = "reticuleaoe_1_6"
@@ -190,7 +190,7 @@ local SPELLSKOCHO =
 			if TheWorld.ismastersim then
 				inst.components.aoetargeting:SetTargetFX("reticuleaoecctarget")
 				inst.components.aoespell:SetSpellFn(rainfn)
-				inst.components.kochospellbook:SetSpellFn(nil)
+				inst.components.spellbook:SetSpellFn(nil)
 			end
 		end,
 		execute = StartAOETargeting,
@@ -202,7 +202,7 @@ local SPELLSKOCHO =
 	{
 		label = STRINGS.SPELLS.KOCHO_2,
 		onselect = function(inst)
-			inst.components.kochospellbook:SetSpellName(STRINGS.SPELLS.KOCHO_2)
+			inst.components.spellbook:SetSpellName(STRINGS.SPELLS.KOCHO_2)
 			inst.components.aoetargeting:SetDeployRadius(0)
 			inst.components.aoetargeting:SetShouldRepeatCastFn(nil)
 			inst.components.aoetargeting.reticule.reticuleprefab = "reticuleaoe_1_6"
@@ -210,7 +210,7 @@ local SPELLSKOCHO =
 			if TheWorld.ismastersim then
 				inst.components.aoetargeting:SetTargetFX("reticuleaoecctarget")
 				inst.components.aoespell:SetSpellFn(fullmoonfn)
-				inst.components.kochospellbook:SetSpellFn(nil)
+				inst.components.spellbook:SetSpellFn(nil)
 			end
 		end,
 		execute = StartAOETargeting,
@@ -222,7 +222,7 @@ local SPELLSKOCHO =
 	{
 		label = STRINGS.SPELLS.KOCHO_3,
 		onselect = function(inst)
-			inst.components.kochospellbook:SetSpellName(STRINGS.SPELLS.KOCHO_3)
+			inst.components.spellbook:SetSpellName(STRINGS.SPELLS.KOCHO_3)
 			inst.components.aoetargeting:SetDeployRadius(1)
 			inst.components.aoetargeting:SetShouldRepeatCastFn(nil)
 			inst.components.aoetargeting.reticule.reticuleprefab = "reticuleaoe_1_6"
@@ -230,7 +230,7 @@ local SPELLSKOCHO =
 			if TheWorld.ismastersim then
 				inst.components.aoetargeting:SetTargetFX("reticuleaoecctarget")
 				inst.components.aoespell:SetSpellFn(kochospell3)
-				inst.components.kochospellbook:SetSpellFn(nil)
+				inst.components.spellbook:SetSpellFn(nil)
 			end
 		end,
 		execute = StartAOETargeting,
@@ -242,7 +242,7 @@ local SPELLSKOCHO =
 	{
 		label = STRINGS.SPELLS.KOCHO_4,
 		onselect = function(inst)
-			inst.components.kochospellbook:SetSpellName(STRINGS.SPELLS.KOCHO_4)
+			inst.components.spellbook:SetSpellName(STRINGS.SPELLS.KOCHO_4)
 			inst.components.aoetargeting:SetDeployRadius(0)
 			inst.components.aoetargeting:SetShouldRepeatCastFn(nil)
 			inst.components.aoetargeting.reticule.reticuleprefab = "reticuleaoe_1_6"
@@ -250,7 +250,7 @@ local SPELLSKOCHO =
 			if TheWorld.ismastersim then
 				inst.components.aoetargeting:SetTargetFX("reticuleaoecctarget")
 				inst.components.aoespell:SetSpellFn(kochospell4)
-				inst.components.kochospellbook:SetSpellFn(nil)
+				inst.components.spellbook:SetSpellFn(nil)
 			
 			end
 		end,
@@ -310,15 +310,15 @@ local function fn()
 
 	MakeInventoryFloatable(inst, "med", nil, 0.75)
 
-	inst:AddComponent("kochospellbook")
-	inst.components.kochospellbook:SetRequiredTag("kochosei")
-	inst.components.kochospellbook:SetRadius(SPELLBOOK_RADIUS)
-	inst.components.kochospellbook:SetFocusRadius(SPELLBOOK_FOCUS_RADIUS)
-	inst.components.kochospellbook:SetItems(SPELLSKOCHO)
-	inst.components.kochospellbook:SetOnOpenFn(OnOpenSpellBook)
-	inst.components.kochospellbook:SetOnCloseFn(OnCloseSpellBook)
-	inst.components.kochospellbook.opensound = "dontstarve/common/together/book_maxwell/use"
-	inst.components.kochospellbook.closesound = "dontstarve/common/together/book_maxwell/close"
+	inst:AddComponent("spellbook")
+	inst.components.spellbook:SetRequiredTag("kochosei")
+	inst.components.spellbook:SetRadius(SPELLBOOK_RADIUS)
+	inst.components.spellbook:SetFocusRadius(SPELLBOOK_FOCUS_RADIUS)
+	inst.components.spellbook:SetItems(SPELLSKOCHO)
+	inst.components.spellbook:SetOnOpenFn(OnOpenSpellBook)
+	inst.components.spellbook:SetOnCloseFn(OnCloseSpellBook)
+	inst.components.spellbook.opensound = "dontstarve/common/together/book_maxwell/use"
+	inst.components.spellbook.closesound = "dontstarve/common/together/book_maxwell/close"
 	
 	inst:AddComponent("aoetargeting")
 	inst.components.aoetargeting:SetAllowWater(true)

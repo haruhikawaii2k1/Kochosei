@@ -1,5 +1,5 @@
 <Atlas>
-<Texture filename="kochofood.tex"/>
+<Texture filename="cb_kochofood.tex"/>
     <Elements>
         <Element name="cookbook_kochofood_apple_cake.tex" u1="0.19580078" u2="0.34912109" v1="0.69238281" v2="0.99902344"/>
         <Element name="cookbook_kochofood_apple_candy.tex" u1="0.46337891" u2="0.61669922" v1="0.30761719" v2="0.60839844"/>
