@@ -9,7 +9,7 @@ Thank you for using this mod, you can use the config button below and let me kno
 author = "Mio, dinhkarate, Haruhi Kawaii"
 version = "3.8.3" -- Raiden Fuck You
 forumthread = ""
-
+mod_dependencies = { { workshop = "workshop-2521851770"} }
 -- 1.4.5 fix tab
 
 
