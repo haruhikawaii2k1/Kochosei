@@ -25,6 +25,8 @@ Assets = {
    Asset("ATLAS", "bigportraits/kochosei_none.xml"),
    Asset("IMAGE", "bigportraits/kochosei_snowmiku_skin1.tex"),
    Asset("ATLAS", "bigportraits/kochosei_snowmiku_skin1.xml"),
+   Asset("IMAGE", "bigportraits/ms_kochosei_snowmiku_skin1.tex"),
+   Asset("ATLAS", "bigportraits/ms_kochosei_snowmiku_skin1.xml"),
    Asset("IMAGE", "images/map_icons/kochosei.tex"),
    Asset("ATLAS", "images/map_icons/kochosei.xml"),
    Asset("IMAGE", "images/avatars/avatar_kochosei.tex"),

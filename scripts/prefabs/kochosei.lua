@@ -17,21 +17,21 @@ TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.KOCHOSEI = {
     "cutgrass",
     "kochosei_hat2",
     "kochosei_lantern",
-	"kochosei_apple"
+    "kochosei_apple"
 }
 
 TUNING.STARTING_ITEM_IMAGE_OVERRIDE.kochosei_lantern = {
-   -- atlas = "images/inventoryimages/kochosei_inv.xml",
+    -- atlas = "images/inventoryimages/kochosei_inv.xml",
     image = "kochosei_lantern.tex"
 }
 
 TUNING.STARTING_ITEM_IMAGE_OVERRIDE.kochosei_hat2 = {
-  -- atlas = "images/inventoryimages/kochosei_inv.xml",
+    -- atlas = "images/inventoryimages/kochosei_inv.xml",
     image = "kochosei_hat2.tex"
 }
 
 TUNING.STARTING_ITEM_IMAGE_OVERRIDE.kochosei_apple = {
-  -- atlas = "images/inventoryimages/kochosei_inv.xml",
+    -- atlas = "images/inventoryimages/kochosei_inv.xml",
     image = "kochosei_apple.tex"
 }
 
@@ -51,7 +51,7 @@ end
 
 local function onbecameghost(inst)
     -- Remove speed modifier when becoming a ghost
-    inst.components.locomotor:RemoveExternalSpeedMultiplier(inst, "kochosei_speed_mod", 1.25)
+    inst.components.locomotor:RemoveExternalSpeedMultiplier(inst, "kochosei_speed_mod")
 end
 
 -- When loading or spawning the character
@@ -86,24 +86,24 @@ local wlist = require "util/weighted_list"
 
 local talklist =
     wlist(
-    {
-        talk1 = 1,
-        talk2 = 2,
-        talk3 = 3,
-        talk4 = 4,
-        talk5 = 5,
-        talk6 = 6,
-        talk7 = 7,
-        talk8 = 8,
-        talk9 = 9,
-        talk10 = 10,
-        talk11 = 11,
-        talk12 = 12,
-        talk13 = 13,
-        talk14 = 14,
-        talk15 = 15
-    }
-)
+        {
+            talk1 = 1,
+            talk2 = 2,
+            talk3 = 3,
+            talk4 = 4,
+            talk5 = 5,
+            talk6 = 6,
+            talk7 = 7,
+            talk8 = 8,
+            talk9 = 9,
+            talk10 = 10,
+            talk11 = 11,
+            talk12 = 12,
+            talk13 = 13,
+            talk14 = 14,
+            talk15 = 15
+        }
+    )
 local emotesoundlist = {
     emote = "emote",
     emoteXL_waving1 = "wave", -- wave
@@ -216,13 +216,13 @@ local function KochoseiSound(inst, talk, time, tag)
     if time ~= nil then
         inst._kochoseitalk =
             inst:DoTaskInTime(
-            time,
-            function()
-                inst.SoundEmitter:KillSound(tag or "kochoseitalk")
-                inst._kochoseitalk:Cancel()
-                inst._kochoseitalk = nil
-            end
-        )
+                time,
+                function()
+                    inst.SoundEmitter:KillSound(tag or "kochoseitalk")
+                    inst._kochoseitalk:Cancel()
+                    inst._kochoseitalk = nil
+                end
+            )
     end
 end
 
@@ -349,6 +349,7 @@ local function onkilled(inst, data)
             "dragonfly",
             {
                 {"dragon_scales", 1.00},
+                {"dragon_scales", 1.00},				
                 {"dragonflyfurnace_blueprint", 1.00},
                 {"chesspiece_dragonfly_sketch", 1.00},
                 {"chesspiece_dragonfly_sketch", 1.00},
@@ -389,6 +390,18 @@ local function onkilled(inst, data)
                 {"orangegem", 1.00},
                 {"yellowgem", 1.00},
                 {"greengem", 1.00},
+                {"redgem", 1.00},
+                {"bluegem", 1.00},
+                {"purplegem", 1.00},
+                {"orangegem", 1.00},
+                {"yellowgem", 1.00},
+                {"greengem", 1.00},	
+                {"redgem", 1.00},
+                {"bluegem", 1.00},
+                {"purplegem", 1.00},
+                {"orangegem", 1.00},
+                {"yellowgem", 1.00},
+                {"greengem", 1.00},					
                 {"redgem", 0.40},
                 {"bluegem", 0.40},
                 {"purplegem", 0.40},
@@ -410,7 +423,7 @@ end
 local function IsValidVictim(victim)
     return victim ~= nil and
         not (victim:HasTag("prey") or victim:HasTag("veggie") or victim:HasTag("structure") or victim:HasTag("wall") or
-            victim:HasTag("companion")) and
+        victim:HasTag("companion")) and
         victim.components.health ~= nil and
         victim.components.combat ~= nil
 end
@@ -481,7 +494,7 @@ local function haru(inst)
 end
 
 local function harulevel(inst)
-  if inst.components.health:IsDead() or inst:HasTag("playerghost") then
+    if inst.components.health:IsDead() or inst:HasTag("playerghost") then
         return
     end
 
@@ -491,7 +504,7 @@ local function harulevel(inst)
 
     if not inst.components.locomotor.wantstomoveforward then
         inst.kochostop = inst.kochostop + 1
-    else 
+    else
         inst.kochostop = 0
     end
 
@@ -526,16 +539,16 @@ local master_postinit = function(inst)
 
     inst:DoPeriodicTask(1, OnTaskTick, 1)
     inst:DoPeriodicTask(5, in_fire)
-	inst:DoPeriodicTask(1, harulevel)
-	 
-  
+    inst:DoPeriodicTask(1, harulevel)
+
+
 
     -- Damage multiplier (optional)
 
     -- Hunger rate (optional)
     inst.components.hunger.hungerrate =  TUNING.WILSON_HUNGER_RATE
     inst.components.eater.PrefersToEat = anvaochetnguoiay
-    inst.customidleanim = "idle_wendy"
+    inst.customidleanim = "idle_wilson"
     inst.OnLoad = onload
 
     inst:ListenForEvent("emote", onemote)
@@ -547,34 +560,34 @@ local master_postinit = function(inst)
     inst:ListenForEvent("ms_respawnedfromghost", onbecamehuman)
     inst:ListenForEvent("death", onbecameghost)
     inst:ListenForEvent("death",function(inst, data)
-	if
-                data and data.afflicter and data.afflicter:IsValid() and data.afflicter.components.health and
-                    not data.afflicter.components.health:IsDead()
-             then
-                local killer =
-                    data.afflicter.components.follower and data.afflicter.components.follower:GetLeader() or
-                    data.afflicter:HasTag("player") and data.afflicter or
-                    nil
-                if killer and killer:HasTag("player") and killer ~= inst then
-                    killer.components.health:Kill() -- 要死一起死
-                end
+        if
+            data and data.afflicter and data.afflicter:IsValid() and data.afflicter.components.health and
+            not data.afflicter.components.health:IsDead()
+        then
+            local killer =
+                data.afflicter.components.follower and data.afflicter.components.follower:GetLeader() or
+                data.afflicter:HasTag("player") and data.afflicter or
+                nil
+            if killer and killer:HasTag("player") and killer ~= inst then
+                killer.components.health:Kill() -- 要死一起死
             end
         end
+    end
     )
     inst:ListenForEvent("healthdelta", function(inst, data)
-            if
-                data and data.afflicter and data.afflicter:IsValid() and data.afflicter.components.health and
-                    not data.afflicter.components.health:IsDead()
-             then
-                local killer =
-                    data.afflicter.components.follower and data.afflicter.components.follower:GetLeader() or
-                    data.afflicter:HasTag("player") and data.afflicter or
-                    nil
-                if killer and killer:HasTag("player") and killer ~= inst then
-                    killer.components.health:DoDelta(3 * data.amount, nil, nil, true, killer, true) -- 3倍反伤
-                end
+        if
+            data and data.afflicter and data.afflicter:IsValid() and data.afflicter.components.health and
+            not data.afflicter.components.health:IsDead()
+        then
+            local killer =
+                data.afflicter.components.follower and data.afflicter.components.follower:GetLeader() or
+                data.afflicter:HasTag("player") and data.afflicter or
+                nil
+            if killer and killer:HasTag("player") and killer ~= inst then
+                killer.components.health:DoDelta(3 * data.amount, nil, nil, true, killer, true) -- 3倍反伤
             end
         end
+    end
     )
 
     inst.wlist = wlist
@@ -599,7 +612,7 @@ local master_postinit = function(inst)
     end
     inst:ListenForEvent("entity_death", inst._onentitydeathfn, TheWorld)
     -------------Bướm chết ở gần bị trừ sanity----------------------
-    
+
 end
 
 return MakePlayerCharacter("kochosei", prefabs, assets, common_postinit, master_postinit, prefabs)

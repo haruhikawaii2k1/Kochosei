@@ -1,29 +1,32 @@
 local assets = {
     Asset("ANIM", "anim/kochosei.zip"),
-	 Asset("ANIM", "anim/kochosei_snowmiku_skin1.zip"),
+	Asset("ANIM", "anim/kochosei_snowmiku_skin1.zip"),
     Asset("SOUND", "sound/maxwell.fsb")
 }
 
-local brain = require "brains/kochosei_enemy_brain"
+local brain = require "brains/kochosei_enemy_brain_b"
 local prefabs = {
     "shadow_despawn",
     "statue_transition_2"
 }
 
-
 local function onopen(inst)
     inst.SoundEmitter:PlaySound("dontstarve/wilson/chest_open")
 	inst.sg:GoToState("dance")
+	if inst.brain ~= nil then
     inst.brain:Stop()
+	end
    
 end
 
 local function onclose(inst)
     inst.SoundEmitter:PlaySound("dontstarve/wilson/chest_close")
+	inst.sg:GoToState("idle")
+	if inst.brain ~= nil then
     inst.brain:Start()
+	end
   
 end
-
 
 
 local function m_killPet(inst)
@@ -68,14 +71,8 @@ local function OnAttacked(inst, data)
     end
 end
 
-
-
-
-
 local function balovali(inst)
 
-
-	
     inst.AnimState:OverrideSymbol("swap_body", "swap_miku_usagi_backpack", "usagi")
     inst.AnimState:OverrideSymbol("swap_body", "swap_miku_usagi_backpack", "swap_body")
   
@@ -85,7 +82,7 @@ local function balovali(inst)
         return self.inst.components.container
     end
 	
-		inst:AddComponent("container")
+	inst:AddComponent("container")
     inst.components.container:WidgetSetup("chester")
 	inst.components.container.onopenfn = onopen
 	inst.components.container.onclosefn = onclose
@@ -111,7 +108,8 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
         inst.entity:AddNetwork()
 		inst.entity:AddDynamicShadow()
 
-		MakeGiantCharacterPhysics(inst, 50, .7)
+		--MakeGiantCharacterPhysics(inst, 50, .7)
+		    MakeGhostPhysics(inst, .5, .5)
         inst.Transform:SetFourFaced(inst)
 
         --Scale of your kochosei_enemy.
@@ -180,7 +178,7 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
         inst.components.combat:SetRange(2)
         inst.components.combat:SetAttackPeriod(3)
 
-        inst:AddComponent("inventory")
+        --inst:AddComponent("inventory")
 
         inst:AddComponent("follower")
         inst.components.follower:KeepLeaderOnAttacked()

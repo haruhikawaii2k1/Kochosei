@@ -1104,6 +1104,7 @@ local function OnAttacked(inst, data)
     end
 end
 
+
 --------------------------------------------------------------------------
 
 local function common_fn(bank, build, shadowsize, canfight, atriumstalker)
@@ -1213,6 +1214,7 @@ local function common_fn(bank, build, shadowsize, canfight, atriumstalker)
         inst.SpawnSnares = SpawnSnares
         inst.SetEngaged = atriumstalker and AtriumSetEngaged or SetEngaged
         inst:SetEngaged(false)
+
     else
         inst.components.combat:SetKeepTargetFunction(DoNotKeepTargetFn)
     end
@@ -1236,131 +1238,6 @@ local function common_fn(bank, build, shadowsize, canfight, atriumstalker)
     return inst
 end
 
-local function common_fn2(bank, build, shadowsize, canfight, atriumstalker)
-    local inst = CreateEntity()
-
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddDynamicShadow()
-    inst.entity:AddSoundEmitter()
-    inst.entity:AddNetwork()
-
-    inst.Transform:SetFourFaced()
-
-    inst.DynamicShadow:SetSize(unpack(shadowsize))
-
-    MakeGiantCharacterPhysics(inst, 1000, .75)
-
-    inst.AnimState:SetBank(bank)
-    inst.AnimState:SetBuild("stalker_shadow_build")
-    inst.AnimState:AddOverrideBuild(build)
-    inst.AnimState:PlayAnimation("idle", true)
-	inst.AnimState:SetScale(0.6, 0.6)
-
---    inst:AddTag("epic")
---    inst:AddTag("monster")
---    inst:AddTag("hostile")
---    inst:AddTag("scarytoprey")
---    inst:AddTag("largecreature")
---    inst:AddTag("stalker")
---    inst:AddTag("fossil")
-   
-
-
-    if canfight then
-        inst:AddComponent("talker")
-        inst.components.talker.fontsize = 40
-        inst.components.talker.font = TALKINGFONT
-        inst.components.talker.colour = Vector3(238 / 255, 69 / 255, 105 / 255)
-        inst.components.talker.offset = Vector3(0, -700, 0)
-        inst.components.talker.symbol = "fossil_chest"
-        inst.components.talker:MakeChatter()
-    end
-
-    inst.entity:SetPristine()
-
-    if not TheWorld.ismastersim then
-        if atriumstalker then
-            inst:ListenForEvent("camerafocusdirty", OnCameraFocusDirty)
-          
-        end
-
-        return inst
-    end
-
-    inst.recentlycharged = {}
---    inst.Physics:SetCollisionCallback(OnCollide)
-
-    inst:AddComponent("inspectable")
-    inst.components.inspectable:RecordViews()
-
-    inst:AddComponent("lootdropper")
-    --inst.components.lootdropper:SetChanceLootTable("stalker")
-
-    inst:AddComponent("locomotor")
-    inst.components.locomotor.pathcaps = { ignorewalls = true }
-    inst.components.locomotor.walkspeed = TUNING.STALKER_SPEED
-
-    inst:AddComponent("health")
-    inst.components.health:SetMaxHealth(TUNING.STALKER_ALTRIUM_SLAVE_HEALTH)
-    inst.components.health.nofadeout = true
-
-    inst:AddComponent("sanityaura")
---    inst.components.sanityaura.aura = -TUNING.SANITYAURA_HUGE
-    inst.components.sanityaura.aura = -TUNING.SANITYAURA_LARGE
-
-    inst:AddComponent("combat")
-    inst.components.combat.hiteffectsymbol = "torso"
-    if canfight then
-        inst.canfight = true --Need this b4 setting brain
-
-        inst.components.combat:SetDefaultDamage(TUNING.STALKER_ALTRIUM_SLAVE_DAMAGE)
-        inst.components.combat:SetAttackPeriod(atriumstalker and TUNING.STALKER_ATRIUM_ATTACK_PERIOD or TUNING.STALKER_ATTACK_PERIOD)
-        inst.components.combat.playerdamagepercent = .5
-        inst.components.combat:SetRange(TUNING.STALKER_ATTACK_RANGE, TUNING.STALKER_HIT_RANGE)
-        inst.components.combat:SetAreaDamage(TUNING.STALKER_AOE_RANGE, TUNING.STALKER_AOE_SCALE)
-        inst.components.combat:SetRetargetFunction(3, atriumstalker and AtriumRetargetFn or RetargetFn)
-        inst.components.combat:SetKeepTargetFunction(atriumstalker and AtriumKeepTargetFn or KeepTargetFn)
-        inst.components.combat.battlecryinterval = 10
-        inst.components.combat.GetBattleCryString = atriumstalker and AtriumBattleCry or BattleCry
-
-        inst:AddComponent("grouptargeter")
-
-        inst:AddComponent("timer")
-
-        inst:AddComponent("epicscare")
-        inst.components.epicscare:SetRange(TUNING.STALKER_EPICSCARE_RANGE)
-
-        inst._recentattackers = not atriumstalker and {} or nil
-      --  inst:ListenForEvent("attacked", OnAttacked)
-
-        inst.StartAbility = StartAbility
-        inst.FindSnareTargets = FindSnareTargets
-        inst.SpawnSnares = SpawnSnares
-        inst.SetEngaged = atriumstalker and AtriumSetEngaged or SetEngaged
-        inst:SetEngaged(false)
-    else
-        inst.components.combat:SetKeepTargetFunction(DoNotKeepTargetFn)
-    end
-
-    inst:AddComponent("explosiveresist")
-
-    if atriumstalker then
-        inst.atriumstalker = true --Need this b4 setting brain
-
-        inst:AddComponent("entitytracker")
-    end
-
-    inst:SetStateGraph("SGkochosei_stalker")
-    inst:SetBrain(brain2)
-
-    inst:ListenForEvent("ontalk", OnTalk)
-    inst:ListenForEvent("donetalking", OnDoneTalking)
-
-   -- inst.auratest = auratest -- added (Jul/26/2022)
-
-    return inst
-end
 
 local function atrium_fn()
     local inst = common_fn("stalker", "stalker_atrium_build", { 4, 2 }, true, true)
@@ -1412,68 +1289,12 @@ local function atrium_fn()
     inst:ListenForEvent("miniondeath", OnMinionDeath)
     inst:ListenForEvent("death", AtriumOnDeath)
 
-    return inst
-end
-
-local function atrium_fn2()
-    local inst = common_fn2("stalker", "stalker_atrium_build", { 4, 2 }, true, true)
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-    inst.components.lootdropper:SetLootSetupFn(AtriumLootFn)
-
-    inst:AddComponent("commander")
-	
-
-    inst:AddComponent("follower")
-    inst.components.follower:KeepLeaderOnAttacked()
-    inst.components.follower.keepdeadleader = true
-	inst.components.follower.keepleaderduringminigame = true
-
-
-    inst:DoPeriodicTask(0.5, onPeriodicTask)
-	 inst:DoPeriodicTask(1, m_checkLeaderExisting)
-	 inst:ListenForEvent("attacked", OnAttacked)
-
-    inst:ListenForEvent("stopfollowing", function(inst) inst.components.health:Kill()  end)
-
-   -- inst.components.health.redirect = nodmgshielded
-
-   -- inst.EnableCameraFocus = EnableCameraFocus
-    inst.BattleChatter = AtriumBattleChatter
-    inst.IsNearAtrium = IsNearAtrium
-    inst.IsAtriumDecay = CheckAtriumDecay
-    inst.SpawnChannelers = SpawnChannelers
-    inst.DespawnChannelers = DespawnChannelers
-    inst.SpawnMinions = SpawnMinions
-    inst.FindMinions = FindMinions
-    inst.EatMinions = EatMinions
-    inst.SpawnSpikes = SpawnSpikes
-  --  inst.HasMindControlTarget = HasMindControlTarget
-   -- inst.MindControl = MindControl
-    inst.OnRemoveEntity = DespawnChannelers
-    inst.OnEntityWake = AtriumOnEntityWake
-   -- inst.OnEntitySleep = AtriumOnEntitySleep
-    inst.OnSave = AtriumOnSave
-    inst.OnLoad = AtriumOnLoad
-    inst.OnLoadPostPass = AtriumOnLoadPostPass
-
-   -- inst.hasshield = false
-  --  inst:ListenForEvent("soldierschanged", OnSoldiersChanged)
-    inst:ListenForEvent("miniondeath", OnMinionDeath)
-    inst:ListenForEvent("death", AtriumOnDeath2)
 
     return inst
 end
+
 
 STRINGS.NAMES.DINHCUTENHATHEMATROI = "Slave Skeleton"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.DINHCUTENHATHEMATROI = "Dinh..."
 
-
-STRINGS.NAMES.DAMSTALKER = "Ancient Fuelweaver Pro Max"
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.DAMSTALKER = "Haru..."
-
-return  Prefab("dinhcutenhathematroi", atrium_fn, assets_atrium),
-        Prefab("damstalker", atrium_fn2, assets_atrium)
+return  Prefab("dinhcutenhathematroi", atrium_fn, assets_atrium)

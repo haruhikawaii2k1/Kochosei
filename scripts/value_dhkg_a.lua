@@ -43,7 +43,14 @@ TUNING.DEMONLORD_DAMAGE = GetModConfigData("demonlord_damage")
 TUNING.DRAGONFLY_SLAVE_HEALTH = GetModConfigData("dragonfly_slave_health")
 TUNING.DEERCLOPS_SLAVE_HEALTH = GetModConfigData("deerclops_slave_health")
 TUNING.STALKER_ALTRIUM_SLAVE_HEALTH = GetModConfigData("stalker_altrium_slave_health")
+TUNING.BEARGER_SLAVE_HEALTH = GetModConfigData("bearger_slave_health")
 --Boss slave damage--
 TUNING.DRAGONFLY_SLAVE_DAMAGE = GetModConfigData("dragonfly_slave_damage")
 TUNING.DEERCLOPS_SLAVE_DAMAGE = GetModConfigData("deerclops_slave_damage")
 TUNING.STALKER_ALTRIUM_SLAVE_DAMAGE = GetModConfigData("stalker_altrium_slave_damage")
+TUNING.BEARGER_SLAVE_DAMAGE = GetModConfigData("bearger_slave_damage")
+
+--Lucky hammer--
+TUNING.KOCHO_LUCKYHAMMER_DURABILITY = GetModConfigData("kocho_luckyhammer_durability")
+--Acient book--
+TUNING.KOCHO_ACIENTBOOKS_COOLDOWN = GetModConfigData("kocho_acientbooks_cooldown")

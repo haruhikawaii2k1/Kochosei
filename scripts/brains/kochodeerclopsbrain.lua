@@ -8,8 +8,6 @@ local MIN_FOLLOW_DIST = 0
 local TARGET_FOLLOW_DIST = 20
 local MAX_FOLLOW_DIST = 20
 
-
-
 local kochodeerclopsBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)

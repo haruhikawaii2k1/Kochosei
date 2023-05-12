@@ -19,26 +19,27 @@ end
 
 
 local items = { -- a local table to store the item names
-  kocho_miku_cos = true,
-  kocho_miku_back = true,
-  dragon_scales = true,
-  deerclops_eyeball = true
+    kocho_miku_cos = true,
+    kocho_miku_back = true,
+    dragon_scales = true,
+    deerclops_eyeball = true,
+    bearger_fur = true
 }
 
 local function NhanItemCuaDinhCute(inst, item)
-  local dinh = item.prefab
-  return items[dinh] or -- check if the item name is in the table
-         item.components.equippable and -- check if the item is equippable
-         (item.components.equippable.equipslot == EQUIPSLOTS.HEAD or -- check if the equipslot is HEAD
-          item.components.equippable.equipslot == EQUIPSLOTS.HANDS or -- check if the equipslot is HANDS
-          item.components.equippable.equipslot == EQUIPSLOTS.BODY) and -- check if the equipslot is BODY
-         not item.components.projectile -- check if the item is not a projectile
+    local dinh = item.prefab
+    return items[dinh] or -- check if the item name is in the table
+        item.components.equippable and -- check if the item is equippable
+        (item.components.equippable.equipslot == EQUIPSLOTS.HEAD or -- check if the equipslot is HEAD
+        item.components.equippable.equipslot == EQUIPSLOTS.HANDS or -- check if the equipslot is HANDS
+        item.components.equippable.equipslot == EQUIPSLOTS.BODY) and -- check if the equipslot is BODY
+        not item.components.projectile -- check if the item is not a projectile
 end
 
 local function m_killPet(inst)
-	if inst.components.health and not inst.components.health:IsDead() then
-		inst.components.health:Kill()
-	end
+    if inst.components.health and not inst.components.health:IsDead() then
+        inst.components.health:Kill()
+    end
 end
 
 local function doiskin(inst)
@@ -56,7 +57,7 @@ local function OnGetItemFromPlayer(inst, giver, item)
         SlaveDeoNhanDoRaidenFuckYou(inst, item)
         return
     end
-    
+
     local equippable = item.components.equippable
     if equippable and (equippable.equipslot == EQUIPSLOTS.HEAD or equippable.equipslot == EQUIPSLOTS.HANDS or equippable.equipslot == EQUIPSLOTS.BODY) then
         local newslot = equippable.equipslot
@@ -73,11 +74,11 @@ local function OnGetItemFromPlayer(inst, giver, item)
         local x, y, z = inst.Transform:GetWorldPosition()
 
         if item.prefab == "kocho_miku_back" then
-           
-			 giver.components.petleash:DespawnPet(inst)
+
+            giver.components.petleash:DespawnPet(inst)
             giver.components.petleash:SpawnPetAt(x, y, z, "kochosei_enemyb")
         elseif item.prefab == "dragon_scales" then
-          	 giver.components.petleash:DespawnPet(inst)
+            giver.components.petleash:DespawnPet(inst)
             local df = giver.components.petleash:SpawnPetAt(x, y, z, "kochodragonfly")
             local rot = inst.Transform:GetRotation()
             if df then
@@ -87,7 +88,7 @@ local function OnGetItemFromPlayer(inst, giver, item)
                 df.sg:GoToState("land")
             end
         elseif item.prefab == "deerclops_eyeball" then
-           	 giver.components.petleash:DespawnPet(inst)
+            giver.components.petleash:DespawnPet(inst)
             local deer = giver.components.petleash:SpawnPetAt(x, y, z, "kochodeerclops")
             local rot = inst.Transform:GetRotation()
             if deer then
@@ -96,6 +97,17 @@ local function OnGetItemFromPlayer(inst, giver, item)
                 deer.Transform:SetRotation(rot)
                 deer.sg:GoToState("taunt")
             end
+        elseif item.prefab == "bearger_fur" then
+            giver.components.petleash:DespawnPet(inst)
+            local bear = giver.components.petleash:SpawnPetAt(x, y, z, "kocho_bearger")
+            local rot = inst.Transform:GetRotation()
+            if bear then
+                bear.Transform:SetPosition(x, y, z)
+                bear.components.follower:SetLeader(giver)
+                bear.Transform:SetRotation(rot)
+                --  bear.sg:GoToState("taunt")
+            end
+
         end
     end
 end
@@ -118,8 +130,8 @@ local function m_checkLeaderExisting(inst)
     local leader = inst.components.follower:GetLeader()
     if
         leader ~= nil and leader.components.health ~= nil and
-            not (leader.components.health:IsDead() or leader:HasTag("playerghost"))
-     then
+        not (leader.components.health:IsDead() or leader:HasTag("playerghost"))
+    then
         return
     elseif inst._killtask == nil then
         inst._killtask = inst:ResumeTask(2, m_killPet)
@@ -200,7 +212,7 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
         inst.entity:AddDynamicShadow()
 
         --MakeCharacterPhysics(inst, 550, 1)
-		MakeGiantCharacterPhysics(inst, 50, .7)
+        MakeGiantCharacterPhysics(inst, 50, .7)
 
         inst.Transform:SetFourFaced(inst)
 
@@ -236,10 +248,11 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
         end
 
         inst:AddTag("scarytoprey")
-       -- inst:AddTag("NOBLOCK")
+        -- inst:AddTag("NOBLOCK")
         inst:AddTag("summonerally")
         inst:AddTag("kochosei_enemy")
-		inst:AddTag("woodcutter")
+		inst:AddTag("kochosei_enemy_skin_1")
+        inst:AddTag("woodcutter")
 
         inst:SetPrefabNameOverride("kochosei_enemy")
 
@@ -248,16 +261,16 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
         if not TheWorld.ismastersim then
             return inst
         end
-			inst:AddTag("woodcutter")
+        inst:AddTag("woodcutter")
         inst:AddComponent("inspectable")
-		
+
         inst:AddComponent("locomotor")
         inst.components.locomotor.runspeed = 8
         inst.components.locomotor:SetSlowMultiplier(.6)
-		inst.components.locomotor:SetAllowPlatformHopping(true)
-		
-		inst:AddComponent("embarker")
-		
+        inst.components.locomotor:SetAllowPlatformHopping(true)
+
+        inst:AddComponent("embarker")
+
         inst:AddComponent("health")
         inst.components.health:SetMaxHealth(TUNING.KOCHOSEI_SLAVE_HP)
 

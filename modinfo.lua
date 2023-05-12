@@ -7,7 +7,7 @@ Thank you for using this mod, you can use the config button below and let me kno
 	
 ]]
 author = "Mio, dinhkarate, Haruhi Kawaii"
-version = "3.8.3" -- Raiden Fuck You
+version = "3.9.7"
 forumthread = ""
 
 -- 1.4.5 fix tab
@@ -53,7 +53,7 @@ configuration_options =
 
   {
         name = "keykocho",
-        label = "Key to sleep",
+        label = "A) Key to sleep",
         options = {
             {description = "INS", data = 277},
             {description = "HOME", data = 278},
@@ -68,7 +68,7 @@ configuration_options =
 	
 	  {
         name = "turnoffmusic",
-        label = "Music",
+        label = "B) Structure Music",
         options = {
             {description = "OFF", data = 0},
             {description = "ON", data = 1},
@@ -77,13 +77,69 @@ configuration_options =
         default = 1
     },
 
-
+-------------------------------------------------------------------------------------------------	
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
 
   Title("Basic Stats"),
 
-{
+	  {
+    name = "kocho_hunger",
+    label = "1) Kochosei Hunger 󰀎",
+	hover = "How much hunger Kocho has?",
+		options =	
+		{
+			{description = "50", data = 50},
+			{description = "75", data = 75},
+			{description = "100", data = 100},
+			{description = "125", data = 125},
+			{description = "150", data = 150},
+			{description = "175", data = 175},
+			{description = "200", data = 200},
+			{description = "225", data = 225},
+			{description = "250", data = 250},
+			{description = "275", data = 275},
+			{description = "300", data = 300},
+			{description = "400", data = 400},
+			{description = "500", data = 500},
+			{description = "600", data = 600},
+			{description = "700", data = 700},
+			{description = "800", data = 800},
+			{description = "900", data = 900},
+		},
+		default = 150,
+    },
+    
+  {
+    name = "kocho_sanity",
+    label = "2) Kochosei Sanity 󰀓",
+	hover = "How much sanity Kocho has?",
+		options =	
+		{
+			{description = "50", data = 50},
+			{description = "75", data = 75},
+			{description = "100", data = 100},
+			{description = "125", data = 125},
+			{description = "150", data = 150},
+			{description = "175", data = 175},
+			{description = "200", data = 200},
+			{description = "225", data = 225},
+			{description = "250", data = 250},
+			{description = "275", data = 275},
+			{description = "300", data = 300},
+			{description = "400", data = 400},
+			{description = "500", data = 500},
+			{description = "600", data = 600},
+			{description = "700", data = 700},
+			{description = "800", data = 800},
+			{description = "900", data = 900},
+		},
+		default = 200,
+    },
+
+		{
     name = "kocho_hp",
-    label = "Kochosei HP 󰀍",
+    label = "3) Kochosei HP 󰀍",
 	hover = "How much health Kocho has?",
 		options =	
 		{
@@ -108,66 +164,10 @@ configuration_options =
 		default = 150,
     },
 
-    
-  {
-    name = "kocho_sanity",
-    label = "Kochosei Sanity 󰀓",
-	hover = "How much sanity Kocho has?",
-		options =	
-		{
-			{description = "50", data = 50},
-			{description = "75", data = 75},
-			{description = "100", data = 100},
-			{description = "125", data = 125},
-			{description = "150", data = 150},
-			{description = "175", data = 175},
-			{description = "200", data = 200},
-			{description = "225", data = 225},
-			{description = "250", data = 250},
-			{description = "275", data = 275},
-			{description = "300", data = 300},
-			{description = "400", data = 400},
-			{description = "500", data = 500},
-			{description = "600", data = 600},
-			{description = "700", data = 700},
-			{description = "800", data = 800},
-			{description = "900", data = 900},
-		},
-		default = 200,
-    },
-	
-	
-	  {
-    name = "kocho_hunger",
-    label = "Kochosei Hunger 󰀎",
-	hover = "How much hunger Kocho has?",
-		options =	
-		{
-			{description = "50", data = 50},
-			{description = "75", data = 75},
-			{description = "100", data = 100},
-			{description = "125", data = 125},
-			{description = "150", data = 150},
-			{description = "175", data = 175},
-			{description = "200", data = 200},
-			{description = "225", data = 225},
-			{description = "250", data = 250},
-			{description = "275", data = 275},
-			{description = "300", data = 300},
-			{description = "400", data = 400},
-			{description = "500", data = 500},
-			{description = "600", data = 600},
-			{description = "700", data = 700},
-			{description = "800", data = 800},
-			{description = "900", data = 900},
-		},
-		default = 150,
-    },
-	
 		
 		 {
     name = "kocho_armor",
-    label = "Kochosei Armor",
+    label = "4) Kochosei Armor",
 	hover = "How much armor Kocho has?",
 		options =	
 		{
@@ -186,7 +186,7 @@ configuration_options =
     },
 	 {
     name = "kocho_damage",
-    label = "Kochosei Damage Multiple 󰀘",
+    label = "5) Kochosei Damage Multiple 󰀘",
 	hover = "How much damage multiple Kocho has?",
 		options =	
 		{
@@ -205,116 +205,16 @@ configuration_options =
 		},
 		default = 1,
     },
-	
+
+-------------------------------------------------------------------------------------------------	
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
+
 	  Title("Kochosei Slave"),	
-	  
-	     {
-    name = "purplemagic_damage",
-    label = "Kochosei Purplemagic Damage 󰀘",
-	hover = "How much damage Purplemagic has?",
-		options =	
-		{
-			{description = "10", data = 10},
-			{description = "15", data = 15},
-			{description = "20", data = 20},
-			{description = "30", data = 30},
-			{description = "40", data = 40},
-			{description = "50", data = 50},
-			{description = "60", data = 60},
-			{description = "70", data = 70},
-			{description = "80", data = 80},
-			{description = "90", data = 90},
-			{description = "100", data = 100},
-			{description = "200", data = 200},
-			{description = "500", data = 500},
-			{description = "1000", data = 1000},
-			
-			
-		},
-		default = 10,
-    },
-	
-	   {
-    name = "purplemagic_durability",
-    label = "Kochosei Purplemagic Durability",
-	hover = "How much Purplemagic Durability has?",
-		options =	
-		{
-			{description = "10", data = 10},
-			{description = "15", data = 15},
-			{description = "20", data = 20},
-			{description = "30", data = 30},
-			{description = "40", data = 40},
-			{description = "50", data = 50},
-			{description = "60", data = 60},
-			{description = "70", data = 70},
-			{description = "80", data = 80},
-			{description = "90", data = 90},
-			{description = "100", data = 100},
-			{description = "200", data = 200},
-			{description = "500", data = 500},
-			{description = "1000", data = 1000},
-			
-			
-		},
-		default = 50,
-    },
-	
-		     {
-    name = "demonlord_damage",
-    label = "Demonlord Damage 󰀘",
-	hover = "How much damage Demonlord has?",
-		options =	
-		{
-			{description = "10", data = 10},
-			{description = "15", data = 15},
-			{description = "20", data = 20},
-			{description = "30", data = 30},
-			{description = "40", data = 40},
-			{description = "50", data = 50},
-			{description = "60", data = 60},
-			{description = "70", data = 70},
-			{description = "80", data = 80},
-			{description = "90", data = 90},
-			{description = "100", data = 100},
-			{description = "200", data = 200},
-			{description = "500", data = 500},
-			{description = "1000", data = 1000},
-			
-			
-		},
-		default = 10,
-    },
-	
-	   {
-    name = "demonlord_durability",
-    label = "Demonlord Durability",
-	hover = "How much Demonlord Durability has?",
-		options =	
-		{
-			{description = "10", data = 10},
-			{description = "15", data = 15},
-			{description = "20", data = 20},
-			{description = "30", data = 30},
-			{description = "40", data = 40},
-			{description = "50", data = 50},
-			{description = "60", data = 60},
-			{description = "70", data = 70},
-			{description = "80", data = 80},
-			{description = "90", data = 90},
-			{description = "100", data = 100},
-			{description = "200", data = 200},
-			{description = "500", data = 500},
-			{description = "1000", data = 1000},
-			
-			
-		},
-		default = 50,
-    },
 	
    {
     name = "kocho_slave_damage",
-    label = "Kochosei Slave Damage 󰀘",
+    label = "6) Kochosei Slave Damage 󰀘",
 	hover = "How much damage slave has?",
 		options =	
 		{
@@ -341,8 +241,8 @@ configuration_options =
 
    {
     name = "kocho_slave_max_fix",
-    label = "Kochosei Slave Max",
-	hover = "How much max slave has?",
+    label = "7) Kochosei Slave Max",
+	hover = "How much slave has?",
 		options =	
 		{
 			
@@ -367,7 +267,7 @@ configuration_options =
 
  {
     name = "kocho_slave_hp",
-    label = "Kochosei Slave HP 󰀍",
+    label = "8) Kochosei Slave HP 󰀍",
 	hover = "How much hp slave has?",
 		options =	
 		{
@@ -394,7 +294,7 @@ configuration_options =
 	
  {
     name = "kocho_slave_cost",
-    label = "Kochosei Slave Cost To Spawn",
+    label = "9) Kochosei Slave Cost",
 	hover = "How much sanity cost to spawn slave?",
 		options =	
 		{
@@ -411,11 +311,15 @@ configuration_options =
 		default = 10,
     },
 
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
+
 	  Title("Health of Boss slave"),	
 	  
 	     {
     name = "deerclops_slave_health",
-    label = "Deerclops health 󰀍",
+    label = "10) Deerclops health 󰀍",
 	hover = "Health of Deerclops slave",
 		options =	
 		{
@@ -448,7 +352,7 @@ configuration_options =
 
 	     {
     name = "dragonfly_slave_health",
-    label = "Dragonfly health 󰀍",
+    label = "11) Dragonfly health 󰀍",
 	hover = "Health of Dragonfly slave",
 		options =	
 		{
@@ -480,8 +384,41 @@ configuration_options =
     },
 	
 	     {
+    name = "bearger_slave_health",
+    label = "12) Bearger health 󰀍",
+	hover = "Health of Bearger slave",
+		options =	
+		{
+			{description = "10", data = 10},
+			{description = "20", data = 20},
+			{description = "30", data = 30},
+			{description = "40", data = 40},
+			{description = "50", data = 50},
+			{description = "60", data = 60},
+			{description = "70", data = 70},
+			{description = "80", data = 80},
+			{description = "90", data = 90},
+			{description = "100", data = 100},
+			{description = "200", data = 200},
+			{description = "500", data = 500},
+			{description = "1000", data = 1000},
+			{description = "2000", data = 2000},
+			{description = "4000", data = 4000},
+			{description = "6000", data = 6000},
+			{description = "8000", data = 8000},
+			{description = "10000", data = 10000},
+			{description = "16000", data = 16000},
+			{description = "25000", data = 25000},
+			{description = "50000", data = 50000},
+			{description = "100000", data = 100000},
+					
+		},
+		default = 200,
+    },
+	
+	     {
     name = "stalker_altrium_slave_health",
-    label = "Acientfuelweaver health 󰀍",
+    label = "13) Acientfuelweaver health 󰀍",
 	hover = "Health of Acientfuelweaver slave",
 		options =	
 		{
@@ -509,14 +446,19 @@ configuration_options =
 			{description = "100000", data = 100000},
 					
 		},
-		default = 16000,
+		default = 8000,
     },	
+
+
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
 
 	  Title("Damage of Boss slave"),	
 	  
 	     {
     name = "deerclops_slave_damage",
-    label = "Deerclops damage 󰀘",
+    label = "14) Deerclops damage 󰀘",
 	hover = "Damage of Deerclops slave",
 		options =	
 		{
@@ -543,8 +485,35 @@ configuration_options =
 	
 	     {
     name = "dragonfly_slave_damage",
-    label = "Dragonfly damage 󰀘",
+    label = "15) Dragonfly damage 󰀘",
 	hover = "Damage of Dragonfly slave",
+		options =	
+		{
+			{description = "10", data = 10},
+			{description = "20", data = 20},
+			{description = "30", data = 30},
+			{description = "40", data = 40},
+			{description = "50", data = 50},
+			{description = "60", data = 60},
+			{description = "70", data = 70},
+			{description = "80", data = 80},
+			{description = "90", data = 90},
+			{description = "100", data = 100},
+			{description = "200", data = 200},
+			{description = "500", data = 500},
+			{description = "1000", data = 1000},
+			{description = "2000", data = 2000},
+			{description = "4000", data = 4000},
+			{description = "6000", data = 6000},
+			{description = "8000", data = 8000},					
+		},
+		default = 50,
+    },	
+	
+		  {
+    name = "bearger_slave_damage",
+    label = "16) Bearger damage 󰀘",
+	hover = "Damage of Bearger slave",
 		options =	
 		{
 			{description = "10", data = 10},
@@ -570,7 +539,7 @@ configuration_options =
 
 	     {
     name = "stalker_altrium_slave_damage",
-    label = "Acientfuelweaver damage 󰀘",
+    label = "17) Acientfuelweaver damage 󰀘",
 	hover = "Damage of Acientfuelweaver slave",
 		options =	
 		{
@@ -595,14 +564,15 @@ configuration_options =
 		default = 50,
     },
 	
-	
-	
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
 	
 	  Title("Miku Usagi backpack"),	
 	  
 	     {
     name = "miku_usagi_backpack",
-    label = "Miku Usagi backpack refresh food",
+    label = "18) Miku Usagi backpack refresh",
 	hover = "Bigger is fresher",
 		options =	
 		{
@@ -620,11 +590,121 @@ configuration_options =
 		},
 		default = 0.5,
     },
+
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
 	
   Title("Kochosei Weapon"),	
-   {
+  
+  	     {
+    name = "purplemagic_damage",
+    label = "19) Purplemagic Damage 󰀘",
+	hover = "How much damage Purplemagic has?",
+		options =	
+		{
+			{description = "10", data = 10},
+			{description = "15", data = 15},
+			{description = "20", data = 20},
+			{description = "30", data = 30},
+			{description = "40", data = 40},
+			{description = "50", data = 50},
+			{description = "60", data = 60},
+			{description = "70", data = 70},
+			{description = "80", data = 80},
+			{description = "90", data = 90},
+			{description = "100", data = 100},
+			{description = "200", data = 200},
+			{description = "500", data = 500},
+			{description = "1000", data = 1000},
+			
+			
+		},
+		default = 10,
+    },
+	
+	   {
+    name = "purplemagic_durability",
+    label = "20) Purplemagic Durability",
+	hover = "How much Purplemagic Durability has?",
+		options =	
+		{
+			{description = "10", data = 10},
+			{description = "15", data = 15},
+			{description = "20", data = 20},
+			{description = "30", data = 30},
+			{description = "40", data = 40},
+			{description = "50", data = 50},
+			{description = "60", data = 60},
+			{description = "70", data = 70},
+			{description = "80", data = 80},
+			{description = "90", data = 90},
+			{description = "100", data = 100},
+			{description = "200", data = 200},
+			{description = "500", data = 500},
+			{description = "1000", data = 1000},
+			
+			
+		},
+		default = 50,
+    },
+	
+		     {
+    name = "demonlord_damage",
+    label = "21) Demonlord Damage 󰀘",
+	hover = "How much damage Demonlord has?",
+		options =	
+		{
+			{description = "10", data = 10},
+			{description = "15", data = 15},
+			{description = "20", data = 20},
+			{description = "30", data = 30},
+			{description = "40", data = 40},
+			{description = "50", data = 50},
+			{description = "60", data = 60},
+			{description = "70", data = 70},
+			{description = "80", data = 80},
+			{description = "90", data = 90},
+			{description = "100", data = 100},
+			{description = "200", data = 200},
+			{description = "500", data = 500},
+			{description = "1000", data = 1000},
+			
+			
+		},
+		default = 10,
+    },
+	
+	   {
+    name = "demonlord_durability",
+    label = "22) Demonlord Durability",
+	hover = "How much Demonlord Durability has?",
+		options =	
+		{
+			{description = "10", data = 10},
+			{description = "15", data = 15},
+			{description = "20", data = 20},
+			{description = "30", data = 30},
+			{description = "40", data = 40},
+			{description = "50", data = 50},
+			{description = "60", data = 60},
+			{description = "70", data = 70},
+			{description = "80", data = 80},
+			{description = "90", data = 90},
+			{description = "100", data = 100},
+			{description = "200", data = 200},
+			{description = "500", data = 500},
+			{description = "1000", data = 1000},
+			
+			
+		},
+		default = 50,
+    },
+	
+	
+		{
     name = "kocho_miohm_damage",
-    label = "Miohm Basic Damage 󰀘",
+    label = "23) Miohm Basic Damage 󰀘",
 	hover = "How much damage basic miohm has?",
 		options =	
 		{
@@ -648,10 +728,36 @@ configuration_options =
 		default = 15,
     },
 
+	{
+    name = "kocho_miohm_dub",
+    label = "24) Miohm Durability",
+	hover = "Kochosei Miohm Durability",
+		options =	
+		{		
+			{description = "100", data = 100},
+			{description = "150", data = 150},
+			{description = "200", data = 200},
+			{description = "250", data = 250},
+			{description = "500", data = 500},
+			{description = "750", data = 750},
+			{description = "1000", data = 1000},
+			{description = "2000", data = 2000},
+			{description = "3000", data = 3000},
+			{description = "4000", data = 4000},
+			{description = "5000", data = 5000},
+			{description = "6000", data = 6000},
+			{description = "7000", data = 7000},
+			{description = "Infinite", data = 999999999999},
+			
+			
+		},
+		default = 500,
+    },
+
 	
 	 {
     name = "kocho_miohm_max_level",
-    label = "Max damage of Miohm",
+    label = "25) Miohm max damage",
 	hover = "Max damage of Miohm",
 		options =	
 		{
@@ -676,7 +782,7 @@ configuration_options =
 	
 		 {
     name = "kocho_lv_perkill",
-    label = " Increase damage per kill",
+    label = "26) Increase damage per kill",
 	hover = " Increase damage per kill",
 		options =	
 		{
@@ -697,36 +803,10 @@ configuration_options =
 		default = 1,
     },
 	
-	
-	{
-    name = "kocho_miohm_dub",
-    label = "Kochosei Miohm Durability",
-	hover = "Kochosei Miohm Durability",
-		options =	
-		{		
-			{description = "100", data = 100},
-			{description = "150", data = 150},
-			{description = "200", data = 200},
-			{description = "250", data = 250},
-			{description = "500", data = 500},
-			{description = "750", data = 750},
-			{description = "1000", data = 1000},
-			{description = "2000", data = 2000},
-			{description = "3000", data = 3000},
-			{description = "4000", data = 4000},
-			{description = "5000", data = 5000},
-			{description = "6000", data = 6000},
-			{description = "7000", data = 7000},
-			{description = "Infinite", data = 999999999999},
-			
-			
-		},
-		default = 500,
-    },
  
 	 {
     name = "kocho_miohm_damage_spell",
-    label = "Kochosei Miohm Damage Spell 󰀘",
+    label = "27) Miohm Damage Spell 󰀘",
 	hover = "Kochosei Miohm Damage Spell",
 		options =	
 		{
@@ -747,8 +827,8 @@ configuration_options =
 	
 	 {
     name = "kocho_miohm_repair",
-    label = "Kochosei Miohm Repair",
-	hover = "Kochosei Miohm Repair",
+    label = "28) Miohm Repair",
+	hover = "Kochosei Miohm Repair with gold",
 		options =	
 		{
 			{description = "5", data = 5},
@@ -771,7 +851,7 @@ configuration_options =
 	
 	   {
     name = "kocho_sword_damage",
-    label = "Kochosei Sword Basic Damage 󰀘",
+    label = "29) Kochosei Sword Damage 󰀘",
 	hover = "How much damage basic sword has?",
 		options =	
 		{
@@ -798,7 +878,7 @@ configuration_options =
 
 	{
     name = "kocho_sword_dub",
-    label = "Kochosei Sword Durability",
+    label = "30) Kochosei Sword Durability",
 	hover = "Kochosei Sword Durability",
 		options =	
 		{		
@@ -823,12 +903,60 @@ configuration_options =
 		default = 500,
     },
 	
-		
+	{
+    name = "kocho_luckyhammer_durability",
+    label = "31)Lucky hammer durability",
+	hover = "Lucky hammer durability",
+		options =	
+		{		
+			{description = "10", data = 10},
+			{description = "20", data = 20},
+			{description = "50", data = 50},
+			{description = "100", data = 100},
+			{description = "150", data = 150},
+			{description = "200", data = 200},
+			{description = "250", data = 250},
+			{description = "500", data = 500},
+			{description = "750", data = 750},
+			{description = "1000", data = 1000},
+			{description = "2000", data = 2000},
+			{description = "3000", data = 3000},
+			{description = "4000", data = 4000},
+			{description = "Infinite", data = 999999999999},	
+		},
+		default = 20,
+    },
+
+	{
+    name = "kocho_acientbooks_cooldown",
+    label = "32)Acientbooks Cooldown",
+	hover = "Acient books cooldown",
+		options =	
+		{		
+			{description = "10s", data = 10},
+			{description = "20s", data = 20},
+			{description = "40s", data = 40},
+			{description = "60s", data = 60},
+			{description = "120s", data = 120},
+			{description = "180s", data = 180},
+			{description = "240s", data = 240},
+			{description = "360s", data = 360},
+			{description = "480s", data = 480},
+			{description = "560s", data = 560},			
+		},
+		default = 120,
+    },	
+
+	
+	
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------		
   
 	  Title("Kochosei Hat"),
 	{
 		name = "kocho_hat1_durability",
-		label = "Kochosei Hat 1 Durability",
+		label = "33) Kochosei Hat1 Durability",
 		hover = "How durable Kochosei Hat 1 should be?",
 		options =	
 		{
@@ -849,7 +977,7 @@ configuration_options =
 	},
 	{
 		name = "kocho_hat1_absorption",
-		label = "Kochosei Hat 1 Armor",
+		label = "34) Kochosei Hat1 Armor",
 		hover = "How much Kochosei Hat 1 reduces incoming damage?",
 		options =	
 		{
@@ -867,11 +995,16 @@ configuration_options =
 		},
 		default = 0.8,
 	},
+
+
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
 	  
   Title("Kochotambourin Heal"),	  
 	{
 		name = "kocho_tambourin_heal",
-		label = "Kochotambourin Heal 󰀍",
+		label = "35) Kochotambourin Heal 󰀍",
 		hover = "Kochotambourin Heal",
 		options =	
 		{
@@ -884,13 +1017,18 @@ configuration_options =
 		},
 		default = 5,
 	},
+
+
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
 	  
   Title("Kochosei Apple tree"),
 
   
   {
     name = "Kochosei's apple spawn rates",
-    label = "Kochosei's apple spawn rates",
+    label = "36) Kochosei's apple spawn rates",
     options = 
     {
         {description = "Default", data = "Default"},

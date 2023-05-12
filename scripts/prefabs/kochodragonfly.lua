@@ -34,11 +34,11 @@ local prefabs =
     "chesspiece_dragonfly_sketch",
 }
 
-SetSharedLootTable('kochodragonfly',
+local loot = 
 {
-    {'dragon_scales',             1.00},
+"dragon_scales"
+}
 
-})
 
 --------------------------------------------------------------------------
 
@@ -264,6 +264,12 @@ local function OnSpawnStop(inst)
     inst.components.locomotor:RemoveExternalSpeedMultiplier(inst, "spawning")
 end
 
+
+local function ondeath(inst)
+inst.components.lootdropper:DropLoot(inst:GetPosition())
+end
+
+
 local function OnAttacked(inst, data)
     if data.attacker ~= nil then
         local target = inst.components.combat.target
@@ -374,7 +380,6 @@ local function fn()
     inst:AddComponent("groundpounder")
     inst:AddComponent("combat")
     inst:AddComponent("explosiveresist")
-    inst:AddComponent("lootdropper")
     inst:AddComponent("inspectable")
     inst:AddComponent("locomotor")
     inst:AddComponent("knownlocations")
@@ -401,7 +406,9 @@ local function fn()
     inst:SetBrain(brain)
 
     -- Component Init
-
+	inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetLoot(loot)
+	
     inst.components.stunnable.stun_threshold = TUNING.DRAGONFLY_STUN
     inst.components.stunnable.stun_period = TUNING.DRAGONFLY_STUN_PERIOD
     inst.components.stunnable.stun_duration = TUNING.DRAGONFLY_STUN_DURATION
@@ -431,8 +438,6 @@ local function fn()
 
 
 
-    inst.components.lootdropper:SetChanceLootTable("kochodragonfly")
-
     inst.components.inspectable:RecordViews()
 
     inst.components.locomotor:EnableGroundSpeedMultiplier(false)
@@ -442,6 +447,7 @@ local function fn()
 
    
     inst:ListenForEvent("timerdone", OnTimerDone)
+	inst:ListenForEvent("death", ondeath )
    
     inst.OnEntitySleep = ToggleDespawnOffscreen
     inst.OnEntityWake = ToggleDespawnOffscreen

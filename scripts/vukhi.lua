@@ -116,7 +116,7 @@ AddCharacterRecipe("kochosei_hat3",
 	
 )
 --]]
-
+if TUNING.KOCHOSEI_CHECKMOD ~= 1 then
 MakeSkinnableRecipe( AddCharacterRecipe("kochosei_hat1",
 	{	Ingredient("silk", 3),
 		Ingredient("rope", 1),
@@ -137,7 +137,19 @@ MakeSkinnableRecipe( AddCharacterRecipe("kochosei_hat1",
         }
     }
 )
-
+else
+AddCharacterRecipe("kochosei_hat1",
+	{	Ingredient("silk", 3),
+		Ingredient("rope", 1),
+		Ingredient("pigskin", 1)},
+		TECH.NONE,
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
+		image = "kochosei_hat1.tex",
+		builder_tag = "kochosei"},
+	{	"CHARACTER" }
+	
+)
+end
 
 ----------------------
 AddCharacterRecipe("kochosei_house",
@@ -176,8 +188,18 @@ AddCharacterRecipe("kochosei_wishlamp",
 	
 )
 
-
-
+AddCharacterRecipe("kochosei_building_redlantern",
+	{	Ingredient("log",10)},
+		TECH.SCIENCE_ONE,
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
+		image = "kochosei_building_redlantern.tex",
+		builder_tag = "kochosei",
+		placer= "kochosei_building_redlantern_placer"},
+			
+	{	"CHARACTER" }
+	
+)
+--Con cò mio
 ------------------------------
 
 
@@ -343,3 +365,49 @@ AddCharacterRecipe("kochosei_umbrella",
 	
 )
 
+AddCharacterRecipe("kochosei_hatfl",
+	{	Ingredient("flowerhat",1),
+		Ingredient("moonglass",50),
+		Ingredient("hivehat",1)},
+		
+		TECH.NONE,
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
+		image = "kochosei_hatfl.tex",
+		builder_tag = "kochosei"},
+
+			
+	{	"CHARACTER" }
+	
+)
+
+AddCharacterRecipe("lucky_hammer",
+	{	Ingredient("goldnugget",50),
+		Ingredient("log",20),
+		Ingredient("yellowgem",5)},
+		
+		TECH.NONE,
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
+		image = "lucky_hammer.tex",
+		builder_tag = "kochosei"},
+
+			
+	{	"CHARACTER" }
+	
+)
+
+AddCharacterRecipe("kochosei_ancient_books",
+	{	Ingredient("walrus_tusk",10),
+		Ingredient("papyrus",10),
+		Ingredient("featherpencil",2),
+		Ingredient("rope",4)},
+		
+		
+		TECH.NONE,
+	{	atlas = "images/inventoryimages/kochosei_inv.xml",
+		image = "kochosei_ancient_books.tex",
+		builder_tag = "kochosei"},
+
+			
+	{	"CHARACTER" }
+	
+)

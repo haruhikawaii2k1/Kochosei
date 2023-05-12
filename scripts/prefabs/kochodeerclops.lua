@@ -14,6 +14,10 @@ local prefabs =
     "meat",
 
 }
+local loot = 
+{
+"deerclops_eyeball"
+}
 
 local TARGET_DIST = 16
 
@@ -215,7 +219,7 @@ local function fn()
     ------------------------------------------
 
     inst:AddComponent("lootdropper")
-   -- inst.components.lootdropper:SetLoot(loot)
+    inst.components.lootdropper:SetLoot(loot)
 
     ------------------------------------------
 

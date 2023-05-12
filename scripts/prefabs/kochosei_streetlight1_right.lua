@@ -132,7 +132,7 @@ local function fn()
     inst.components.fueled:SetTakeFuelFn(OnAddFuel)
     inst.components.fueled.accepting = true
     inst.components.fueled:SetSections(10)
-	inst.components.fueled:InitializeFuelLevel(TUNING.CAMPFIRE_FUEL_MAX*6)
+	inst.components.fueled:InitializeFuelLevel(TUNING.CAMPFIRE_FUEL_MAX*15)
 	
 	inst:DoTaskInTime(0,OnChange)
 	inst:WatchWorldState("phase",OnChange)

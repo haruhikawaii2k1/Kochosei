@@ -1,15 +1,20 @@
 local assets = {
     Asset("ANIM", "anim/miohm.zip"),
-    Asset("ANIM", "anim/swap_miohm.zip"),
+    Asset("ANIM", "anim/swap_miohm.zip")
 
 }
 
 local function onattack(inst, attacker, target)
-    --target could be killed or removed in combat damage phase
-    if target:IsValid() then
-        SpawnPrefab("electrichitsparks"):AlignToTarget(target, inst)
+    if target ~= nil and target:IsValid() and attacker ~= nil and attacker:IsValid() then
+        SpawnPrefab("electrichitsparks"):AlignToTarget(target, attacker, true)
         SpawnPrefab("electricchargedfx").Transform:SetPosition(target.Transform:GetWorldPosition())
         SpawnPrefab("superjump_fx").Transform:SetPosition(target.Transform:GetWorldPosition())
+    end
+	
+    local percent_health = target.components.health:GetPercent()
+    local damage = target.components.health.maxhealth * percent_health * 0.01
+    if not target.components.health:IsDead() and target.components.health and target.components.health.currenthealth > 50000 then
+        target.components.health:DoDelta(-damage)
     end
 end
 
@@ -169,21 +174,21 @@ local function aoeSpell(inst, target, caster)
     end
 
     if caster.components.sanity.current <= 50 then
-        inst.components.talker:Say("My sanity is not enough!!")
+        caster.components.talker:Say("My sanity is not enough!!")
         return
     end
 
     if caster.components.hunger.current <= 50 then
-        inst.components.talker:Say("My hunger is not enough!!")
+        caster.components.talker:Say("My hunger is not enough!!")
         return
     end
 
     if target:HasTag("player") then
-        inst.components.talker:Say("Please don't!!, We are goodfriend! :>")
+        caster.components.talker:Say("Please don't!!, We are goodfriend! :>")
         return
     end
 
-    inst.components.talker:Say("Thunder attack!")
+    caster.components.talker:Say("Thunder attack!")
 
     inst.components.finiteuses:Use(10)
     caster.components.sanity:DoDelta(-10)
@@ -198,13 +203,13 @@ local function aoeSpell(inst, target, caster)
         freezeSpell(inst, v)
     end
 
-	if target.components.health and target.components.health.currenthealth > 50000 then
-		target.components.health:DoDelta(-damage)
-	end
+    if target.components.health and target.components.health.currenthealth > 50000 then
+        target.components.health:DoDelta(-damage)
+    end
     local lightning = SpawnPrefab("lightning")
     lightning.Transform:SetPosition(x, y, z)
 
-	if not crabking_running then
+    if not crabking_running then
         crabking_running = true
         crabking_task = inst:DoPeriodicTask(1, crabking_counter)
         local freeze_fx = SpawnPrefab("crabking_feeze")
@@ -263,7 +268,6 @@ end
 local function fn()
     local inst = CreateEntity()
 
-    inst:AddComponent("talker")
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddNetwork()
@@ -319,7 +323,7 @@ local function fn()
     inst.components.spellcaster.quickcast = true
 
     inst:AddComponent("equippable")
-	inst.components.equippable.restrictedtag = "kochosei"
+    inst.components.equippable.restrictedtag = "kochosei"
     inst.components.equippable:SetOnEquip(OnEquip)
     inst.components.equippable:SetOnUnequip(OnUnequip)
     inst.components.inventoryitem.keepondeath = true
@@ -329,8 +333,8 @@ local function fn()
     inst.components.trader:SetAcceptTest(AcceptTest)
     inst.components.trader.onaccept = OnGetItemFromPlayer
     inst.components.trader.onrefuse = OnRefuseItem
-	inst:DoPeriodicTask(1, OnUpdate)
-	inst:ListenForEvent("onremove", on_remove)
+    inst:DoPeriodicTask(1, OnUpdate)
+    inst:ListenForEvent("onremove", on_remove)
 
     inst.lights = {}
 

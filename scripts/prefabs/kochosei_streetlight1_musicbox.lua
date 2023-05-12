@@ -67,6 +67,8 @@ local function OnAddFuel(inst)
         --TurnOn(inst)
 		inst.components.machine:TurnOn()
     end
+	local fuel_value = TUNING.CAMPFIRE_FUEL_MAX*7
+    inst.components.fueled:DoDelta(fuel_value)
 end
 
 local function fuelupdate(inst)
@@ -117,7 +119,7 @@ local function fn()
 	inst.Light:SetIntensity(.9)
     inst.Light:SetColour(255 / 255, 200 / 255, 255 / 255)
     inst.Light:SetFalloff(.9)
-    inst.Light:SetRadius(9)
+    inst.Light:SetRadius(16)
     inst.Light:Enable(false)
 
     -- MakeObstaclePhysics(inst, 1)
@@ -161,7 +163,7 @@ local function fn()
     inst.components.fueled:SetTakeFuelFn(OnAddFuel)
     inst.components.fueled.accepting = true
     inst.components.fueled:SetSections(10)
-	inst.components.fueled:InitializeFuelLevel(TUNING.CAMPFIRE_FUEL_MAX*10)
+	inst.components.fueled:InitializeFuelLevel(TUNING.CAMPFIRE_FUEL_MAX*50)
 	
 	return inst
 end 

@@ -20,27 +20,73 @@ table.insert(prefabs, CreatePrefabSkin("kochosei_none", --This skin is the regul
 	},
 
 }))
-
-table.insert(prefabs, CreatePrefabSkin("kochosei_snowmiku_skin1",
+if TUNING.KOCHOSEI_CHECKMOD == 1 then
+table.insert(prefabs, CreatePrefabSkin("ms_kochosei_snowmiku_skin1",
 {
 	base_prefab = "kochosei",
-	build_name_override = "kochosei_snowmiku_skin1", --The build name of your new skin,
+	build_name_override = "ms_kochosei_snowmiku_skin1", 
 	type = "base",
-	rarity = "Elegant", --I did the Elegant Rarity, but you can do whatever rarity you want!
-	rarity_modifier = "Woven", --Ive put the rarity_modifier to Woven, Doesnt make a difference other than say youve woven the skin
+	rarity = "ModMade",
+	rarity_modifier = "Woven",
 	skip_item_gen = true,
 	skip_giftable_gen = true,
-	skin_tags = { "BASE", "kochosei", "white"}, --Notice in this skin_tags table I have "white", This tag actually makes the little gorge icon show up on the skin! Other tags will do the same thing such as forge, yotc, yotp, yotv, yog and so on!
+	skin_tags = { "BASE", "kochosei", "white"}, 
 	skins = {
-		normal_skin = "kochosei_snowmiku_skin1", --Rename your "normal_skin" accordingly
-		ghost_skin = "ghost_kochosei_build", --And if you did a ghost skin, rename that too!
+		normal_skin = "ms_kochosei_snowmiku_skin1",
+		ghost_skin = "ghost_kochosei_build", 
 	},
 
 	assets = {
-		Asset( "ANIM", "anim/kochosei_snowmiku_skin1.zip" ), --Self-explanatory, these are the assets your character is using!
+		Asset( "ANIM", "anim/ms_kochosei_snowmiku_skin1.zip" ),
 		Asset( "ANIM", "anim/ghost_kochosei_build.zip" ),
 	},
 
 }))
+
+
+table.insert(prefabs, CreatePrefabSkin("ms_kochosei_hat2", {
+
+    base_prefab = "kochosei_hat1",
+    type = "item",
+    rarity = "ModMade",
+	build_name_override = "ms_kochosei_hat2",
+    assets = {
+          Asset("ANIM", "anim/kochosei_hat2.zip")
+    },
+
+}))
+table.insert(prefabs, CreatePrefabSkin("ms_kochosei_hat3", {
+    base_prefab = "kochosei_hat1",
+    type = "item",
+    rarity = "ModMade",
+	build_name_override = "kochosei_hat3",
+    assets = {
+          Asset("ANIM", "anim/kochosei_hat3.zip")
+    },
+
+}))
+else
+table.insert(prefabs, CreatePrefabSkin("kochosei_snowmiku_skin1",
+{
+	base_prefab = "kochosei",
+	build_name_override = "kochosei_snowmiku_skin1",
+	type = "base",
+	rarity = "Elegant",
+	rarity_modifier = "Woven", 
+	skip_item_gen = true,
+	skip_giftable_gen = true,
+	skin_tags = { "BASE", "kochosei", "white"}, 
+	skins = {
+		normal_skin = "kochosei_snowmiku_skin1",
+		ghost_skin = "ghost_kochosei_build",
+	},
+
+	assets = {
+		Asset( "ANIM", "anim/kochosei_snowmiku_skin1.zip" ), 
+		Asset( "ANIM", "anim/ghost_kochosei_build.zip" ),
+	},
+
+}))
+end
 
 return unpack(prefabs)

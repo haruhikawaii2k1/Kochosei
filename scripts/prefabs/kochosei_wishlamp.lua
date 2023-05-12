@@ -1,5 +1,6 @@
 local assets = {
 	Asset("ANIM", "anim/kochosei_wishlamp.zip"),
+	Asset("ANIM", "anim/kochosei_building_redlantern.zip")
 }
 
 local SCALE = 1.25
@@ -8,14 +9,25 @@ local function TurnOn(inst)
 	inst.on = true
 	inst.Light:Enable(true)
 	inst.components.fueled:StartConsuming()
-	inst.AnimState:PlayAnimation("idle_on", true)
+	if inst.prefab == "kochosei_building_redlantern" then
+ 	inst.AnimState:PlayAnimation("idle_on", true)
+	end
+	if inst.prefab == "kochosei_wishlamp" then
+ 	inst.AnimState:PlayAnimation("idle_on", true)
+	end
 end 
 
 local function TurnOff(inst)
 	inst.on = false 
 	inst.Light:Enable(false)
 	inst.components.fueled:StopConsuming()
-	 inst.AnimState:PlayAnimation("idle_off", true)
+--	 inst.AnimState:PlayAnimation("idle_off", true)
+	if inst.prefab == "kochosei_building_redlantern" then
+ 	inst.AnimState:PlayAnimation("idle_off", true)
+	end
+	if inst.prefab == "kochosei_wishlamp" then
+ 	inst.AnimState:PlayAnimation("idle_off", true)
+	end
 end 
 
 local function CanInteract(inst)
@@ -42,6 +54,8 @@ local function OnAddFuel(inst)
         --TurnOn(inst)
 		inst.components.machine:TurnOn()
     end
+	local fuel_value = TUNING.CAMPFIRE_FUEL_MAX*7
+    inst.components.fueled:DoDelta(fuel_value)
 end
 
 local function fuelupdate(inst)
@@ -74,7 +88,16 @@ local function descriptionfn(inst,viewer)
 	return "Fuel: "..tostring(keepTwoDecimalPlaces(inst.components.fueled:GetPercent()*100)).."%"
 end 
 
-local function fn()
+local function OnChange(inst)
+	local day = TheWorld.state.phase	
+	if day == "night"  then 
+		inst.components.machine:TurnOn()
+	else
+		inst.components.machine:TurnOff()
+	end 
+end 
+
+local function commonfn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -87,19 +110,12 @@ local function fn()
     inst.entity:AddNetwork()
 	
 	inst.Light:SetIntensity(.9)
-    inst.Light:SetColour(255 / 255, 153 / 255, 51 / 255)
-    inst.Light:SetFalloff(.5)
-    inst.Light:SetRadius(4)
+    inst.Light:SetColour(255 / 255, 241 / 255, 141 / 255)
+    inst.Light:SetFalloff(.4)
+    inst.Light:SetRadius(3)
     inst.Light:Enable(false)
 
-    -- MakeObstaclePhysics(inst, 1)
-
-    --inst.MiniMapEntity:SetIcon("portal_dst.png")
 	MakeObstaclePhysics(inst, .05)
-	
-	inst.AnimState:SetBank("kochosei_wishlamp")
-    inst.AnimState:SetBuild("kochosei_wishlamp")
-    inst.AnimState:PlayAnimation("idle_on", true)
 	
 	inst.Transform:SetScale(SCALE,SCALE,SCALE)
 	
@@ -132,16 +148,35 @@ local function fn()
     inst.components.fueled:SetTakeFuelFn(OnAddFuel)
     inst.components.fueled.accepting = true
     inst.components.fueled:SetSections(10)
-	inst.components.fueled:InitializeFuelLevel(TUNING.CAMPFIRE_FUEL_MAX*6)
+	inst.components.fueled:InitializeFuelLevel(TUNING.CAMPFIRE_FUEL_MAX*50)
 	
-	inst:DoTaskInTime(1,OnChange)
-	--inst:WatchWorldState("phase",OnChange)
+	inst:ListenForEvent("onbuilt", OnChange)
 	
 	return inst
 end 
 
+local function cottreolongden()
+    local inst = commonfn()
+	inst.AnimState:SetBank("kochosei_wishlamp")
+    inst.AnimState:SetBuild("kochosei_wishlamp")
+    inst.AnimState:PlayAnimation("idle_off", true)
+    return inst
+end
+
+local function cotden()
+    local inst = commonfn()
+	inst.AnimState:SetBank("kochosei_building_redlantern")
+    inst.AnimState:SetBuild("kochosei_building_redlantern")
+    inst.AnimState:PlayAnimation("idle_off",true)
+    return inst
+end
+
 STRINGS.NAMES[string.upper("kochosei_wishlamp")] = "Wish lamp"
 STRINGS.RECIPE_DESC[string.upper("kochosei_wishlamp")] = "A beautiful Japan lantern to decorate"
+STRINGS.NAMES[string.upper("kochosei_building_redlantern")] = "Wish lamp"
+STRINGS.RECIPE_DESC[string.upper("kochosei_building_redlantern")] = "A beautiful Japan lantern to decorate"
 
-return Prefab("kochosei_wishlamp", fn, assets),
-	MakePlacer("kochosei_wishlamp_placer", "kochosei_wishlamp", "kochosei_wishlamp", "idle_on",nil,nil,nil,SCALE) 
+return Prefab("kochosei_wishlamp", cottreolongden, assets),
+	Prefab("kochosei_building_redlantern", cotden, assets),
+	MakePlacer("kochosei_wishlamp_placer", "kochosei_wishlamp", "kochosei_wishlamp", "idle_on",nil,nil,nil,SCALE),
+		MakePlacer("kochosei_building_redlantern_placer", "kochosei_building_redlantern", "kochosei_building_redlantern", "idle_on",nil,nil,nil,SCALE) 
