@@ -140,7 +140,7 @@ local function freezeSpell(inst, target)
 end
 
 
-local MIOHM_CANT_TAGS = {"DECOR", "FX", "INLIMBO", "NOCLICK", "playerghost", "player"}
+local MIOHM_CANT_TAGS = {"DECOR", "FX", "INLIMBO", "NOCLICK", "playerghost", "player", "beefalo"}
 
 local crabking_running = false
 local crabking_task = nil
@@ -183,14 +183,15 @@ local function aoeSpell(inst, target, caster)
         return
     end
 
-    if target:HasTag("player") then
+    if target:HasTag("player") or target:HasTag("beefalo") then
         caster.components.talker:Say("Please don't!!, We are goodfriend! :>")
         return
     end
 
     caster.components.talker:Say("Thunder attack!")
-
+	if type(TUNING.MIOHM_DURABILITY) == "number" then  
     inst.components.finiteuses:Use(10)
+	end
     caster.components.sanity:DoDelta(-10)
     caster.components.hunger:DoDelta(-10)
 
@@ -220,7 +221,7 @@ end
 
 
 local function castFreeze(inst, target)
-    if target and target.components.health then
+    if target ~= nil and target:IsValid() and target.components.health then
         aoeSpell(inst, target)
     end
 end
@@ -231,6 +232,7 @@ local function applyupgrades(inst, data)
     local max_upgrades = TUNING.KOCHOSEI_MAX_LEVEL
     local upgrades = math.min(inst.levelmiohm, max_upgrades)
     inst.components.weapon:SetDamage(upgrades + TUNING.MIOHM_DAMAGE)
+	
 end
 
 local function OnSave(inst, data)
@@ -247,16 +249,21 @@ end
 -------------Sửa Chữa----------------
 
 local function OnGetItemFromPlayer(inst, giver, item)
-    if item.prefab == "goldnugget" then
+    if item.prefab == "goldnugget" then 
+		if type(TUNING.MIOHM_DURABILITY) == "number" then
         local doben = inst.components.finiteuses:GetUses() + (TUNING.MIOHM_REPAIR * 2)
         inst.components.finiteuses:SetUses(math.min(doben, TUNING.MIOHM_DURABILITY ))
+		else
+		inst.levelmiohm = inst.levelmiohm + TUNING.KOCHOSEI_PER_KILL
+		applyupgrades(inst)
+		end
     end
 end
 
 --Đau Lưng vaelu--
 local function OnRefuseItem(inst, giver, item)
     if item.prefab ~= "goldnugget" then
-        giver.components.talker:Say("Ony Gold, :chibikeqingcheer:  ヾ(•ω•`)o!")
+        giver.components.talker:Say("Only Gold" , nil, nil, nil, nil, {255/0, 255/0, 0/255, 1})
     end
 end
 
@@ -305,11 +312,17 @@ local function fn()
     inst:AddComponent("tool")
     inst.components.tool:SetAction(ACTIONS.MINE, 1.2)
     inst.components.tool:SetAction(ACTIONS.HAMMER, 1.2)
-
-    inst:AddComponent("finiteuses")
+	
+	if type(TUNING.MIOHM_DURABILITY) == "number" then     -- Giá trị của TUNING.KOCHOSEI_CHECKMOD là một số
+	
+	inst:AddComponent("finiteuses")
     inst.components.finiteuses:SetMaxUses(TUNING.MIOHM_DURABILITY)
     inst.components.finiteuses:SetUses(TUNING.MIOHM_DURABILITY)
     inst.components.finiteuses:SetOnFinished(inst.Remove)
+	end
+
+	
+
 
     inst:AddComponent("inspectable")
 

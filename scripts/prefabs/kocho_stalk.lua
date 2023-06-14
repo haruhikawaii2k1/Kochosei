@@ -12,26 +12,9 @@ local assets_atrium =
 
 local brain = require("brains/stalkbr")
 
-local brain2 = require("brains/damstalk")
-
 SetSharedLootTable('dinhcutenhathematroi',
 {
     {"fossil_piece",    1.00},
-
-})
-
-
-SetSharedLootTable('damstalker',
-{
-    {"fossil_piece",    1.00},
-    {"armorskeleton",    1.00},
-    {"greengem",    3.00},
-    {"yellowgem",    3.00},
-    {"orangegem",    3.00},
-    {"redgem",    6.00},
-    {"bluegem",    3.00},
-    {"purplegem",    3.00},
-    {"thulecite",    3.00},
 
 })
 

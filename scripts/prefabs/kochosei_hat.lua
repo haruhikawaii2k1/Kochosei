@@ -86,6 +86,7 @@ local function MainFunction(bank, build, tag)
     inst.AnimState:PlayAnimation("anim")
     inst:AddTag(tag)
     inst:AddTag("waterproofer")
+	inst:AddTag("kochosei_hat")
 
 
     MakeInventoryFloatable(inst, "small", 0.1, 1.12)

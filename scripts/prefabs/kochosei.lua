@@ -449,6 +449,7 @@ local function ontalk(inst, data)
 end
 
 -----------------------------------------------------------------------------
+--[[
 local function OnEquipCustom(inst, data)
     local hat_prefabs = {"kochosei_hat1", "kochosei_hat2", "kochosei_hat3"}
     if table.contains(hat_prefabs, data.item.prefab) then
@@ -463,6 +464,25 @@ local function OnUnequipCustom(inst, data)
         local hat_prefabs = {"kochosei_hat1", "kochosei_hat2", "kochosei_hat3"}
         if table.contains(hat_prefabs, data.item.prefab) then
             if not inst:HasTag("scarytoprey") then
+                inst:AddTag("scarytoprey")
+            end
+        end
+    end
+end
+--]]
+
+local function OnEquipCustom(inst, data)
+		if data.item:HasTag("kochosei_hat") then
+	        if inst:HasTag("scarytoprey") then
+				inst:RemoveTag("scarytoprey")
+			end
+		end
+end
+
+local function OnUnequipCustom(inst, data)
+	    if data.item ~= nil then
+		   if data.item:HasTag("kochosei_hat") then
+		      if not inst:HasTag("scarytoprey") then
                 inst:AddTag("scarytoprey")
             end
         end
@@ -494,6 +514,12 @@ local function haru(inst)
 end
 
 local function harulevel(inst)
+--[[
+if inst.components.skinner:Kochosei_GetSkinName() == "kochosei_snowmiku_skin1"
+then
+print("baideo2")
+end
+--]]
     if inst.components.health:IsDead() or inst:HasTag("playerghost") then
         return
     end
@@ -513,12 +539,9 @@ local function harulevel(inst)
     end
 end
 
-
 local master_postinit = function(inst)
     -- Set starting inventory
     inst.starting_inventory = start_inv[TheNet:GetServerGameMode()] or start_inv.default
-
-
 
     -- choose which sounds this character will play
     inst.soundsname = "kochosei"
@@ -530,8 +553,13 @@ local master_postinit = function(inst)
     inst.components.health:SetMaxHealth(TUNING.KOCHOSEI_HEALTH)
     inst.components.hunger:SetMax(TUNING.KOCHOSEI_HUNGER)
     inst.components.sanity:SetMax(TUNING.KOCHOSEI_SANITY)
-    inst.components.health.absorb = TUNING.KOCHOSEI_ARMOR
-    inst.components.combat.damagemultiplier = TUNING.KOCHOSEI_DAMAGE
+    --inst.components.health.absorb = TUNING.KOCHOSEI_ARMOR
+	--inst.components.combat.damagemultiplier = TUNING.KOCHOSEI_DAMAGE
+	inst.components.combat.externaldamagemultipliers:SetModifier(inst, TUNING.KOCHOSEI_DAMAGE, "kocho_damage_config")     -- Damage multiplier (optional)
+	--inst.components.combat.externaldamagetakenmultipliers:SetModifier(inst, TUNING.KOCHOSEI_ARMOR, "kocho_def_config") -- Def multiplier
+	--if TUNING.KOCHOSEI_ARMOR ~= 0 then
+	inst.components.health.externalabsorbmodifiers:SetModifier("kochosei", TUNING.KOCHOSEI_ARMOR)
+	--end
     inst.components.sanity.dapperness = -5 / 60
 
 
@@ -541,11 +569,6 @@ local master_postinit = function(inst)
     inst:DoPeriodicTask(5, in_fire)
     inst:DoPeriodicTask(1, harulevel)
 
-
-
-    -- Damage multiplier (optional)
-
-    -- Hunger rate (optional)
     inst.components.hunger.hungerrate =  TUNING.WILSON_HUNGER_RATE
     inst.components.eater.PrefersToEat = anvaochetnguoiay
     inst.customidleanim = "idle_wilson"
@@ -615,4 +638,4 @@ local master_postinit = function(inst)
 
 end
 
-return MakePlayerCharacter("kochosei", prefabs, assets, common_postinit, master_postinit, prefabs)
+return MakePlayerCharacter("kochosei", prefabs, assets, common_postinit, master_postinit)

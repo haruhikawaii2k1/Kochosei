@@ -1,6 +1,5 @@
 local prefabs = {}
 
-
 table.insert(prefabs, CreatePrefabSkin("kochosei_none", --This skin is the regular default skin we have, You should already have this
 {
 	base_prefab = "kochosei", --What Prefab are we skinning? The character of course!
@@ -16,28 +15,53 @@ table.insert(prefabs, CreatePrefabSkin("kochosei_none", --This skin is the regul
 	},
 	assets = {
 		Asset( "ANIM", "anim/kochosei.zip" ), --Self-explanatory, these are the assets your character is using!
+		Asset( "ANIM", "anim/ms_kochosei_snowmiku_skin1.zip" ), 
 		Asset( "ANIM", "anim/ghost_kochosei_build.zip" ),
 	},
 
 }))
-if TUNING.KOCHOSEI_CHECKMOD == 1 then
+if TUNING.KOCHOSEI_CHECKMOD ~= 1 then
+table.insert(prefabs, CreatePrefabSkin("kochosei_snowmiku_skin1",
+{
+	base_prefab = "kochosei",
+	build_name_override = "kochosei_snowmiku_skin1",
+	type = "base",
+	rarity = "Elegant",
+	rarity_modifier = "Woven", 
+	skip_item_gen = true,
+	skip_giftable_gen = true,
+	skin_tags = { "BASE", "kochosei", "white"}, 
+	skins = {
+		normal_skin = "kochosei_snowmiku_skin1",
+		ghost_skin = "ghost_kochosei_build",
+	},
+
+	assets = {
+		Asset( "ANIM", "anim/kochosei_snowmiku_skin1.zip" ), 
+		Asset( "ANIM", "anim/ghost_kochosei_build.zip" ),
+	},
+
+}))
+
+else
+
 table.insert(prefabs, CreatePrefabSkin("ms_kochosei_snowmiku_skin1",
 {
 	base_prefab = "kochosei",
-	build_name_override = "ms_kochosei_snowmiku_skin1", 
+	build_name_override = "ms_kochosei_snowmiku_skin1",
 	type = "base",
-	rarity = "ModMade",
-	rarity_modifier = "Woven",
+	rarity = "Elegant",
+	rarity_modifier = "Woven", 
 	skip_item_gen = true,
 	skip_giftable_gen = true,
 	skin_tags = { "BASE", "kochosei", "white"}, 
 	skins = {
 		normal_skin = "ms_kochosei_snowmiku_skin1",
-		ghost_skin = "ghost_kochosei_build", 
+		ghost_skin = "ghost_kochosei_build",
 	},
 
 	assets = {
-		Asset( "ANIM", "anim/ms_kochosei_snowmiku_skin1.zip" ),
+		Asset( "ANIM", "anim/ms_kochosei_snowmiku_skin1.zip" ), 
 		Asset( "ANIM", "anim/ghost_kochosei_build.zip" ),
 	},
 
@@ -65,28 +89,8 @@ table.insert(prefabs, CreatePrefabSkin("ms_kochosei_hat3", {
     },
 
 }))
-else
-table.insert(prefabs, CreatePrefabSkin("kochosei_snowmiku_skin1",
-{
-	base_prefab = "kochosei",
-	build_name_override = "kochosei_snowmiku_skin1",
-	type = "base",
-	rarity = "Elegant",
-	rarity_modifier = "Woven", 
-	skip_item_gen = true,
-	skip_giftable_gen = true,
-	skin_tags = { "BASE", "kochosei", "white"}, 
-	skins = {
-		normal_skin = "kochosei_snowmiku_skin1",
-		ghost_skin = "ghost_kochosei_build",
-	},
 
-	assets = {
-		Asset( "ANIM", "anim/kochosei_snowmiku_skin1.zip" ), 
-		Asset( "ANIM", "anim/ghost_kochosei_build.zip" ),
-	},
-
-}))
 end
+
 
 return unpack(prefabs)

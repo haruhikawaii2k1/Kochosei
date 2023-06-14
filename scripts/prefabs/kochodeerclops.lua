@@ -246,7 +246,7 @@ local function fn()
 	inst:ListenForEvent("attacked", OnAttacked)
 
     inst:ListenForEvent("stopfollowing", function(inst) inst.components.health:Kill()  end)
-    --inst:ListenForEvent("newstate", OnNewState)
+
     
 
     return inst

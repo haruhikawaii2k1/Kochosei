@@ -28,9 +28,18 @@ local function TurnOff(inst, owner)
 end
 
 --Bloomson credit to Abigail  https://steamcommunity.com/sharedfiles/filedetails/?id=2535962194&searchtext=fantasy
-local Rn = 6 --这是范围
-local Zn = 5 --这是持续时间
 
+local function SanityCheck(inst, level)
+    level = level or inst.components.sanity.current
+    if level > 50 then
+        inst.components.sanity:DoDelta(-20)
+        return true
+    end
+    return false
+end
+
+local Rn = 6 
+local Zn = 5 
 local hua = {}
 table.insert(hua, Point())
 for i = 2, Rn, 2 do
@@ -43,25 +52,16 @@ for i = 2, Rn, 2 do
     end
 end
 
-local function SanityCheck(inst, level)
-    level = level or inst.components.sanity.current
-    if level > 50 then
-        inst.components.sanity:DoDelta(-40)
-
-        return true
-    end
-    return false
-end
-
-local function HealFunc2(inst, target, pos) -- 范围回血 + 催眠 + 催熟
-    print(inst, target)
-    local hstrongtay = STRINGS.NAMES.LYDOHOISINH
-    local caster = inst.components.inventoryitem.owner
+local function HealFunc2(inst, target, pos) 
+	    local hstrongtay = STRINGS.NAMES.LYDOHOISINH
+		local caster = inst.components.inventoryitem.owner
     if not caster then
         caster = target or caster
     end
-    inst.components.finiteuses:Use(20)
-    if SanityCheck(caster) then
+
+    if not  SanityCheck(caster) then
+		caster.components.talker:Say("I need more sanity!") return
+	else
         local xu = CreateEntity()
         xu.entity:AddTransform()
         xu.Transform:SetPosition(pos.x, 0, pos.z)
@@ -75,7 +75,8 @@ local function HealFunc2(inst, target, pos) -- 范围回血 + 催眠 + 催熟
                 end
             )
         end
-        local players = TheSim:FindEntities(pos.x, pos.y, pos.z, Rn, {"playerghost"})
+		 inst.components.finiteuses:Use(10)
+		local players = TheSim:FindEntities(pos.x, pos.y, pos.z, Rn, {"playerghost"})
         local playercount = #players
         for k, v in ipairs(players) do
             v:PushEvent("respawnfromghost")
@@ -85,20 +86,18 @@ local function HealFunc2(inst, target, pos) -- 范围回血 + 催眠 + 催熟
             caster.components.health:DoDelta(-100, true, "lydochet")
             inst.components.finiteuses:SetUses(0)
         end
-
         local playersheal = TheSim:FindEntities(pos.x, pos.y, pos.z, Rn, {"player"})
-        xu:DoPeriodicTask(
-            0.5,
-            function()
+        xu:DoPeriodicTask(0.5, function()
                 for k, v in pairs(playersheal) do
                     v.components.health:DoDelta(TUNING.KOCHO_TAMBOURIN_HEAL)
                 end
             end
         )
         xu:DoTaskInTime(Zn, xu.Remove)
-    else
-        caster.components.talker:Say("I need more sanity!")
-    end
+   
+        
+    
+	end
 end
 
 
@@ -133,6 +132,14 @@ local function OnUnequip(inst, owner)
     TurnOff(inst, owner)
 end
 
+local function onhaunt (inst,haunter)
+
+	if  haunter:HasTag("playerghost")  then
+		haunter:PushEvent("respawnfromghost", { source = inst })
+		inst:Remove()
+	end
+end
+
 local function light_fn()
     local inst = CreateEntity()
     inst.entity:AddTransform()
@@ -162,7 +169,6 @@ local function fn()
     inst.entity:AddNetwork()
 
     MakeInventoryPhysics(inst)
-    MakeHauntableLaunch(inst)
 
     inst.AnimState:SetBank("kochotambourin")
     inst.AnimState:SetBuild("kochotambourin")
@@ -208,10 +214,10 @@ local function fn()
     inst.components.equippable.dapperness = (0.033)
 
     inst:AddComponent("inventoryitem")
-
+	inst:AddComponent("hauntable")
+	inst.components.hauntable.onhaunt = onhaunt
     inst.lights = {}
 
-    MakeHauntableLaunch(inst)
 
     return inst
 end

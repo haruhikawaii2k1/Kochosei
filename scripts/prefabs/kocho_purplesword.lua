@@ -47,15 +47,16 @@ local function fn()
     inst.components.tool:SetAction(ACTIONS.CHOP, 1.2)
    
 
-  
+  	if type(TUNING.KOCHO_SWORD_DURABILITY) == "number" then 
     inst:AddComponent("finiteuses")
-	inst.components.finiteuses:SetMaxUses(TUNING.SWORD_DURABILITY)
-    inst.components.finiteuses:SetUses(TUNING.SWORD_DURABILITY)
+	inst.components.finiteuses:SetMaxUses(TUNING.KOCHO_SWORD_DURABILITY)
+    inst.components.finiteuses:SetUses(TUNING.KOCHO_SWORD_DURABILITY)
     inst.components.finiteuses:SetOnFinished(inst.Remove)
+	end
 
     inst:AddComponent("weapon")
    
-    inst.components.weapon:SetDamage(TUNING.SWORD_DAMAGE)
+    inst.components.weapon:SetDamage(TUNING.KOCHO_SWORD_DAMAGE)
 
     inst:AddComponent("inspectable")
     inst:AddComponent("tradable")

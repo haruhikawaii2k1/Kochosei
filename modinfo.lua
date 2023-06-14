@@ -7,11 +7,11 @@ Thank you for using this mod, you can use the config button below and let me kno
 	
 ]]
 author = "Mio, dinhkarate, Haruhi Kawaii"
-version = "3.9.7"
+version = "3.9.9"
 forumthread = ""
 
 -- 1.4.5 fix tab
-
+ 
 
 -- This is the URL name of the mod's thread on the forum; the part after the ? and before the first & in the url
 
@@ -164,9 +164,8 @@ configuration_options =
 		default = 150,
     },
 
-		
 		 {
-    name = "kocho_armor",
+    name = "kocho_armor_fix",
     label = "4) Kochosei Armor",
 	hover = "How much armor Kocho has?",
 		options =	
@@ -629,6 +628,7 @@ configuration_options =
 	hover = "How much Purplemagic Durability has?",
 		options =	
 		{
+			{description = "Infinite", data = "Infinite"},
 			{description = "10", data = 10},
 			{description = "15", data = 15},
 			{description = "20", data = 20},
@@ -643,6 +643,7 @@ configuration_options =
 			{description = "200", data = 200},
 			{description = "500", data = 500},
 			{description = "1000", data = 1000},
+			{description = "Infinite", data = "Infinite"},
 			
 			
 		},
@@ -681,6 +682,7 @@ configuration_options =
 	hover = "How much Demonlord Durability has?",
 		options =	
 		{
+			{description = "Infinite", data = "Infinite"},
 			{description = "10", data = 10},
 			{description = "15", data = 15},
 			{description = "20", data = 20},
@@ -695,6 +697,7 @@ configuration_options =
 			{description = "200", data = 200},
 			{description = "500", data = 500},
 			{description = "1000", data = 1000},
+			{description = "Infinite", data = "Infinite"},
 			
 			
 		},
@@ -734,6 +737,7 @@ configuration_options =
 	hover = "Kochosei Miohm Durability",
 		options =	
 		{		
+			{description = "Infinite", data = "Infinite"},
 			{description = "100", data = 100},
 			{description = "150", data = 150},
 			{description = "200", data = 200},
@@ -747,7 +751,7 @@ configuration_options =
 			{description = "5000", data = 5000},
 			{description = "6000", data = 6000},
 			{description = "7000", data = 7000},
-			{description = "Infinite", data = 999999999999},
+			{description = "Infinite", data = "Infinite"},
 			
 			
 		},
@@ -774,7 +778,7 @@ configuration_options =
 			{description = "3000", data = 3000},
 			{description = "4000", data = 4000},
 			{description = "5000", data = 5000},
-			{description = "Infinite", data = 999999999 },
+			{description = "Infinite", data = 99999999999 },
 		
 		},
 		default = 75,
@@ -882,6 +886,7 @@ configuration_options =
 	hover = "Kochosei Sword Durability",
 		options =	
 		{		
+			{description = "Infinite", data = "Infinite"},
 			{description = "50", data = 50},
 			{description = "100", data = 100},
 			{description = "150", data = 150},
@@ -896,7 +901,7 @@ configuration_options =
 			{description = "5000", data = 5000},
 			{description = "6000", data = 6000},
 			{description = "7000", data = 7000},
-			{description = "Infinite", data = 999999999999},
+			{description = "Infinite", data = "Infinite"},
 			
 			
 		},
@@ -908,7 +913,8 @@ configuration_options =
     label = "31)Lucky hammer durability",
 	hover = "Lucky hammer durability",
 		options =	
-		{		
+		{	
+			{description = "Infinite", data = "Infinite"},		
 			{description = "10", data = 10},
 			{description = "20", data = 20},
 			{description = "50", data = 50},
@@ -922,7 +928,8 @@ configuration_options =
 			{description = "2000", data = 2000},
 			{description = "3000", data = 3000},
 			{description = "4000", data = 4000},
-			{description = "Infinite", data = 999999999999},	
+			{description = "Infinite", data = 999999999999},
+			{description = "Infinite", data = "Infinite"},
 		},
 		default = 20,
     },

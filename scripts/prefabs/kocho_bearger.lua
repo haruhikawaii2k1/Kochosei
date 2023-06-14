@@ -268,7 +268,7 @@ local function fn()
     end
 
     inst.recentlycharged = {}
-    inst.Physics:SetCollisionCallback(OnCollide)
+  --  inst.Physics:SetCollisionCallback(OnCollide)
 
     ------------------------------------------
     ------------------
@@ -305,7 +305,8 @@ local function fn()
     inst.components.groundpounder.destructionRings = 999
     inst.components.groundpounder.platformPushingRings = 0
     inst.components.groundpounder.numRings = 3
-    -- inst.components.groundpounder.groundpoundFn = OnGroundPound
+	inst.components.groundpounder.noTags = { "FX", "NOCLICK", "DECOR", "INLIMBO", "structure"}
+
     inst:AddComponent("timer")
 
 

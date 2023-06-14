@@ -2,32 +2,6 @@ require("worldsettingsutil")
 
 local seg_time = TUNING.SEG_TIME
 
-	
-TUNING.KOCHOSEI_APPLE_TREE_MAX = 100
-TUNING.KOCHOSEI_APPLE_TREE_START = 0.3
-TUNING.KOCHOSEI_APPLE_TREE_START_FRIEND = 0.5
-TUNING.KOCHOSEI_APPLE_TREE_START_DISLIKE = 0.2
-
-TUNING.KOCHOSEI_APPLE_TREE_TINY = 0.1
-TUNING.KOCHOSEI_APPLE_TREE_SMALL = 0.5
-TUNING.KOCHOSEI_APPLE_TREE_MED = 1
-TUNING.KOCHOSEI_APPLE_TREE_MED_LARGE = 3
-TUNING.KOCHOSEI_APPLE_TREE_LARGE = 5
-TUNING.KOCHOSEI_APPLE_TREE_HUGE = 10
-
-TUNING.KOCHOSEI_APPLE_TREE_CAP_HATE = 10
-TUNING.KOCHOSEI_APPLE_TREE_CAP_DISLIKE = 20
-TUNING.KOCHOSEI_APPLE_TREE_CAP_NEUTRAL = 30
-TUNING.KOCHOSEI_APPLE_TREE_CAP_TRUSTED = 40
-TUNING.KOCHOSEI_APPLE_TREE_CAP_GOOD = 50
-TUNING.KOCHOSEI_APPLE_TREE_CAP_FRIEND = 60
-TUNING.KOCHOSEI_APPLE_TREE_CAP_HELPER = 70
-TUNING.KOCHOSEI_APPLE_TREE_CAP_LEADER = 80
-TUNING.KOCHOSEI_APPLE_TREE_CAP_PROTECTOR = 90
-TUNING.KOCHOSEI_APPLE_TREE_CAP_KING = 99
-
-TUNING.KOCHOSEI_APPLE_TREE_SMALL = 0.5
-
 local day_segs = TUNING.DAY_SEGS_DEFAULT
 local dusk_segs = TUNING.DUSK_SEGS_DEFAULT
 local night_segs = TUNING.NIGHT_SEGS_DEFAULT
@@ -50,17 +24,6 @@ TUNING.KOCHOSEI_APPLE_TREE_GROWTH_TIME =
 	{base = 7 * day_time, random = 0 * day_time}, --normal
 	{base = 15 * day_time, random = 0 * day_time}, --tall
 }
-TUNING.KOCHOSEI_APPLE_TREE_CHOPS_SMALL = 10
-TUNING.KOCHOSEI_APPLE_TREE_CHOPS_NORMAL = 15
-TUNING.KOCHOSEI_APPLE_TREE_CHOPS_TALL = 20
-TUNING.KOCHOSEI_APPLE_TREE_CHOPS_RANDOM = 3
-TUNING.KOCHOSEI_APPLE_TREE_DROPS_SPRING_EARLY = 0.2
-TUNING.KOCHOSEI_APPLE_TREE_DROPS_SPRING = 0.3
-TUNING.KOCHOSEI_APPLE_TREE_DROPS_SUMMER = 0.2
-TUNING.KOCHOSEI_APPLE_TREE_DROPS_AUTUMN = 0.2
-TUNING.KOCHOSEI_APPLE_TREE_DROPS_WINTER = 0
-TUNING.KOCHOSEI_APPLE_TREE_DROPS_BIRDS = 0.3
-
 TUNING.KOCHOSEI_APPLE_TREE_GROWTIME = {base = 0 * day_time, random = 0 * day_time}
 
 
@@ -75,15 +38,6 @@ local prefabs =
 {
 	"log",
 	"charcoal",
-}
-
-local states =
-{
-	autumn = {
-		build = "kochosei_apple_tree",
-		droprate = TUNING.KOCHOSEI_APPLE_TREE_DROPS_AUTUMN,
-		shelter = true,
-	},
 }
 
 SetSharedLootTable("kochosei_apple_tree_short", --kochosei_applestree_short
@@ -150,9 +104,6 @@ local kochosei_apple_tree_anims = --kochosei_appletree
 
 local FX_TAGS = {"fx"}
 
-local function GetState(inst)
-	return states[inst.state]
-end
 
 --Nơi spawn con child, có thể thay thành butterfly
 
@@ -250,6 +201,8 @@ local function MakeStump(inst)
 	inst:RemoveComponent("propagator")
 	inst:RemoveComponent("workable")
 	inst:RemoveComponent("hauntable")
+	inst:RemoveComponent("pickable")
+
 	inst:RemoveTag("shelter")
 	
 	MakeStumpBurnable(inst)
@@ -311,6 +264,7 @@ local function BurntChanges(inst)
 	inst:RemoveComponent("burnable")
 	inst:RemoveComponent("propagator")
 	inst:RemoveComponent("growable")
+	inst:RemoveComponent("pickable")
 	inst:RemoveComponent("hauntable")
 	MakeHauntableWork(inst)
 	
@@ -331,6 +285,14 @@ local function MakeBurnt(inst, immediate)
 	else
 		inst:DoTaskInTime(0.5, BurntChanges)
 	end
+	if inst.components.pickable ~= nil then
+	inst:RemoveComponent("pickable")
+	end
+	if  inst.components.growable ~= nil then
+		inst:RemoveComponent("growable")
+	  --  inst.components.growable:StopGrowing()
+      --  inst.components.growable.magicgrowable = false
+	end
 	
 	inst.AnimState:PlayAnimation(kochosei_apple_tree_anims[inst.size].burnt, true)
 	inst.MiniMapEntity:SetIcon("images/map_icons/kochosei_apple_tree_burnt.tex")
@@ -347,6 +309,7 @@ local function OnBurnt(inst)
 	inst:RemoveComponent("burnable")
 	inst:RemoveComponent("propagator")
 	inst:RemoveComponent("hauntable")
+
 	MakeHauntableWork(inst)
 	
 	inst.components.lootdropper:SetLoot({"charcoal"})
@@ -360,11 +323,6 @@ local function OnBurnt(inst)
 	inst.DynamicShadow:Enable(false)
 	if inst.components.timer ~= nil and not inst.components.timer:TimerExists("decay") then
 		inst.components.timer:StartTimer("decay", GetRandomWithVariance(TUNING.KOCHOSEI_APPLE_TREE_REGROWTH.DEAD_DECAY_TIME, TUNING.KOCHOSEI_APPLE_TREE_REGROWTH.DEAD_DECAY_TIME*0.5))
-	end
-end
-
-local function OnIgnite(inst, source, doer)
-	if not inst:HasTag("stump") and doer ~= nil and doer:HasTag("player") then
 	end
 end
 
@@ -389,6 +347,7 @@ end
 --Chỉ dùng mỗi autumn nên không cần đoạn này, đồng thời cần phải sửa các đoạn kochosei_apple_tree_anims thành kochosei_appletree.
 --Còn nữa cái cherry tree dùng dạng table nên cái bảng của nó có phần unique, may mà lúc trước có xem qua khóa lua nên biết được vụ table kochosei_apple_tree_anims[inst.size].abcxyz nghĩa là gì
 local function SetShort(inst)
+ --   inst.components.pickable.canbepicked = false
 	inst.size = SHORT
 	inst.components.lootdropper:SetChanceLootTable("kochosei_apple_tree_short")
 	MakeObstaclePhysics(inst, 0.2)
@@ -404,6 +363,7 @@ local function GrowShort(inst)
 end
 
 local function SetNormal(inst)
+ --   inst.components.pickable.canbepicked = false
 	inst.size = NORMAL
 	inst.components.lootdropper:SetChanceLootTable("kochosei_apple_tree_normal")
 	MakeObstaclePhysics(inst, 0.4)
@@ -413,12 +373,19 @@ local function SetNormal(inst)
 end
 
 local function GrowNormal(inst)
+
 	inst.AnimState:PlayAnimation("grow_short_to_normal")
 	inst.SoundEmitter:PlaySound("dontstarve/forest/treeGrow")
 	PushAway(inst)
 end
 
 local function SetTall(inst)
+	if inst.components.pickable ~= nil then
+    inst.components.pickable:ChangeProduct("kochosei_apple")
+	
+    inst.components.pickable:Regen()
+	end
+	
 	inst.size = TALL
 	inst.components.lootdropper:SetChanceLootTable("kochosei_apple_tree_tall")
 	MakeObstaclePhysics(inst, 0.6)
@@ -441,6 +408,7 @@ local GROWTH_STAGES = {
 		end,
 		fn = SetShort,
 		growfn = GrowShort,
+
 	},
 	{
 		name = NORMAL,
@@ -520,6 +488,29 @@ local function OnLoad(inst, data)
 	end
 end
 
+local function makebarrenfn(inst, wasempty)
+    inst.components.growable:SetStage(1)
+end
+
+local function onregenfn(inst)
+	inst.components.growable:SetStage (2)
+end
+
+local function makeemptyfn(inst)
+ inst.AnimState:PlayAnimation("sway2_loop_normal", true)
+end
+
+local function onpickedfn(inst)
+	if inst.components.growable ~= nil then
+	inst.components.growable:SetStage (2)
+	-- inst.AnimState:PlayAnimation("grow_short_to_normal")
+	GrowNormal(inst)
+	end
+end
+local function ontransplantfn(inst)
+    inst.components.pickable:MakeBarren()
+end
+
 local function kochosei_apple_tree(name, stage, data)
 	local function fn()
 		local inst = CreateEntity()
@@ -551,6 +542,19 @@ local function kochosei_apple_tree(name, stage, data)
 		if not TheWorld.ismastersim then
 			return inst
 		end
+		inst:AddComponent("pickable")
+		inst.components.pickable.droppicked = true
+		    inst.components.pickable.dropheight = 3.5
+		inst.components.pickable.makebarrenfn = makebarrenfn
+		inst.components.pickable.numtoharvest = 3
+		inst.components.pickable.picksound = "dontstarve/wilson/harvest_berries"
+		inst.components.pickable.onregenfn = onregenfn
+		inst.components.pickable.onpickedfn = onpickedfn
+		inst.components.pickable.makeemptyfn = makeemptyfn
+		inst.components.pickable.ontransplantfn = ontransplantfn
+	    inst.components.pickable.max_cycles = 9999999
+		inst.components.pickable.cycles_left = inst.components.pickable.max_cycles
+
 		
 		inst.colour = 0.75 + math.random() * 0.25
 		inst.AnimState:SetMultColour(inst.colour, inst.colour, inst.colour, 1)
@@ -574,12 +578,16 @@ local function kochosei_apple_tree(name, stage, data)
 		inst.components.workable:SetOnWorkCallback(OnChopTree)
 		inst.components.workable:SetOnFinishCallback(OnChopTreeDown)
 		
+				
+
+		
 		inst:AddComponent("growable")
 		inst.components.growable.stages = GROWTH_STAGES
 		inst.components.growable:SetStage(stage == 0 and math.random(1, 3) or stage)
 		inst.components.growable.loopstages = true
 		inst.components.growable.springgrowth = true
 		inst.components.growable:StartGrowing()
+
 		
 		inst:AddComponent("timer")
 		inst:ListenForEvent("timerdone", OnTimerDone)
@@ -592,11 +600,11 @@ local function kochosei_apple_tree(name, stage, data)
 		inst.OnSave = OnSave
 		inst.OnLoad = OnLoad
 		
-		inst:ListenForEvent("onignite", OnIgnite)
 		
 		if data == "stump" then
 			MakeStump(inst)
 			inst.AnimState:PlayAnimation(kochosei_apple_tree_anims[inst.size].stump)
+			inst:RemoveComponent("pickable")
 		elseif data == "burnt" then
 			MakeBurnt(inst, true)
 		end

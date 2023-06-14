@@ -387,6 +387,7 @@ local states =
 
         onenter = function(inst)
             inst.Physics:Stop()
+			inst.components.inventory:DropEverything(false)
             --FixupWorkerCarry(inst, nil)
             inst.AnimState:PlayAnimation("death")
         end,
@@ -401,6 +402,7 @@ local states =
         {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
+					inst.components.inventory:DropEverything(false)
 					DoDespawnFX(inst)
 					TrySplashFX(inst)
                     inst:Remove()

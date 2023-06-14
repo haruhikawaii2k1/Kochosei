@@ -50,39 +50,6 @@ local function IsNearLeader(inst, dist)
     return leader ~= nil and inst:IsNear(leader, dist)
 end
 
-local function FindEntityToWorkAction(inst, action, addtltags)
-    local leader = GetLeader(inst)
-    if leader ~= nil then
-        local target = inst.sg.statemem.target
-        if target ~= nil and
-            target:IsValid() and
-            not (target:IsInLimbo() or
-                target:HasTag("NOCLICK") or
-                target:HasTag("event_trigger")) and
-            target.components.workable ~= nil and
-            target.components.workable:CanBeWorked() and
-            target.components.workable:GetWorkAction() == action and
-            not (target.components.burnable ~= nil
-                and (target.components.burnable:IsBurning() or
-                    target.components.burnable:IsSmoldering())) and
-            target.entity:IsVisible() and
-            target:IsNear(leader, KEEP_WORKING_DIST) then
-                
-            if addtltags ~= nil then
-                for i, v in ipairs(addtltags) do
-                    if target:HasTag(v) then
-                        return BufferedAction(inst, target, action)
-                    end
-                end
-            else
-                return BufferedAction(inst, target, action)
-            end
-        end
-
-        target = FindEntity(leader, SEE_WORK_DIST, nil, { action.id.."_workable" }, { "fire", "smolder", "event_trigger", "INLIMBO", "NOCLICK" }, addtltags)
-        return target ~= nil and BufferedAction(inst, target, action) or nil
-    end
-end
 
 local function KeepFaceTargetFn(inst, target)
     return not target:HasTag("notarget") and inst:IsNear(target, KEEP_FACE_DIST)
@@ -104,33 +71,6 @@ local function ShouldDanceParty(inst)
   return leader ~= nil and leader.sg:HasStateTag("dancing")
 end
 
-local function PickUpAction(inst)
-	if not inst.components.container then 
-		return nil
-	end
-	if inst.components.container:IsFull()then 
-		return nil
-	end
-	
-    local leader = inst.components.follower and inst.components.follower.leader or nil
-    if leader == nil or leader.components.trader == nil then -- Trader component is needed for ACTIONS.GIVEALLTOPLAYER
-        return nil
-    end
-
-    if not leader:HasTag("player") then -- Stop Polly Rogers from trying to help non-players due to trader mechanics.
-        return nil
-    end
-
-    local item = FindPickupableItem(leader, TUNING.POLLY_ROGERS_RANGE, true)
-    if item == nil then
-        return nil
-    end
-
-    return BufferedAction(inst, item, ACTIONS.PICKUP)
-end
-
-
-
 
 function kochosei_enemy_brain:OnStart()
     local root = PriorityNode(
@@ -151,14 +91,6 @@ function kochosei_enemy_brain:OnStart()
                             RunAway(self.inst, { fn = ShouldKite, tags = { "_combat", "_health" }, notags = { "INLIMBO" } }, KITING_DIST, STOP_KITING_DIST)),
                         ChaseAndAttack(self.inst),
                 }, .25)),
-				DoAction(self.inst, PickUpAction, nil, true),
-                IfNode(function() return self.inst.prefab == "kochosei_enemy" end, "Keep Chopping",
-                   DoAction(self.inst, function() return FindEntityToWorkAction(self.inst, ACTIONS.CHOP, CHOP_TAGS) end)),
-              --  IfNode(function() return self.inst.prefab == "kochosei_enemy" end, "Keep Mining",
-               --     DoAction(self.inst, function() return FindEntityToWorkAction(self.inst, ACTIONS.MINE) end)),
-                IfNode(function() return self.inst.prefab == "kochosei_enemy" end, "Keep Digging",
-                    DoAction(self.inst, function() return FindEntityToWorkAction(self.inst, ACTIONS.DIG, DIG_TAGS) end)),
-					
 					
         }, .25)),
 

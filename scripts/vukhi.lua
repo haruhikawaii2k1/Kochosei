@@ -79,7 +79,7 @@ AddCharacterRecipe("kochotambourin",
 	{	"CHARACTER" }
 	
 )
---[[
+
 AddCharacterRecipe("kochosei_hat1",
 	{	Ingredient("silk", 3),
 		Ingredient("rope", 1),
@@ -91,6 +91,8 @@ AddCharacterRecipe("kochosei_hat1",
 	{	"CHARACTER" }
 	
 )
+------------------------------------ Cái này sẽ chạy khi không có modded api-----------------------------
+if GLOBAL.TUNING.KOCHOSEI_CHECKMOD ~= 1 then
 
 AddCharacterRecipe("kochosei_hat2",
 	{	Ingredient("silk", 3),
@@ -115,43 +117,9 @@ AddCharacterRecipe("kochosei_hat3",
 	{	"CHARACTER" }
 	
 )
---]]
-if TUNING.KOCHOSEI_CHECKMOD ~= 1 then
-MakeSkinnableRecipe( AddCharacterRecipe("kochosei_hat1",
-	{	Ingredient("silk", 3),
-		Ingredient("rope", 1),
-		Ingredient("pigskin", 1)},
-		TECH.NONE,
-    { builder_tag = "kochosei",
-		atlas = "images/inventoryimages/kochosei_inv.xml",
-		image = "kochosei_hat1.tex",},
-        {"CHARACTER", "WEAPONS"}),
-    {
-        ["kochosei_hat2"] = {
-		atlas = "images/inventoryimages/kochosei_inv.xml",
-		image = "kochosei_hat2.tex",
-        },
-	 ["kochosei_hat3"] = {
-		atlas = "images/inventoryimages/kochosei_inv.xml",
-		image = "kochosei_hat3.tex",
-        }
-    }
-)
-else
-AddCharacterRecipe("kochosei_hat1",
-	{	Ingredient("silk", 3),
-		Ingredient("rope", 1),
-		Ingredient("pigskin", 1)},
-		TECH.NONE,
-	{	atlas = "images/inventoryimages/kochosei_inv.xml",
-		image = "kochosei_hat1.tex",
-		builder_tag = "kochosei"},
-	{	"CHARACTER" }
-	
-)
 end
 
-----------------------
+------------------------------------------------------------------------------------------------------------
 AddCharacterRecipe("kochosei_house",
 	{	Ingredient("log",40)},
 		TECH.SCIENCE_ONE,
@@ -219,28 +187,228 @@ AddCharacterRecipe("kocho_lotus",
 
 
 -------------------------------------- DST ITEM ----------------------------------------------------------------------
-AddCharacterRecipe("butterfly",
+AddCharacterRecipe("kocho_butterfly",
 	{	Ingredient("petals", 2)},
 		TECH.NONE,
-	{	builder_tag = "kochosei"},
+	{	builder_tag = "kochosei",
+		product = "butterfly"},
 	{	"CHARACTER" }
 	
 )
 
-AddCharacterRecipe("moonbutterfly",
+AddCharacterRecipe("kocho_moonbutterfly",
 	{	Ingredient("moon_tree_blossom", 2)},
 		TECH.NONE,
-	{	builder_tag = "kochosei"},
+	{	builder_tag = "kochosei",
+		product = "moonbutterfly"},
 	{	"CHARACTER" }
 	
 )
 
-AddCharacterRecipe("messagebottleempty",
+AddCharacterRecipe("kocho_messagebottleempty",
 	{	Ingredient("moonglass", 2)},
 		TECH.NONE,
-	{	builder_tag = "kochosei"},
+	{	builder_tag = "kochosei",
+		product = "messagebottleempty"},
 	{	"CHARACTER" }
 	
+)
+
+AddCharacterRecipe("kocho_chum",
+	{	Ingredient("spoiled_food", 10)},
+		TECH.NONE,
+	{	builder_tag = "kochosei",
+		product = "chum"},
+	{	"CHARACTER" }
+	
+)
+
+AddCharacterRecipe("kocho_oceanfishinglure_hermit_rain",
+	{	Ingredient("stinger", 10)},
+		TECH.NONE,
+	{	builder_tag = "kochosei",
+        product = "oceanfishinglure_hermit_rain"},
+    {   "CHARACTER" }
+	
+)
+
+AddCharacterRecipe("kocho_oceanfishinglure_hermit_snow",
+    {   Ingredient("stinger", 5)},
+        TECH.NONE,
+    {   builder_tag = "kochosei",
+        product = "oceanfishinglure_hermit_snow"},
+    {   "CHARACTER" }
+    
+)
+
+AddCharacterRecipe("kocho_oceanfishinglure_hermit_heavy",
+    {   Ingredient("stinger", 5)},
+        TECH.NONE,
+    {   builder_tag = "kochosei",
+        product = "oceanfishinglure_hermit_heavy"},
+    {   "CHARACTER" }
+    
+)
+
+AddCharacterRecipe("kocho_oceanfishinglure_hermit_drowsy",
+    {   Ingredient("stinger", 6)},
+        TECH.NONE,
+    {   builder_tag = "kochosei",
+        product = "oceanfishinglure_hermit_drowsy"},
+    {   "CHARACTER" }
+    
+)
+
+AddCharacterRecipe("kocho_oceanfishinglure_spoon_red",
+    {   Ingredient("stinger", 2)},
+        TECH.NONE,
+    {   builder_tag = "kochosei",
+        product = "oceanfishinglure_spoon_red"},
+    {   "CHARACTER" }
+    
+)
+
+AddCharacterRecipe("kocho_oceanfishinglure_spoon_green",
+    {   Ingredient("stinger", 2)},
+        TECH.NONE,
+    {   builder_tag = "kochosei",
+        product = "oceanfishinglure_spoon_green"},
+    {   "CHARACTER" }
+    
+)
+
+AddCharacterRecipe("kocho_oceanfishinglure_spoon_blue",
+    {   Ingredient("stinger", 2)},
+        TECH.NONE,
+    {   builder_tag = "kochosei",
+        product = "oceanfishinglure_spoon_blue"},
+    {   "CHARACTER" }
+    
+)
+
+AddCharacterRecipe("kocho_oceanfishingbobber_oval",
+    {   Ingredient("log", 2)},
+        TECH.NONE,
+    {   builder_tag = "kochosei",
+        product = "oceanfishingbobber_oval"},
+    {   "CHARACTER" }
+    
+)
+
+AddCharacterRecipe("kocho_supertacklecontainer",
+    {   Ingredient("boneshard", 10)},
+        TECH.NONE,
+    {   builder_tag = "kochosei",
+        product = "supertacklecontainer"},
+    {   "CHARACTER" }
+    
+)
+
+AddCharacterRecipe("kocho_oceanfishingrod",
+    {   Ingredient("log", 5)},
+        TECH.NONE,
+    {   builder_tag = "kochosei",
+        product = "oceanfishingrod"},
+    {   "CHARACTER" }
+    
+)
+
+AddCharacterRecipe("kocho_book_fish",
+    {   Ingredient("papyrus",2), Ingredient("pondfish",2)},
+        TECH.NONE,
+    {   builder_tag = "kochosei",
+        product = "book_fish"},
+    {   "CHARACTER" }
+    
+)
+
+AddCharacterRecipe("kocho_book_rain",
+    {   Ingredient("papyrus", 8)},
+        TECH.NONE,
+    {   builder_tag = "kochosei",
+        product = "book_rain"},
+    {   "CHARACTER" }
+    
+)
+
+AddCharacterRecipe("kocho_book_moon",
+    {   Ingredient("papyrus",1), Ingredient("moonrocknugget",20)},
+        TECH.NONE,
+    {   builder_tag = "kochosei",
+        product = "book_moon"},
+    {   "CHARACTER" }
+    
+)
+
+AddCharacterRecipe("kocho_book_silviculture",
+    {   Ingredient("papyrus",6), Ingredient("log",60)},
+        TECH.NONE,
+    {   builder_tag = "kochosei",
+        product = "book_silviculture"},
+    {   "CHARACTER" }
+    
+)
+AddCharacterRecipe("kocho_book_horticulture_upgraded",
+    {   Ingredient("papyrus",5), Ingredient("spoiled_food",40)},
+        TECH.NONE,
+    {   builder_tag = "kochosei",
+        product = "book_horticulture_upgraded"},
+    {   "CHARACTER" }
+    
+)
+
+AddCharacterRecipe("kocho_book_fire",
+	{	Ingredient("log", 20)},
+		TECH.NONE,
+	{	builder_tag = "kochosei",
+        product = "book_fire"},
+    {   "CHARACTER" }
+	
+)
+
+AddCharacterRecipe("kocho_book_tentacles",
+	{	Ingredient("papyrus",2), Ingredient("tentaclespots",3)},
+		TECH.NONE,
+	{	builder_tag = "kochosei",
+        product = "book_tentacles"},
+    {   "CHARACTER" }
+	
+)
+
+AddCharacterRecipe("kocho_polly_rogershat",
+    {   Ingredient("silk", 10)},
+        TECH.NONE,
+    {   builder_tag = "kochosei",
+        product = "polly_rogershat"},
+    {   "CHARACTER" }
+    
+)
+
+AddCharacterRecipe("kocho_antlionhat",
+    {   Ingredient("silk", 10)},
+        TECH.NONE,
+    {   builder_tag = "kochosei",
+        product = "antlionhat"},
+    {   "CHARACTER" }
+    
+)
+
+AddCharacterRecipe("kocho_honeycomb",
+    {   Ingredient("honey", 10)},
+        TECH.NONE,
+    {   builder_tag = "kochosei",
+        product = "honeycomb"},
+    {   "CHARACTER" }
+    
+)
+
+AddCharacterRecipe("kocho_compostwrap",
+    {   Ingredient("poop",3), Ingredient("spoiled_food",1)},
+        TECH.NONE,
+    {   builder_tag = "kochosei",
+        product = "compostwrap"},
+    {   "CHARACTER" }
+    
 )
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -299,6 +467,15 @@ AddCharacterRecipe("kochosei_streetlight1_musicbox",
 	
 )
 
+AddCharacterRecipe("kocho_madscience_lab",
+    {   Ingredient("log",20), Ingredient("transistor",2)},
+        TECH.NONE,
+    {   builder_tag = "kochosei",
+        product = "madscience_lab"},
+    {   "CHARACTER" }
+    
+)
+
 AddCharacterRecipe("kocho_miku_cos",
 	{	Ingredient("petals",1)},
 		TECH.SCIENCE_ONE,
@@ -317,19 +494,6 @@ AddCharacterRecipe("kocho_miku_back",
 		image = "kocho_miku_back.tex",
 		builder_tag = "kochosei"},
 
-			
-	{	"CHARACTER" }
-	
-)
-
-AddCharacterRecipe("kochobook",
-	{	Ingredient("opalpreciousgem",3),
-		Ingredient("goose_feather",15),
-		Ingredient("reviver",3)},
-		TECH.SCIENCE_TWO,
-	{	atlas = "images/inventoryimages/kochosei_inv.xml",
-		image = "kochobook.tex",
-		builder_tag = "kochosei"},
 			
 	{	"CHARACTER" }
 	

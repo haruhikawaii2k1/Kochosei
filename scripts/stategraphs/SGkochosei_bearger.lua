@@ -668,11 +668,11 @@ local states=
 			{
 				TimeEvent(3*FRAMES, function(inst)
 					DoFootstep(inst)
-					destroystuff(inst)
+					--destroystuff(inst)
 				end),
 				TimeEvent(11*FRAMES, function(inst)
 					DoFootstep(inst)
-					destroystuff(inst)
+					--destroystuff(inst)
 				end),
 			},
 

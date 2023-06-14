@@ -1,15 +1,24 @@
 GLOBAL.setmetatable(env, {__index = function(_, k)return GLOBAL.rawget(GLOBAL, k) end })
 local _G = GLOBAL
 local TUNING = GLOBAL.TUNING
-local modID = "workshop-2812783478"
 TUNING.KOCHOSEI_CHECKMOD = nil
-if GLOBAL.KnownModIndex:IsModEnabled(modID) then
-    TUNING.KOCHOSEI_CHECKMOD = 1
-    print("Mod với ID " .. modID .. " đã được bật.")
-
-else
-    print("Mod với ID " .. modID .. " chưa được bật.")
+local isModEnabled = false
+for k, v in ipairs(GLOBAL.KnownModIndex:GetModsToLoad()) do
+    local Mod = GLOBAL.KnownModIndex:GetModInfo(v).name
+    if Mod == "[API] Modded Skins" then
+        isModEnabled = true
+        break
+    end
 end
+
+if isModEnabled then
+    TUNING.KOCHOSEI_CHECKMOD = 1
+    print("Modded API đã được bật.")
+else
+    print("Modded API chưa được bật.")
+end
+
+	
 local require = GLOBAL.require
 local cooking = require("cooking")
 local ingredients = cooking.ingredients
@@ -89,7 +98,6 @@ PrefabFiles = {
     "kochosei_none",
     "miohm",
     "kocho_bearger",
-    "kochobook",
     "kochotambourin",
     "kochosei_hat",
     "kochosei_lantern",
@@ -146,7 +154,8 @@ local function namngua(inst)
         if inst.sg:HasStateTag("jumping") then
             inst.sg.statemem.queued_post_land_state = "knockout"
         else
-            inst.sg:GoToState("knockout")
+           -- inst.sg:GoToState("knockout")
+		inst:PushEvent("yawn", { grogginess = 4, knockoutduration = 99999999999 })
         end
     end
 
@@ -220,32 +229,29 @@ GLOBAL.kochosei_hat1_clear_fn = function(inst)
     GLOBAL.basic_clear_fn(inst, "kochosei_hat1" )
 end
 
+
 if TUNING.KOCHOSEI_CHECKMOD ~= 1 then
 
     modimport("scripts/skins_api")
-    modimport("scripts/skin_items_api")
-    PREFAB_SKINS["kochosei_hat1"] =
-        {
-            "kochosei_hat2",
-            "kochosei_hat3",
-        }
+	
+	    SKIN_AFFINITY_INFO.kochosei = {
+        "kochosei_snowmiku_skin1"		--Hornet: These skins will show up for the character when the Survivor filter is enabled
+    }
 
     PREFAB_SKINS["kochosei"] = {
         "kochosei_none",
         "kochosei_snowmiku_skin1"
     }
 
-    SKIN_AFFINITY_INFO.kochosei = {
-        "kochosei_snowmiku_skin1" --Hornet: These skins will show up for the character when the Survivor filter is enabled
-    }
 
-    PREFAB_SKINS_IDS = {} --Make sure this is after you  change the PREFAB_SKINS["character"] table
-    for prefab, skins in pairs(PREFAB_SKINS) do
-        PREFAB_SKINS_IDS[prefab] = {}
-        for k, v in pairs(skins) do
-            PREFAB_SKINS_IDS[prefab][v] = k
-        end
+	
+PREFAB_SKINS_IDS = {} --Make sure this is after you  change the PREFAB_SKINS["character"] table
+for prefab,skins in pairs(PREFAB_SKINS) do
+    PREFAB_SKINS_IDS[prefab] = {}
+    for k,v in pairs(skins) do
+      	  PREFAB_SKINS_IDS[prefab][v] = k
     end
+end
 
     AddSkinnableCharacter("kochosei") --Hornet: The character youd like to skin, make sure you use the prefab name. And MAKE sure you run this function AFTER you import the skins_api file
     --------------------------------------------
@@ -253,7 +259,7 @@ end
 modimport("scripts/vukhi")
 --------------------------------------------
 
-
+---- Tùy chỉnh item ----
 
 AddPrefabPostInitAny(function(inst)
     if not GLOBAL.TheWorld.ismastersim then
@@ -265,7 +271,16 @@ AddPrefabPostInitAny(function(inst)
         end
     end
 end)
-	
+
+
+
+--[[
+AddComponentPostInit("skinner",function(self)
+	function self:Kochosei_GetSkinName()
+		return self.skin_name
+	end
+end)
+	--]]
 	
 local function kochospeed(inst, data)
 if data.name == "kochobuffspeed_time" then

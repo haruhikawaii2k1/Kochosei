@@ -132,12 +132,13 @@ local assets = {
     inst.components.spellcaster.canpoint = false
     inst.components.spellcaster.canuseonpoint = true
     inst.components.spellcaster:SetSpellFn(HealFunc3)
- 
+	
+ 	if type(TUNING.DEMONLORD_DURABILITY) == "number" then 
     inst:AddComponent("finiteuses")
     inst.components.finiteuses:SetMaxUses(TUNING.DEMONLORD_DURABILITY)
     inst.components.finiteuses:SetUses(TUNING.DEMONLORD_DURABILITY)
     inst.components.finiteuses:SetOnFinished(inst.Remove)
-
+	end
  
 	inst:AddComponent("weapon")
 	inst.components.weapon:SetDamage((TUNING.DEMONLORD_DAMAGE))

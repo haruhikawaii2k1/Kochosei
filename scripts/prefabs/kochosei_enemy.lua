@@ -38,6 +38,7 @@ end
 
 local function m_killPet(inst)
     if inst.components.health and not inst.components.health:IsDead() then
+	
         inst.components.health:Kill()
     end
 end

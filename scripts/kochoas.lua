@@ -3,12 +3,9 @@ Assets = {
 
 --------------------------------------------------------------------------------
 
-	Asset("ATLAS", "images/kochofood.xml"),
-
+	Asset("ATLAS", "images/cb_kochofood.xml"),
 	Asset("ATLAS", "images/inventoryimages/kochofood.xml"),
 	Asset("ATLAS", "images/inventoryimages/kochosei_inv.xml"),
-	Asset("ATLAS", "images/inventoryimages/kochospell.xml"),
-
 
 --------------------------------------------------------------------------------
 

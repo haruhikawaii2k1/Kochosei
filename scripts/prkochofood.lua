@@ -239,7 +239,7 @@ for k, v in pairs(prkochofood) do
 	v.weight = v.weight or 1
 	v.priority = v.priority or 0
 
-	v.cookbook_atlas = "images/kochofood.xml"
+	v.cookbook_atlas = "images/cb_kochofood.xml"
 	v.cookbook_tex = "cookbook_"..k..".tex"
 	v.cookbook_category = "cookpot"
 	--AddCookerRecipe("cookpot", v)
