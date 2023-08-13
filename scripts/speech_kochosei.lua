@@ -110,7 +110,7 @@ return {
         --wickerbottom specific action
         READ =
         {
-            GENERIC = "only_used_by_waxwell_and_wicker",
+            GENERIC = "Hallo",
             NOBIRDS = "only_used_by_waxwell_and_wicker",
             NOWATERNEARBY = "only_used_by_waxwell_and_wicker",
             TOOMANYBIRDS = "only_used_by_waxwell_and_wicker",

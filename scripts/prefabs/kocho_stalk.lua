@@ -18,62 +18,14 @@ SetSharedLootTable('dinhcutenhathematroi',
 
 })
 
-
-local function AggressiveRetarget(inst)
-    if inst._playerlink == nil then
-        return nil
-    else
-        local ix, iy, iz = inst.Transform:GetWorldPosition()
-        local entities_near_me = TheSim:FindEntities(
-            ix, iy, iz, TUNING.ABIGAIL_COMBAT_TARGET_DISTANCE,
-            COMBAT_MUSHAVE_TAGS, COMBAT_CANTHAVE_TAGS, COMBAT_MUSTONEOF_TAGS_AGGRESSIVE
-        )
-
-        local leader = inst.components.follower.leader
-
-        for _, v in ipairs(entities_near_me) do
-            if CommonRetarget(inst, v) then
-                return v
-            end
-        end
-
-        return nil
-    end
-end
-local function BecomeAggressive(inst)
-    inst.AnimState:OverrideSymbol("ghost_eyes", "ghost_abigail_build", "angry_ghost_eyes")
-    inst.is_defensive = false
-    inst._playerlink:AddTag("has_aggressive_follower")
-    inst.components.combat:SetRetargetFunction(0.5, AggressiveRetarget)
-end
-
-
-
 local STALK_CAN_TAGS = { "epic", "_combat", "monster" }
 local STALK_CANT_TAGS  = {"DECOR", "FX", "INLIMBO", "NOCLICK", "playerghost", "player"}
 
-local function findEnemies(x, y, z, dist)
+local function findEnemies(x, y, z)
 
 	local ents = TheSim:FindEntities(x, y, z, 10, STALK_CAN_TAGS, STALK_CANT_TAGS)
 
 end
-
-local function findEnemiesbackup(x, y, z, dist)
-    local ents = nil
-    ents = TheSim:FindEntities(x, y, z, dist, {"epic"})
-	
-	local ents = TheSim:FindEntities(x, y, z, 10, STALK_CAN_TAGS, STALK_CANT_TAGS)
-	
-    if #ents < 1 then
-        ents = TheSim:FindEntities(x, y, z, dist, nil, {"character", "structure"}, {"hostile", "epic", "berrythief", "mossling"})
-    else
-        print("---- stalker findEnemies(), "..ents[1].prefab)
-    end
-
-    return ents
-end
-
-
 --------------------------------------------------------------------------
 
 local function OnDoneTalking(inst)
@@ -116,15 +68,6 @@ local function OnCameraFocusDirty(inst)
             inst._camerafocustask = nil
         end
         TheFocalPoint.components.focalpoint:StopFocusSource(inst)
-    end
-end
-
-local function EnableCameraFocus(inst, enable)
-    if enable ~= inst._camerafocus:value() then
-        inst._camerafocus:set(enable)
-        if not TheNet:IsDedicated() then
-            OnCameraFocusDirty(inst)
-        end
     end
 end
 
@@ -272,35 +215,6 @@ local function AtriumKeepTargetFn(inst, target)
         and (inst:IsNearAtrium(target) or not inst:IsNearAtrium())
 end
 
-local function ClearRecentAttacker(inst, attacker)
-    if inst._recentattackers[attacker] ~= nil then
-        inst._recentattackers[attacker]:Cancel()
-        inst._recentattackers[attacker] = nil
-    end
-end
-
-local function OnAttacked(inst, data)
-    if data.attacker ~= nil then
---        if inst._recentattackers ~= nil and data.attacker:HasTag("player") then
-        if inst._recentattackers ~= nil and (data.attacker:HasTag("hostile") or data.attacker:HasTag("epic") or data.attacker:HasTag("berrythief") or data.attacker:HasTag("mossling")) then
-            if inst._recentattackers[data.attacker] ~= nil then
-                inst._recentattackers[data.attacker]:Cancel()
-            end
-            inst._recentattackers[data.attacker] = inst:DoTaskInTime(6, ClearRecentAttacker, data.attacker)
-        end
-        local target = inst.components.combat.target
-        if target ~= data.attacker and
-            not (target ~= nil and
---                target:HasTag("player") and
-                (target:HasTag("hostile") or target:HasTag("epic") or target:HasTag("berrythief") or target:HasTag("mossling")) and
-                target:IsNear(inst, TUNING.STALKER_ATTACK_RANGE + target:GetPhysicsRadius(0))) and
-            not (inst.atriumstalker and
-                not inst:IsNearAtrium(data.attacker) and
-                inst:IsNearAtrium()) then
-            inst.components.combat:SetTarget(data.attacker)
-        end
-    end
-end
 
 local function DoNotKeepTargetFn()
     return false
@@ -309,11 +223,6 @@ end
 --------------------------------------------------------------------------
 
 local CAVE_PHASE2_HEALTH = .1
-
-local function CaveEnterPhase2Trigger(inst)
-    inst.components.timer:ResumeTimer("snare_cd")
-    inst:PushEvent("roar")
-end
 
 --------------------------------------------------------------------------
 
@@ -644,21 +553,6 @@ local function DespawnChannelers(inst)
         end
     end
 end
-
-local function nodmgshielded(inst, amount, overtime, cause, ignore_invincible, afflicter, ignore_absorb)
-    return inst.hasshield and amount <= 0 and not ignore_absorb
-end
-
-local function OnSoldiersChanged(inst)
-    if inst.hasshield ~= (inst.components.commander:GetNumSoldiers() > 0) then
-        inst.hasshield = not inst.hasshield
-        if not inst.hasshield then
-            inst.components.timer:StopTimer("channelers_cd")
-            inst.components.timer:StartTimer("channelers_cd", TUNING.STALKER_CHANNELERS_CD)
-        end
-    end
-end
-
 --------------------------------------------------------------------------
 
 local MINION_RADIUS = .3
@@ -853,44 +747,6 @@ local function IsCrazyGuy(guy)
     return sanity ~= nil and sanity:GetPercentNetworked() <= (guy:HasTag("dappereffects") and TUNING.DAPPER_BEARDLING_SANITY or TUNING.BEARDLING_SANITY)
 end
 
-
-local function HasMindControlTarget(inst)
-    local insanecount = 0
-    local sanecount = 0
-    local inatrium = inst.atriumstalker and inst:IsNearAtrium()
-    for i, v in ipairs(AllPlayers) do
-        if IsValidMindControlTarget(inst, v, inatrium) then
-            --Use fully crazy check for initiating mind control
-            --Use IsCrazyGuy check for effect to actually stick
-            if not v.components.sanity:IsCrazy() then
-                insanecount = insanecount + 1
-            else
-                sanecount = sanecount + 1
-            end
-        end
-    end
-    return insanecount >= math.ceil((insanecount + sanecount) / 3)
-end
-
-local function MindControl(inst)
-    ResetAbilityCooldown(inst, "mindcontrol")
-
-    local count = 0
-    local inatrium = inst.atriumstalker and inst:IsNearAtrium()
-    for i, v in ipairs(AllPlayers) do
-        if IsValidMindControlTarget(inst, v, inatrium) and not IsCrazyGuy(v) then
-            count = count + 1
-            v.components.debuffable:AddDebuff("mindcontroller", "mindcontroller")
-        end
-    end
-
-    if count > 0 then
-        DelaySharedAbilityCooldown(inst, "mindcontrol")
-    end
-    return count
-end
-
-
 --------------------------------------------------------------------------
 
 local function IsNearAtrium(inst, other)
@@ -944,15 +800,6 @@ local function OnAtriumOffscreenDeath(inst)
     inst:Remove()
 end
 
-local function AtriumOnEntitySleep(inst)
-    if inst.sleeptask ~= nil then
-        inst.sleeptask:Cancel()
-    end
-    inst.sleeptask =
-        inst.components.health:IsDead() and
-        inst:DoTaskInTime(1, OnAtriumOffscreenDeath) or
-        inst:DoTaskInTime(inst:IsNearAtrium() and 10 or 1, OnAtriumDecay)
-end
 
 local function CheckAtriumDecay(inst)
     if inst.atriumdecay == nil and inst.components.health:IsDead() then
@@ -1078,6 +925,7 @@ end
 
 local function OnAttacked(inst, data)
     if data.attacker ~= nil then
+        if data.attacker:HasTag("kochoseipet") then return end
         if data.attacker.components.petleash ~= nil and data.attacker.components.petleash:IsPet(inst) then
             inst.components.health:Kill()
             
@@ -1172,7 +1020,7 @@ local function common_fn(bank, build, shadowsize, canfight, atriumstalker)
     if canfight then
         inst.canfight = true --Need this b4 setting brain
 
-        inst.components.combat:SetDefaultDamage(TUNING.STALKER_ALTRIUM_SLAVE_DAMAGE)
+        inst.components.combat:SetDefaultDamage(TUNING.STALKER_ALTRIUM_SLAVE_DAMAGE + TUNING.KOCHOSEI_CHECKWIFI)
         inst.components.combat:SetAttackPeriod(atriumstalker and TUNING.STALKER_ATRIUM_ATTACK_PERIOD or 3 )
         inst.components.combat.playerdamagepercent = .5
         inst.components.combat:SetRange(TUNING.STALKER_ATTACK_RANGE +1, TUNING.STALKER_HIT_RANGE+1)
@@ -1190,8 +1038,6 @@ local function common_fn(bank, build, shadowsize, canfight, atriumstalker)
         inst.components.epicscare:SetRange(TUNING.STALKER_EPICSCARE_RANGE)
 
         inst._recentattackers = not atriumstalker and {} or nil
-      --  inst:ListenForEvent("attacked", OnAttacked)
-
         inst.StartAbility = StartAbility
         inst.FindSnareTargets = FindSnareTargets
         inst.SpawnSnares = SpawnSnares
@@ -1244,11 +1090,8 @@ local function atrium_fn()
 	 inst:DoPeriodicTask(1, m_checkLeaderExisting)
 	 inst:ListenForEvent("attacked", OnAttacked)
 
-    inst:ListenForEvent("stopfollowing", function(inst) inst.components.health:Kill()  end)
-
-    inst.components.health.redirect = nodmgshielded
-
-   -- inst.EnableCameraFocus = EnableCameraFocus
+    --inst:ListenForEvent("stopfollowing", function(inst) inst.components.health:Kill()  end)
+    
     inst.BattleChatter = AtriumBattleChatter
     inst.IsNearAtrium = IsNearAtrium
     inst.IsAtriumDecay = CheckAtriumDecay
@@ -1258,17 +1101,12 @@ local function atrium_fn()
     inst.FindMinions = FindMinions
     inst.EatMinions = EatMinions
     inst.SpawnSpikes = SpawnSpikes
-   -- inst.HasMindControlTarget = HasMindControlTarget
-    --inst.MindControl = MindControl
     inst.OnRemoveEntity = DespawnChannelers
     inst.OnEntityWake = AtriumOnEntityWake
-   -- inst.OnEntitySleep = AtriumOnEntitySleep
     inst.OnSave = AtriumOnSave
     inst.OnLoad = AtriumOnLoad
     inst.OnLoadPostPass = AtriumOnLoadPostPass
 
-    --inst.hasshield = false
-  --  inst:ListenForEvent("soldierschanged", OnSoldiersChanged)
     inst:ListenForEvent("miniondeath", OnMinionDeath)
     inst:ListenForEvent("death", AtriumOnDeath)
 
@@ -1278,6 +1116,6 @@ end
 
 
 STRINGS.NAMES.DINHCUTENHATHEMATROI = "Slave Skeleton"
-STRINGS.CHARACTERS.GENERIC.DESCRIBE.DINHCUTENHATHEMATROI = "Dinh..."
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.DINHCUTENHATHEMATROI = "Làm ơn đừng crash server anh ơi, đi bộ như bình thường đi, đúng rồi, nó đó..."
 
 return  Prefab("dinhcutenhathematroi", atrium_fn, assets_atrium)

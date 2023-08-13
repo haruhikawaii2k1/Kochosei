@@ -1,3 +1,4 @@
+local MakeMinion = require "prefabs/player_common"
 local assets = {
     Asset("ANIM", "anim/kochosei.zip"),
     Asset("ANIM", "anim/kochosei_snowmiku_skin1.zip"),
@@ -173,7 +174,7 @@ local function keeptargetfn(inst, target)
 end
 
 local function spearfn(inst)
-    inst.components.health:SetMaxHealth(TUNING.KOCHOSEI_SLAVE_HP)
+    inst.components.health:SetMaxHealth(TUNING.KOCHOSEI_SLAVE_HP + TUNING.KOCHOSEI_CHECKWIFI)
     inst.components.health:StartRegen(TUNING.SHADOWWAXWELL_HEALTH_REGEN, TUNING.SHADOWWAXWELL_HEALTH_REGEN_PERIOD)
 
     inst.components.combat:SetDefaultDamage(TUNING.KOCHOSEI_SLAVE_DAMAGE)

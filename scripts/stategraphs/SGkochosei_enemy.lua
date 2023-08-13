@@ -4,6 +4,11 @@ local function DetachFX(fx)
 	fx.entity:SetParent(nil)
 end
 
+local function IsList2(item)
+	return item.prefab =="ruins_bat"
+end
+
+
 local function DoDespawnFX(inst)
 	--shadow_despawn is in the air => detaches from sinking boats
 	--shadow_glob_fx is on ground => dies with sinking boats
@@ -79,6 +84,29 @@ local actionhandlers =
                 return inst.sg:HasStateTag("digging")
                     and "dig"
                     or "dig_start"
+            end
+        end),
+        ActionHandler(ACTIONS.ATTACK,
+        function(inst, action)
+            inst.sg.mem.localchainattack = not action.forced or nil
+			local playercontroller = inst.components.playercontroller
+			local attack_tag =
+				playercontroller ~= nil and
+				playercontroller.remote_authority and
+				playercontroller.remote_predicting and
+				"abouttoattack" or
+				"attack"
+			if not (inst.sg:HasStateTag(attack_tag) and action.target == inst.sg.statemem.attacktarget or inst.components.health:IsDead()) then
+                local weapon = inst.components.combat ~= nil and inst.components.combat:GetWeapon() or nil
+                return (weapon == nil and "attack")
+                    or (weapon:HasTag("blowdart") and "blowdart")
+					or (weapon:HasTag("slingshot") and "slingshot_shoot")
+                    or (weapon:HasTag("thrown") and "throw")
+                    or (weapon:HasTag("pillow") and "attack_pillow_pre")
+                    or (weapon:HasTag("propweapon") and "attack_prop_pre")
+                    or (weapon:HasTag("multithruster") and "multithrust_pre")
+                    or (weapon:HasTag("helmsplitter") and "helmsplitter_pre")
+                    or "attack"
             end
         end),
 }
@@ -342,53 +370,13 @@ local states =
             end),
         },
     },
-
-
-    State{
-        name = "attack",
-        tags = {"attack", "notalking", "abouttoattack", "busy"},
-
-        onenter = function(inst)
-            inst.sg.statemem.target = inst.components.combat.target
-            inst.components.combat:StartAttack()
-            inst.Physics:Stop()
-            inst.AnimState:PlayAnimation("atk")
-            inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_nightsword")
-
-            if inst.components.combat.target ~= nil and inst.components.combat.target:IsValid() then
-                inst:FacePoint(inst.components.combat.target.Transform:GetWorldPosition())
-            end
-        end,
-
-        timeline =
-        {
-            TimeEvent(8*FRAMES, function(inst) inst.components.combat:DoAttack(inst.sg.statemem.target) inst.sg:RemoveStateTag("abouttoattack") end),
-            TimeEvent(12*FRAMES, function(inst)
-                inst.sg:RemoveStateTag("busy")
-            end),
-            TimeEvent(13*FRAMES, function(inst)
-                inst.sg:RemoveStateTag("attack")
-            end),
-        },
-
-        events =
-        {
-            EventHandler("animover", function(inst)
-                if inst.AnimState:AnimDone() then
-                    inst.sg:GoToState("idle")
-                end
-            end),
-        },
-    },
-
      State{
         name = "death",
         tags = {"busy"},
 
         onenter = function(inst)
             inst.Physics:Stop()
-			inst.components.inventory:DropEverything(false)
-            --FixupWorkerCarry(inst, nil)
+
             inst.AnimState:PlayAnimation("death")
         end,
 
@@ -402,7 +390,6 @@ local states =
         {
             EventHandler("animover", function(inst)
                 if inst.AnimState:AnimDone() then
-					inst.components.inventory:DropEverything(false)
 					DoDespawnFX(inst)
 					TrySplashFX(inst)
                     inst:Remove()
@@ -712,6 +699,21 @@ local states =
             inst.AnimState:PushAnimation("emoteXL_loop_dance0", true)
         end,
     },
+    State{
+        name = "chicken",
+        tags = {"idle", "dancing"},
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst:ClearBufferedAction()
+            if inst.AnimState:IsCurrentAnimation("run_pst") then
+                inst.AnimState:PushAnimation("emoteXL_loop_dance6")
+            else
+                inst.AnimState:PlayAnimation("emoteXL_loop_dance6")
+            end
+            inst.AnimState:PushAnimation("emoteXL_loop_dance6", true)
+        end,
+    },
 
     State{
         name = "no",
@@ -761,6 +763,108 @@ local states =
         end,
     },
 
+    State{
+        name = "blowdart",
+        tags = { "attack", "notalking", "abouttoattack", "autopredict" },
+
+        onenter = function(inst)
+            if inst.components.combat:InCooldown() then
+                inst.sg:RemoveStateTag("abouttoattack")
+                inst:ClearBufferedAction()
+                inst.sg:GoToState("idle", true)
+                return
+            end
+            local buffaction = inst:GetBufferedAction()
+            local target = buffaction ~= nil and buffaction.target or nil
+            local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+            inst.components.combat:SetTarget(target)
+            inst.components.combat:StartAttack()
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("dart_pre")
+            if inst.sg.laststate == inst.sg.currentstate then
+                inst.sg.statemem.chained = true
+				inst.AnimState:SetFrame(5)
+            end
+            inst.AnimState:PushAnimation("dart", false)
+
+            inst.sg:SetTimeout(math.max((inst.sg.statemem.chained and 14 or 18) * FRAMES, inst.components.combat.min_attack_period))
+
+            if target ~= nil and target:IsValid() then
+                inst:FacePoint(target.Transform:GetWorldPosition())
+                inst.sg.statemem.attacktarget = target
+                inst.sg.statemem.retarget = target
+            end
+
+            if (equip ~= nil and equip.projectiledelay or 0) > 0 then
+                --V2C: Projectiles don't show in the initial delayed frames so that
+                --     when they do appear, they're already in front of the player.
+                --     Start the attack early to keep animation in sync.
+                inst.sg.statemem.projectiledelay = (inst.sg.statemem.chained and 9 or 14) * FRAMES - equip.projectiledelay
+                if inst.sg.statemem.projectiledelay <= 0 then
+                    inst.sg.statemem.projectiledelay = nil
+                end
+            end
+        end,
+
+        onupdate = function(inst, dt)
+            if (inst.sg.statemem.projectiledelay or 0) > 0 then
+                inst.sg.statemem.projectiledelay = inst.sg.statemem.projectiledelay - dt
+                if inst.sg.statemem.projectiledelay <= 0 then
+                    inst:PerformBufferedAction()
+                    inst.sg:RemoveStateTag("abouttoattack")
+                end
+            end
+        end,
+
+        timeline =
+        {
+            TimeEvent(8 * FRAMES, function(inst)
+                if inst.sg.statemem.chained then
+                    inst.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_shoot", nil, nil, true)
+                end
+            end),
+            TimeEvent(9 * FRAMES, function(inst)
+                if inst.sg.statemem.chained and inst.sg.statemem.projectiledelay == nil then
+                    inst:PerformBufferedAction()
+                    inst.sg:RemoveStateTag("abouttoattack")
+                end
+            end),
+            TimeEvent(13 * FRAMES, function(inst)
+                if not inst.sg.statemem.chained then
+                    inst.SoundEmitter:PlaySound("dontstarve/wilson/blowdart_shoot", nil, nil, true)
+                end
+            end),
+            TimeEvent(14 * FRAMES, function(inst)
+                if not inst.sg.statemem.chained and inst.sg.statemem.projectiledelay == nil then
+                    inst:PerformBufferedAction()
+                    inst.sg:RemoveStateTag("abouttoattack")
+                end
+            end),
+        },
+
+        ontimeout = function(inst)
+            inst.sg:RemoveStateTag("attack")
+            inst.sg:AddStateTag("idle")
+        end,
+
+        events =
+        {
+            EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
+            EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            inst.components.combat:SetTarget(nil)
+            if inst.sg:HasStateTag("abouttoattack") then
+                inst.components.combat:CancelAttack()
+            end
+        end,
+    },
 
     State{
         name = "joy",
@@ -776,6 +880,61 @@ local states =
             end
             inst.AnimState:PushAnimation("research", true)
         end,
+    },
+
+
+    State{
+        name = "attack",
+        tags = {"attack", "notalking", "abouttoattack", "busy"},
+
+        onenter = function(inst)
+            local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+            if (inst.prefab == "kochosei_enemy_d" or inst.prefab == "kochosei_enemy_c") and equip == nil then
+                local coin = SpawnPrefab("ruins_bat")
+                inst.components.inventory:GiveItem(coin)
+                local lists2 = inst.components.inventory:FindItems(IsList2)
+                if lists2[1] then -- Access the first item in the 'lists' table
+                    inst.components.inventory:Equip(lists2[1])
+                end
+            end
+            inst.sg.statemem.target = inst.components.combat.target
+            inst.components.combat:StartAttack()
+            inst.Physics:Stop()
+            if equip ~= nil and (equip.components.projectile ~= nil or equip:HasTag("rangedweapon")) then
+                inst.AnimState:PlayAnimation("dart_pre")
+                if inst.sg.laststate == inst.sg.currentstate then
+                    inst.sg.statemem.chained = true
+                    inst.AnimState:SetFrame(5)
+                end
+                inst.AnimState:PushAnimation("dart", false)
+            else
+            inst.AnimState:PlayAnimation("atk")
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_nightsword")
+            end
+            if inst.components.combat.target ~= nil and inst.components.combat.target:IsValid() then
+                inst:FacePoint(inst.components.combat.target.Transform:GetWorldPosition())
+            end
+        end,
+
+        timeline =
+        {
+            TimeEvent(8*FRAMES, function(inst) inst.components.combat:DoAttack(inst.sg.statemem.target) inst.sg:RemoveStateTag("abouttoattack") end),
+            TimeEvent(12*FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+            TimeEvent(13*FRAMES, function(inst)
+                inst.sg:RemoveStateTag("attack")
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
     },
 
     State{

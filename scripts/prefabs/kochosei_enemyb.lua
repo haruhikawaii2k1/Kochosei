@@ -205,10 +205,6 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
 
         return inst
     end
-
-    STRINGS.NAMES.KOCHOSEI_ENEMY = "Kochosei Clone"
-    STRINGS.CHARACTERS.GENERIC.DESCRIBE.KOCHOSEI_ENEMY = "ヾ(•ω•`)o"
-
     return Prefab(prefab, fn, assets, prefabs)
 end
 

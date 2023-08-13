@@ -7,15 +7,14 @@ Thank you for using this mod, you can use the config button below and let me kno
 	
 ]]
 author = "Mio, dinhkarate, Haruhi Kawaii"
-version = "3.9.9"
+version = "4.0.2"
 forumthread = ""
 
--- 1.4.5 fix tab
- 
+folder_name = folder_name or "workshop-"
+if not folder_name:find("workshop-") then
+	name = name .. " - Test Local"
+end
 
--- This is the URL name of the mod's thread on the forum; the part after the ? and before the first & in the url
-
--- This lets other players know if your mod is out of date, update it to match the current version in the game
 api_version = 10
 
 -- Compatible with Don't Starve Together
@@ -50,6 +49,38 @@ end
 
 configuration_options =
 {
+  {
+        name = "kocho_wick",
+        label = "Can Craft Book Case",
+		hover = "Can craft but not unlock all book",
+        options = {
+            {description = "No", data = 0},
+            {description = "Yes", data = 1},
+
+        },
+        default = 0
+    },
+  {
+        name = "kocho_wick2",
+        label = "Im Wickerbottom Now",
+		hover = "Im Wickerbottom Now, but can sleep :)",
+        options = {
+            {description = "No", data = 0},
+            {description = "Yes", data = 1},
+
+        },
+        default = 0
+    },
+{
+        name = "regemapkochosei",
+        label = "Regenerate  Butterfly Island?",
+        options = {
+            {description = "Yes", data = 0}, --- Cái nài bị ngược do t không muốn người ta phải config lại, sorry ae, sorry bro
+            {description = "No", data = 1},
+
+        },
+        default = 0
+    },
 
   {
         name = "keykocho",

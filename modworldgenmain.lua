@@ -9,6 +9,8 @@ require("map/lockandkey")
 local Layouts = require("map/layouts").Layouts
 local StaticLayout = require("map/static_layout")
 
+if GetModConfigData("regemapkochosei") == 0 then
+
 Layouts["KochoseiIsland"] = StaticLayout.Get("map/kochosei_island",
 {
 	start_mask = PLACE_MASK.IGNORE_IMPASSABLE_BARREN_RESERVED,
@@ -24,7 +26,7 @@ Layouts["KochoseiIsland"] = StaticLayout.Get("map/kochosei_island",
 			end
 		end
 	end)
-
+end
 
 -- some math helpers
 local function mymathclamp(num, min, max)

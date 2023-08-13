@@ -34,21 +34,19 @@ Assets = {
    Asset("ATLAS", "images/avatars/self_inspect_kochosei.xml"),
    Asset("IMAGE", "images/names_gold_kochosei.tex"),
    Asset("ATLAS", "images/names_gold_kochosei.xml"),
-   Asset("IMAGE", "images/names_gold_kochosei.tex"),
-   Asset("ATLAS", "images/names_gold_kochosei.xml"),
    -- I have a pen and I have a pineapple Uhhhh pineapple pen --
    -- Apple pen, Pineapple pen --
    -- Pineapple, Apple pen --
 
 
-   Asset("ATLAS", "images/map_icons/kochosei_apple_tree_stump.xml"),
-   Asset("IMAGE", "images/map_icons/kochosei_apple_tree_stump.tex"),
+   Asset("ATLAS", "minimap/kochosei_apple_tree_stump.xml"),
+   Asset("IMAGE", "minimap/kochosei_apple_tree_stump.tex"),
 
-   Asset("ATLAS", "images/map_icons/kochosei_apple_tree_burnt.xml"),
-   Asset("IMAGE", "images/map_icons/kochosei_apple_tree_burnt.tex"),
+   Asset("ATLAS", "minimap/kochosei_apple_tree_burnt.xml"),
+   Asset("IMAGE", "minimap/kochosei_apple_tree_burnt.tex"),
 
-   Asset("ATLAS", "images/map_icons/kochosei_apple_tree_icon.xml"),
-   Asset("IMAGE", "images/map_icons/kochosei_apple_tree_icon.tex"),
+   Asset("ATLAS", "minimap/kochosei_apple_tree.xml"),
+   Asset("IMAGE", "minimap/kochosei_apple_tree.tex"),
 
    -- TAB kochosei
    Asset("ATLAS", "images/hud/kochoseitab.xml"),
@@ -56,6 +54,7 @@ Assets = {
 
    Asset("SOUNDPACKAGE", "sound/kochosei_voice.fev"),
    Asset("SOUND", "sound/kochosei_voice.fsb"),
+   
    Asset("SOUNDPACKAGE", "sound/kochosei_streetlight1_musicbox.fev"),
    Asset("SOUND", "sound/kochosei_streetlight1_musicbox.fsb"),
    Asset("ANIM", "anim/miku_usagi_backpack_2x4.zip")
@@ -72,7 +71,8 @@ RemapSoundEvent("kochosei_streetlight1_musicbox/play", "kochosei_streetlight1_mu
 RemapSoundEvent("kochosei_streetlight1_musicbox/end", "kochosei_streetlight1_musicbox/sound/end")
 
 AddMinimapAtlas("images/map_icons/kochosei.xml")
-AddMinimapAtlas("images/map_icons/kochosei_apple_tree_burnt.xml")
-AddMinimapAtlas("images/map_icons/kochosei_apple_tree_stump.xml")
-AddMinimapAtlas("images/map_icons/kochosei_apple_tree_icon.xml")
+AddMinimapAtlas("minimap/miku_usagi_backpack.xml")
+AddMinimapAtlas("minimap/kochosei_apple_tree_burnt.xml")
+AddMinimapAtlas("minimap/kochosei_apple_tree_stump.xml")
+AddMinimapAtlas("minimap/kochosei_apple_tree.xml")
 

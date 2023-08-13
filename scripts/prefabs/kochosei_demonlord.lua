@@ -57,7 +57,7 @@ local assets = {
        local rot = inst.Transform:GetRotation()
 		if stalker ~= nil then
            stalker.Transform:SetPosition(pos.x, 0, pos.z)
-      --     stalker.components.follower:SetLeader(caster)
+           stalker._playerlink = caster
            stalker.Transform:SetRotation(rot)
            stalker.sg:GoToState("resurrect")
 		  end

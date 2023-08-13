@@ -3,6 +3,9 @@ local assets =
     Asset("ANIM", "anim/miku_usagi_backpack.zip"),
     Asset("ANIM", "anim/swap_miku_usagi_backpack.zip"),
 	Asset("ANIM", "anim/miku_usagi_backpack_2x4.zip"),
+	Asset("ATLAS", "minimap/miku_usagi_backpack.xml"),
+	Asset("IMAGE", "minimap/miku_usagi_backpack.tex"),
+	
 
 }
 
@@ -17,8 +20,9 @@ local function onequip(inst, owner)
 	  	owner.AnimState:OverrideSymbol("swap_body", "swap_miku_usagi_backpack", "usagi")
         owner.AnimState:OverrideSymbol("swap_body", "swap_miku_usagi_backpack", "swap_body")
 	
-        owner:AddTag("fastpicker")  --蜘蛛快采
-		owner:AddTag("fastpick")    --成就快采
+        owner:AddTag("fastpicker") 
+		owner:AddTag("fastpick") 
+		owner:AddTag("expertchef") 		
     if inst.components.container ~= nil then
         inst.components.container:Open(owner)
     end
@@ -27,10 +31,8 @@ end
 local function onunequip(inst, owner)
     owner:RemoveTag("fastpick")
     owner:RemoveTag("fastpicker")
+    owner:RemoveTag("expertchef")
     local skin_build = inst:GetSkinBuild()
-    if skin_build ~= nil then
-        owner:PushEvent("unequipskinneditem", inst:GetSkinName())
-    end
     owner.AnimState:ClearOverrideSymbol("swap_body")
     owner.AnimState:ClearOverrideSymbol("miku_usagi_backpack")
     if inst.components.container ~= nil then
@@ -81,12 +83,10 @@ local function fn()
 	inst:AddTag("fridge")
     inst:AddTag("nocool")
 
-    inst.MiniMapEntity:SetIcon("miku_usagi_backpack_icon.png")
+    inst.MiniMapEntity:SetIcon("miku_usagi_backpack.tex")
 
     inst.foleysound = "dontstarve/movement/foley/backpack"
 
-    --local swap_data = {bank = "swap_miku_usagi_backpack", anim = "BUILD"}
-   -- MakeInventoryFloatable(inst, "small", 0.2, nil, nil, nil, swap_data)
 
     inst.entity:SetPristine()
 
@@ -97,8 +97,6 @@ end
     inst:AddComponent("inspectable")
 
     inst:AddComponent("inventoryitem")
-	--inst.components.inventoryitem.imagename = "miku_usagi_backpack"
-  --  inst.components.inventoryitem.atlasname = "images/inventoryimages/miku_usagi_backpack.xml"
     inst.components.inventoryitem.cangoincontainer = false
 
 
@@ -115,6 +113,7 @@ end
 
     MakeSmallBurnable(inst)
     MakeSmallPropagator(inst)
+	
     inst.components.burnable:SetOnBurntFn(onburnt)
     inst.components.burnable:SetOnIgniteFn(onignite)
     inst.components.burnable:SetOnExtinguishFn(onextinguish)

@@ -187,6 +187,7 @@ AddCharacterRecipe("kocho_lotus",
 
 
 -------------------------------------- DST ITEM ----------------------------------------------------------------------
+
 AddCharacterRecipe("kocho_butterfly",
 	{	Ingredient("petals", 2)},
 		TECH.NONE,
@@ -313,6 +314,18 @@ AddCharacterRecipe("kocho_oceanfishingrod",
     
 )
 
+if TUNING.KOCHOSEI_WICK ~= 0 and TUNING.KOCHOSEI_WICK2 == 0 then
+AddCharacterRecipe("kocho_bookstation",
+	{Ingredient("livinglog", 2), Ingredient("papyrus", 4), Ingredient("featherpencil", 1)},	
+        TECH.NONE,
+    {   builder_tag = "kochosei",
+        product = "bookstation",
+		placer= "bookstation_placer"},
+    {   "CHARACTER" }
+    
+)
+end
+if TUNING.KOCHOSEI_WICK2 ~= 1 then
 AddCharacterRecipe("kocho_book_fish",
     {   Ingredient("papyrus",2), Ingredient("pondfish",2)},
         TECH.NONE,
@@ -374,7 +387,7 @@ AddCharacterRecipe("kocho_book_tentacles",
     {   "CHARACTER" }
 	
 )
-
+end 
 AddCharacterRecipe("kocho_polly_rogershat",
     {   Ingredient("silk", 10)},
         TECH.NONE,

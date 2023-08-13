@@ -5,6 +5,9 @@ local TUNING = GLOBAL.TUNING
 
 TUNING.KOCHOSEI_TURNOFFMUSIC =  GetModConfigData("turnoffmusic")
 
+TUNING.KOCHOSEI_WICK =  GetModConfigData("kocho_wick")
+TUNING.KOCHOSEI_WICK2 =  GetModConfigData("kocho_wick2")
+
 -- Thông Số Cơ bản o((>ω< ))o
 TUNING.KOCHOSEI_HEALTH =  GetModConfigData("kocho_hp")
 TUNING.KOCHOSEI_HUNGER =  GetModConfigData("kocho_hunger")

@@ -111,6 +111,7 @@ local function MakePreparedFood(data)
 		inst.components.edible.nochill = data.nochill or nil
 		inst.components.edible.spice = data.spice
 		inst.components.edible:SetOnEatenFn(data.oneatenfn)
+		inst.components.edible.secondaryfoodtype = FOODTYPE.GOODIES
 		
 		
 		

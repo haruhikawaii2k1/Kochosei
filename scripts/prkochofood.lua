@@ -8,7 +8,7 @@ local prkochofood =
 		test = function(cooker, names, tags) return tags.apple and tags.apple <=2 and tags.veggie and tags.veggie <=1 and tags.egg and tags.egg  <=1  and not tags.monster and not tags.meat and not tags.fish and not tags.inedible end,
 		
 		priority = 666,
-		foodtype = FOODTYPE.VEGGIE,
+		foodtype = FOODTYPE.MEAT,
 		health = 35,
 		hunger = 50,
 		perishtime = TUNING.PERISH_MED,
@@ -24,7 +24,7 @@ local prkochofood =
 		test = function(cooker, names, tags) return tags.meat and tags.meat >=2 and  tags.sweetener and tags.sweetener  >=2 and not tags.veggie and not tags.fish and not tags.egg and not tags.fat and not tags.dairy and not tags.inedible end,
 
 		priority = 666,
-		foodtype = FOODTYPE.VEGGIE,
+		foodtype = FOODTYPE.MEAT,
 		health = 50,
 		hunger = 80,
 		perishtime = TUNING.PERISH_MED,
@@ -40,7 +40,7 @@ local prkochofood =
 		test = function(cooker, names, tags) return (names.berries or names.berries_cooked or names.berries_juicy or names.berries_juicy_cooked or 0) >=1 and tags.egg and tags.egg <= 1 and  tags.sweetener and tags.sweetener <= 1 and not tags.veggie and not tags.fish and not tags.fat and not tags.inedible end,
 
 		priority = 666,
-		foodtype = FOODTYPE.VEGGIE,
+		foodtype = FOODTYPE.MEAT,
 		health = 30,
 		hunger = 90,
 		perishtime = TUNING.PERISH_MED,
@@ -66,7 +66,7 @@ local prkochofood =
 		test = function(cooker, names, tags) return tags.egg and tags.egg ==2 and  tags.sweetener and tags.sweetener ==2 and not tags.veggie and not tags.meat and not tags.fish and not tags.fat and not tags.dairy and not tags.inedible end,
 
 		priority = 666,
-		foodtype = FOODTYPE.VEGGIE,
+		foodtype = FOODTYPE.MEAT,
 		health = 30,
 		hunger = 35,
 		perishtime = TUNING.PERISH_MED,
@@ -79,7 +79,7 @@ local prkochofood =
 		test = function(cooker, names, tags) return tags.egg and  tags.egg  >=2 and tags.meat and tags.meat >=1 and  tags.veggie and tags.veggie >=1 and not tags.sweetener  and not tags.fish and not tags.fat and not tags.dairy and not tags.inedible end,
 
 		priority = 666,
-		foodtype = FOODTYPE.VEGGIE,
+		foodtype = FOODTYPE.MEAT,
 		health = TUNING.HEALING_MED,
 		hunger = TUNING.CALORIES_LARGE*2,
 		perishtime = TUNING.PERISH_MED,
@@ -92,7 +92,7 @@ local prkochofood =
 		test = function(cooker, names, tags) return tags.veggie and tags.veggie >=1 and tags.sweetener and tags.sweetener >=1 and (names.berries or names.berries_cooked or names.berries_juicy or names.berries_juicy_cooked or 0) >=1 and  tags.frozen and tags.frozen >=1  and not tags.fish and not tags.fat and not tags.dairy and not tags.inedible and not tags.meat end,
 
 		priority = 666,
-		foodtype = FOODTYPE.VEGGIE,
+		foodtype = FOODTYPE.MEAT,
 		health = TUNING.HEALING_MED,
 		hunger = TUNING.CALORIES_LARGE,
 		perishtime = TUNING.PERISH_MED,
@@ -113,7 +113,7 @@ local prkochofood =
 		test = function(cooker, names, tags) return tags.frozen and tags.frozen >=2 and tags.sweetener and tags.sweetener >=1  and (names.berries or names.berries_cooked or names.berries_juicy or names.berries_juicy_cooked or 0) >= 1 and not tags.fat and not tags.dairy and not tags.inedible and not tags.meat end,
 
 		priority = 666,
-		foodtype = FOODTYPE.VEGGIE,
+		foodtype = FOODTYPE.MEAT,
 		health = TUNING.HEALING_MED,
 		hunger = TUNING.CALORIES_LARGE,
 		perishtime = TUNING.PERISH_MED,
@@ -134,7 +134,7 @@ local prkochofood =
 		test = function(cooker, names, tags) return tags.tom and tags.tom >=1 and tags.veggie and tags.veggie >=1.5 and tags.fish and tags.fish >=1 and not tags.inedible end,
 
 		priority = 30,
-		foodtype = FOODTYPE.VEGGIE,
+		foodtype = FOODTYPE.MEAT,
 		health = TUNING.HEALING_MED*2,
 		hunger = TUNING.CALORIES_LARGE*2,
 		perishtime = TUNING.PERISH_MED,
@@ -150,7 +150,7 @@ local prkochofood =
 		test = function(cooker, names, tags) return tags.veggie and tags.veggie >=2 and tags.fish and tags.fish >=1 and not tags.inedible end,
 
 		priority = 30,
-		foodtype = FOODTYPE.VEGGIE,
+		foodtype = FOODTYPE.MEAT,
 		health = TUNING.HEALING_MED*2,
 		hunger = TUNING.CALORIES_LARGE*3,
 		perishtime = TUNING.PERISH_MED,
@@ -166,7 +166,7 @@ local prkochofood =
 		test = function(cooker, names, tags) return (names.tomato or names.tomato_cooked) and tags.egg and  tags.meat end,
 
 		priority = 30,
-		foodtype = FOODTYPE.VEGGIE,
+		foodtype = FOODTYPE.MEAT,
 		health = TUNING.HEALING_MED,
 		hunger = TUNING.CALORIES_LARGE*2,
 		perishtime = TUNING.PERISH_MED,
@@ -180,7 +180,7 @@ local prkochofood =
 		test = function(cooker, names, tags) return tags.frozen and tags.frozen >= 3 and tags.sweetener and not tags.meat and not tags.egg end,
 
 		priority = 30,
-		foodtype = FOODTYPE.VEGGIE,
+		foodtype = FOODTYPE.MEAT,
 		health = TUNING.HEALING_MED,
 		hunger = TUNING.CALORIES_LARGE,
 		perishtime = TUNING.PERISH_MED,
@@ -205,7 +205,7 @@ local prkochofood =
 		test = function(cooker, names, tags) return   names.twigs and tags.meat and tags.meat <1 end,
 
 		priority = 666,
-		foodtype = FOODTYPE.VEGGIE,
+		foodtype = FOODTYPE.MEAT,
 		health = TUNING.HEALING_MED,
 		hunger = TUNING.CALORIES_LARGE,
 		perishtime = TUNING.PERISH_MED,
@@ -217,10 +217,10 @@ local prkochofood =
 	
 	kochofood_apple_candy = {    
     name = "kochofood_apple_candy",
-    test = function(cooker, names, tags) return (names.kochosei_apple_cooked) and (names.twigs or 0) >= 1 and  (names.honey or 0) >= 1 and tags.fruit and not tags.meat and not tags.egg end,
+    test = function(cooker, names, tags) return (names.kochosei_apple or names.kochosei_apple_cooked) and (names.twigs or 0) >= 1 and  (names.honey or 0) >= 1 and tags.fruit and not tags.meat and not tags.egg end,
     priority = 666,
     weight = 1,    
-    foodtype = FOODTYPE.GOODIES,    
+	foodtype = FOODTYPE.MEAT,
     health = -TUNING.HEALING_SMALL*3,   
     hunger = TUNING.CALORIES_SMALL*2,    
     perishtime = TUNING.PERISH_SLOW,     
