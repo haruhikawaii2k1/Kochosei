@@ -11,7 +11,6 @@ for k, data in pairs(spices) do
 			spicedfoods[k] = data
 		end
 	end
-	
 end
 
 return spicedfoods

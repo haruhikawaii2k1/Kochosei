@@ -1,133 +1,126 @@
-local assets =
-{
+local assets = {
 	Asset("ANIM", "anim/kocho_lotus.zip"),
 	Asset("SOUND", "sound/common.fsb"),
 }
 
 local function fn()
- local inst = CreateEntity()
+	local inst = CreateEntity()
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddMiniMapEntity()
-    inst.entity:AddNetwork()
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddMiniMapEntity()
+	inst.entity:AddNetwork()
 
-    MakeInventoryPhysics(inst)
-    MakeHauntableLaunch(inst)
-    
-    inst.AnimState:SetBank("kocho_lotus")
-    inst.AnimState:SetBuild("kocho_lotus")
-    inst.AnimState:PlayAnimation("idle")
-	
+	MakeInventoryPhysics(inst)
+	MakeHauntableLaunch(inst)
+
+	inst.AnimState:SetBank("kocho_lotus")
+	inst.AnimState:SetBuild("kocho_lotus")
+	inst.AnimState:PlayAnimation("idle")
+
 	inst:AddTag("cattoy")
-    inst:AddTag("billfood")
-	
+	inst:AddTag("billfood")
+
 	inst.entity:SetPristine()
-    if not TheWorld.ismastersim then
-        return inst
-    end  
-    
-    -----------------
-    inst:AddComponent("stackable")
+	if not TheWorld.ismastersim then
+		return inst
+	end
+
+	-----------------
+	inst:AddComponent("stackable")
 	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
-    ---------------------        
-                
-    inst:AddComponent("edible")
-    inst.components.edible.healthvalue = TUNING.HEALING_TINY
-    inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
-    inst.components.edible.sanityvalue = TUNING.SANITY_TINY or 0     
+	---------------------
+
+	inst:AddComponent("edible")
+	inst.components.edible.healthvalue = TUNING.HEALING_TINY
+	inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
+	inst.components.edible.sanityvalue = TUNING.SANITY_TINY or 0
 	inst.components.edible.foodtype = FOODTYPE.VEGGIE
 
-    ---------------------        
-        
-    inst:AddComponent("perishable")
-    inst.components.perishable:SetPerishTime(TUNING.PERISH_MED)
-    inst.components.perishable:StartPerishing()
-    inst.components.perishable.onperishreplacement = "spoiled_food"
+	---------------------
 
-    ---------------------        
-        
-    inst:AddComponent("cookable")
-    inst.components.cookable.product = "kocho_lotus_flower_cooked"
+	inst:AddComponent("perishable")
+	inst.components.perishable:SetPerishTime(TUNING.PERISH_MED)
+	inst.components.perishable:StartPerishing()
+	inst.components.perishable.onperishreplacement = "spoiled_food"
 
+	---------------------
 
-    inst:AddComponent("bait")
-    
-    inst:AddComponent("inspectable")
-    ----------------------
-    
-    inst:AddComponent("inventoryitem")
+	inst:AddComponent("cookable")
+	inst.components.cookable.product = "kocho_lotus_flower_cooked"
 
-	
-    inst:AddComponent("tradable")
+	inst:AddComponent("bait")
 
-    
-    return inst
+	inst:AddComponent("inspectable")
+	----------------------
+
+	inst:AddComponent("inventoryitem")
+
+	inst:AddComponent("tradable")
+
+	return inst
 end
 
 local function fncooked()
-   local inst = CreateEntity()
+	local inst = CreateEntity()
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddMiniMapEntity()
-    inst.entity:AddNetwork()
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddMiniMapEntity()
+	inst.entity:AddNetwork()
 
-    MakeInventoryPhysics(inst)
-    MakeHauntableLaunch(inst)
+	MakeInventoryPhysics(inst)
+	MakeHauntableLaunch(inst)
 
-    
-    
-    inst.AnimState:SetBank("kocho_lotus")
-    inst.AnimState:SetBuild("kocho_lotus")
-    inst.AnimState:PlayAnimation("cooked")
-	
+	inst.AnimState:SetBank("kocho_lotus")
+	inst.AnimState:SetBuild("kocho_lotus")
+	inst.AnimState:PlayAnimation("cooked")
+
 	inst:AddTag("cattoy")
-    inst:AddTag("billfood")
-	
+	inst:AddTag("billfood")
+
 	inst.entity:SetPristine()
-    if not TheWorld.ismastersim then
-        return inst
-    end  
-    
-    -----------------
-    inst:AddComponent("stackable")
-    inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
+	if not TheWorld.ismastersim then
+		return inst
+	end
 
-    ---------------------        
-                
-    inst:AddComponent("edible")
-    inst.components.edible.healthvalue = TUNING.HEALING_TINY
-    inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
-    inst.components.edible.sanityvalue = TUNING.SANITY_MED or 0      
-    inst.components.edible.foodtype = FOODTYPE.VEGGIE
+	-----------------
+	inst:AddComponent("stackable")
+	inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
 
-    ---------------------        
-        
-    inst:AddComponent("perishable")
-    inst.components.perishable:SetPerishTime(TUNING.PERISH_MED)
-    inst.components.perishable:StartPerishing()
-    inst.components.perishable.onperishreplacement = "spoiled_food"
+	---------------------
 
-    ---------------------        
-    
-    inst:AddComponent("inspectable")
-    ----------------------
+	inst:AddComponent("edible")
+	inst.components.edible.healthvalue = TUNING.HEALING_TINY
+	inst.components.edible.hungervalue = TUNING.CALORIES_SMALL
+	inst.components.edible.sanityvalue = TUNING.SANITY_MED or 0
+	inst.components.edible.foodtype = FOODTYPE.VEGGIE
 
-    inst:AddComponent("bait")
+	---------------------
 
-    MakeSmallBurnable(inst)
-    MakeSmallPropagator(inst)
-    
-    inst:AddComponent("inventoryitem")
+	inst:AddComponent("perishable")
+	inst.components.perishable:SetPerishTime(TUNING.PERISH_MED)
+	inst.components.perishable:StartPerishing()
+	inst.components.perishable.onperishreplacement = "spoiled_food"
 
-    inst:AddComponent("tradable")
-    
-    
-    return inst
+	---------------------
+
+	inst:AddComponent("inspectable")
+	----------------------
+
+	inst:AddComponent("bait")
+
+	MakeSmallBurnable(inst)
+	MakeSmallPropagator(inst)
+
+	inst:AddComponent("inventoryitem")
+
+	inst:AddComponent("tradable")
+
+	return inst
 end
 STRINGS.NAMES.KOCHO_LOTUS_FLOWER_COOKED = "Bông Sen Nướng"
 STRINGS.NAMES.KOCHO_LOTUS_FLOWER = "Bông Sen"
-return Prefab( "common/inventory/kocho_lotus_flower", fn, assets), 
-       Prefab( "common/inventory/kocho_lotus_flower_cooked", fncooked, assets) 
+return Prefab("common/inventory/kocho_lotus_flower", fn, assets),
+	Prefab("common/inventory/kocho_lotus_flower_cooked", fncooked, assets)

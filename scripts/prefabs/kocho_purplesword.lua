@@ -1,78 +1,75 @@
 local assets = {
-    Asset("ANIM", "anim/kocho_purplesword.zip"),
-    Asset("ANIM", "anim/swap_kocho_purplesword.zip"),
-
+	Asset("ANIM", "anim/kocho_purplesword.zip"),
+	Asset("ANIM", "anim/swap_kocho_purplesword.zip"),
 }
 
 local function OnEquip(inst, owner)
-    
-        owner.AnimState:OverrideSymbol("swap_object", "swap_kocho_purplesword", "swap_purplesword")
-        owner.AnimState:Show("ARM_carry")
-        owner.AnimState:Hide("ARM_normal")
-       
-  
+	owner.AnimState:OverrideSymbol("swap_object", "swap_kocho_purplesword", "swap_purplesword")
+	owner.AnimState:Show("ARM_carry")
+	owner.AnimState:Hide("ARM_normal")
 end
 
 local function OnUnequip(inst, owner)
-    owner.AnimState:Hide("ARM_carry")
-    owner.AnimState:Show("ARM_normal")
-   
+	owner.AnimState:Hide("ARM_carry")
+	owner.AnimState:Show("ARM_normal")
 end
 
-
 local function fn()
- local inst = CreateEntity()
+	local inst = CreateEntity()
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddMiniMapEntity()
-    inst.entity:AddNetwork()
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddMiniMapEntity()
+	inst.entity:AddNetwork()
 
-    MakeInventoryPhysics(inst)
-    MakeHauntableLaunch(inst)
+	MakeInventoryPhysics(inst)
+	MakeHauntableLaunch(inst)
 
-    inst.AnimState:SetBank("kocho_purplesword")
-    inst.AnimState:SetBuild("kocho_purplesword")
-    inst.AnimState:PlayAnimation("anim")
+	inst.AnimState:SetBank("kocho_purplesword")
+	inst.AnimState:SetBuild("kocho_purplesword")
+	inst.AnimState:PlayAnimation("anim")
 
-    inst:AddTag("sharp")
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-    inst.entity:SetPristine()
+	inst:AddTag("kochoseiweapon")
+	inst:AddTag("purplesword")
 	
-	inst:AddComponent("tool")
-    inst.components.tool:SetAction(ACTIONS.CHOP, 1.2)
-   
-
-  	if type(TUNING.KOCHO_SWORD_DURABILITY) == "number" then 
-    inst:AddComponent("finiteuses")
-	inst.components.finiteuses:SetMaxUses(TUNING.KOCHO_SWORD_DURABILITY)
-    inst.components.finiteuses:SetUses(TUNING.KOCHO_SWORD_DURABILITY)
-    inst.components.finiteuses:SetOnFinished(inst.Remove)
+	if not TheWorld.ismastersim then
+		return inst
 	end
+	inst:AddTag("kochoseiweapon")
+	
+	inst.entity:SetPristine()
 
-    inst:AddComponent("weapon")
-   
-    inst.components.weapon:SetDamage(TUNING.KOCHO_SWORD_DAMAGE)
+	inst:AddComponent("tool")
+	inst.components.tool:SetAction(ACTIONS.CHOP, 1.2)
 
-    inst:AddComponent("inspectable")
-    inst:AddComponent("tradable")
+	if type(TUNING.KOCHO_SWORD_DURABILITY) == "number" then
+		inst:AddComponent("finiteuses")
+		inst.components.finiteuses:SetMaxUses(TUNING.KOCHO_SWORD_DURABILITY)
+		inst.components.finiteuses:SetUses(TUNING.KOCHO_SWORD_DURABILITY)
+		inst.components.finiteuses:SetOnFinished(inst.Remove)
+	end
+	
+	inst:AddComponent("weapon")
+	inst.components.weapon:SetDamage(TUNING.KOCHO_SWORD_DAMAGE)
 
-    inst:AddComponent("equippable")
-    inst.components.equippable:SetOnEquip(OnEquip)
-    inst.components.equippable:SetOnUnequip(OnUnequip)
-    inst.components.equippable.walkspeedmult = 1.25
-    inst.components.equippable.dapperness = (0.033)
+	inst:AddComponent("inspectable")
+	inst:AddComponent("tradable")
 
-    inst:AddComponent("inventoryitem")
+	inst:AddComponent("equippable")
+	inst.components.equippable:SetOnEquip(OnEquip)
+	inst.components.equippable:SetOnUnequip(OnUnequip)
+	inst.components.equippable.walkspeedmult = 1.25
+	inst.components.equippable.dapperness = 0.033
+
+	inst:AddComponent("inventoryitem")
+
+	inst:AddComponent("cuocdoiquabatcongdi")
+    inst.components.cuocdoiquabatcongdi:Vukhi()
 
 
-    MakeHauntableLaunch(inst)
+	MakeHauntableLaunch(inst)
 
-    return inst
+	return inst
 end
 
 STRINGS.NAMES.KOCHO_PURPLESWORD = "Kocho Purple Sword"
