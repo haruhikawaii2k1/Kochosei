@@ -1,11 +1,11 @@
 local assets = {
-  Asset("ANIM", "anim/lavaarena_heal_flowers_fx.zip"),
+	Asset("ANIM", "anim/lavaarena_heal_flowers_fx.zip"),
 }
 
 local prefabs_healblooms = {
-  "lavaarena_bloom_kocho",
-  "lavaarena_bloom_kochohealbuff_kocho",
-  "lavaarena_bloom_kochosleepdebuff_kocho",
+	"lavaarena_bloom_kocho",
+	"lavaarena_bloom_kochohealbuff_kocho",
+	"lavaarena_bloom_kochosleepdebuff_kocho",
 }
 
 --------------------------------------------------------------------------
@@ -36,14 +36,14 @@ local function MakeBloom(name, variation, prefabs)
 		inst.AnimState:SetBank("lavaarena_heal_flowers")
 		inst.AnimState:SetBuild("lavaarena_heal_flowers_fx")
 		inst.AnimState:Hide("buffed_hide_layer")
-		inst.AnimState:PlayAnimation("in_"..inst.variation)
-		inst.AnimState:PushAnimation("idle_"..inst.variation, true)
+		inst.AnimState:PlayAnimation("in_" .. inst.variation)
+		inst.AnimState:PushAnimation("idle_" .. inst.variation, true)
 
 		inst:AddTag("FX")
 		inst:AddTag("lavaarena_bloom_kocho")
 
 		if variation == nil then
-			inst:SetPrefabName(name..inst.variation)
+			inst:SetPrefabName(name .. inst.variation)
 		end
 		inst:SetPrefabNameOverride("lavaarena_bloom_kocho")
 
@@ -60,23 +60,23 @@ local function MakeBloom(name, variation, prefabs)
 				inst:RemoveEventCallback("animover", inst.Remove)
 			end
 			inst._cx = inst:DoTaskInTime(time or 5, function(inst)
-				inst.AnimState:PlayAnimation("out_"..inst.variation)
-				inst:ListenForEvent('animover', inst.Remove)
+				inst.AnimState:PlayAnimation("out_" .. inst.variation)
+				inst:ListenForEvent("animover", inst.Remove)
 			end)
 		end
 
 		return inst
 	end
 
-  return Prefab(name, fn, assets, prefabs)
+	return Prefab(name, fn, assets, prefabs)
 end
 
 local ret = {}
 local prefs = {}
 for i = 1, NUM_BLOOM_VARIATIONS do
-  local name = "lavaarena_bloom_kocho"..tostring(i)
-  table.insert(prefs, name)
-  table.insert(ret, MakeBloom(name, i))
+	local name = "lavaarena_bloom_kocho" .. tostring(i)
+	table.insert(prefs, name)
+	table.insert(ret, MakeBloom(name, i))
 end
 table.insert(ret, MakeBloom("lavaarena_bloom_kocho", nil, prefs))
 prefs = nil
@@ -84,7 +84,7 @@ prefs = nil
 --------------------------------------------------------------------------
 
 local function healbloomsfn()
-  --return event_server_data("lavaarena", "prefabs/lavaarena_bloom_kochos").createhealblooms()
+	--return event_server_data("lavaarena", "prefabs/lavaarena_bloom_kochos").createhealblooms()
 end
 
 table.insert(ret, Prefab("lavaarena_healblooms_kocho", healbloomsfn, nil, prefabs_healblooms))
@@ -92,7 +92,7 @@ table.insert(ret, Prefab("lavaarena_healblooms_kocho", healbloomsfn, nil, prefab
 --------------------------------------------------------------------------
 
 local function sleepdebufffn()
-  --return event_server_data("lavaarena", "prefabs/lavaarena_bloom_kochos").createsleepdebuff()
+	--return event_server_data("lavaarena", "prefabs/lavaarena_bloom_kochos").createsleepdebuff()
 end
 
 table.insert(ret, Prefab("lavaarena_bloom_kochosleepdebuff_kocho", sleepdebufffn))
@@ -100,29 +100,29 @@ table.insert(ret, Prefab("lavaarena_bloom_kochosleepdebuff_kocho", sleepdebufffn
 --------------------------------------------------------------------------
 
 local function OnInitHealBuff(inst)
-  local parent = inst.entity:GetParent()
-  if parent ~= nil then
-    parent:PushEvent("starthealthregen", inst)
-  end
+	local parent = inst.entity:GetParent()
+	if parent ~= nil then
+		parent:PushEvent("starthealthregen", inst)
+	end
 end
 
 local function healbufffn()
-  local inst = CreateEntity()
+	local inst = CreateEntity()
 
-  inst.entity:AddTransform()
-  inst.entity:AddNetwork()
+	inst.entity:AddTransform()
+	inst.entity:AddNetwork()
 
-  inst:AddTag("CLASSIFIED")
+	inst:AddTag("CLASSIFIED")
 
-  inst:DoTaskInTime(0, OnInitHealBuff)
+	inst:DoTaskInTime(0, OnInitHealBuff)
 
-  inst.entity:SetPristine()
+	inst.entity:SetPristine()
 
-  if not TheWorld.ismastersim then
-    return inst
-  end
+	if not TheWorld.ismastersim then
+		return inst
+	end
 
-  return inst
+	return inst
 end
 
 table.insert(ret, Prefab("lavaarena_bloom_kochohealbuff_kocho", healbufffn))
