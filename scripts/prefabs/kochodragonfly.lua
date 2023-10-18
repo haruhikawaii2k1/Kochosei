@@ -159,6 +159,12 @@ local function OnAttacked(inst, data)
 	end
 end
 
+local function OnHitOther(inst, other)
+	if other and other:HasTag("Kochoseipet") then 
+		inst.components.combat:GiveUp()
+	end
+end
+
 local function fn()
 	local inst = CreateEntity()
 
@@ -184,6 +190,8 @@ local function fn()
 	inst:AddTag("largecreature")
 	inst:AddTag("flying")
 	inst:AddTag("ignorewalkableplatformdrowning")
+	
+	inst:AddTag("kochoseipet")
 
 	inst.Light:Enable(true)
 	inst.Light:SetRadius(2)
@@ -216,6 +224,9 @@ local function fn()
 	inst:AddComponent("healthtrigger")
 	inst:SetStateGraph("SGdragonfly")
 	inst:AddComponent("follower")
+
+	inst:AddComponent("heater")
+    inst.components.heater.heat = 115
 
 	inst.components.follower:KeepLeaderOnAttacked()
 	inst.components.follower.keepdeadleader = true
@@ -251,8 +262,7 @@ local function fn()
 
 	inst.components.combat:SetDefaultDamage(TUNING.DRAGONFLY_SLAVE_DAMAGE + TUNING.KOCHOSEI_CHECKWIFI)
 	inst.components.combat:SetAttackPeriod(1)
-	inst.components.combat.playerdamagepercent = 0.5
-	inst.components.combat:SetRange(TUNING.DRAGONFLY_ATTACK_RANGE, TUNING.DRAGONFLY_HIT_RANGE)
+		inst.components.combat:SetRange(TUNING.DRAGONFLY_ATTACK_RANGE, TUNING.DRAGONFLY_HIT_RANGE)
 	inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
 	inst.components.combat.battlecryenabled = false
 	inst.components.combat.hiteffectsymbol = "dragonfly_body"
@@ -267,7 +277,7 @@ local function fn()
 
 	inst:ListenForEvent("timerdone", OnTimerDone)
 	inst:ListenForEvent("death", ondeath)
-
+    inst.components.combat.onhitotherfn = OnHitOther
 	inst.TransformFire = TransformFire
 	inst.TransformNormal = TransformNormal
 	inst.can_ground_pound = false

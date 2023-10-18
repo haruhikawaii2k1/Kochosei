@@ -108,6 +108,7 @@ AddCharacterRecipe(
 		image = "kochosei_torigate.tex",
 		builder_tag = "kochosei",
 		placer = "kochosei_torigate_placer",
+		min_spacing = 1
 	},
 
 	{ "CHARACTER" }
@@ -122,6 +123,7 @@ AddCharacterRecipe(
 		image = "kochosei_wishlamp.tex",
 		builder_tag = "kochosei",
 		placer = "kochosei_wishlamp_placer",
+		min_spacing = 1
 	},
 
 	{ "CHARACTER" }
@@ -136,6 +138,7 @@ AddCharacterRecipe(
 		image = "kochosei_building_redlantern.tex",
 		builder_tag = "kochosei",
 		placer = "kochosei_building_redlantern_placer",
+		min_spacing = 1
 	},
 
 	{ "CHARACTER" }
@@ -382,6 +385,7 @@ AddCharacterRecipe(
 		image = "kochosei_streetlight1_left.tex",
 		builder_tag = "kochosei",
 		placer = "kochosei_streetlight1_left_placer",
+		min_spacing = 1
 	},
 
 	{ "CHARACTER" }
@@ -396,6 +400,7 @@ AddCharacterRecipe(
 		image = "kochosei_streetlight1_right.tex",
 		builder_tag = "kochosei",
 		placer = "kochosei_streetlight1_right_placer",
+		min_spacing = 1
 	},
 
 	{ "CHARACTER" }
@@ -410,6 +415,7 @@ AddCharacterRecipe(
 		image = "kochosei_streetlight1_musicbox.tex",
 		builder_tag = "kochosei",
 		placer = "kochosei_streetlight1_musicbox_placer",
+		min_spacing = 1
 	},
 
 	{ "CHARACTER" }

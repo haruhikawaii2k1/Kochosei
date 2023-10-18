@@ -92,20 +92,28 @@ end
 local KHONG_TAG = { "player", "FX", "playerghost", "NOCLICK", "DECOR", "INLIMBO", "epic" }
 local CAN_TAG = { "shadowcreature", "monster" }
 
+
 local function thithet(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
 	local ents = TheSim:FindEntities(x, y, z, 15, nil, KHONG_TAG, CAN_TAG)
 
-	for i, v in ipairs(ents) do
-		if v.components.health and (not v.components.follower or not v.components.follower:GetLeader()) then
-			v.components.health:Kill()
-		end
-	end
+    for i, v in ipairs(ents) do
+        if v.components.health then
+            local follower = v.components.follower
+            if not follower or not follower.leader then
+                v.components.health:Kill()
+            elseif follower.leader:HasTag("player") then
+                -- Đối tượng có leader và leader là người chơi, không gọi :Kill()
+            else
+                v.components.health:Kill()
+            end
+        end
+    end
 	local players = FindPlayersInRange(x, y, z, 15, true)
 
 	for _, player in pairs(players) do
 		player.components.temperature:SetTemperature(TUNING.BOOK_TEMPERATURE_AMOUNT)
-		player.components.moisture:SetMoistureLevel(0)
+	--	player.components.moisture:SetMoistureLevel(0)
 		local items = player.components.inventory:ReferenceAllItems()
 		for _, item in ipairs(items) do
 			if item.components.inventoryitemmoisture ~= nil then
@@ -134,10 +142,11 @@ local function cay_kocho()
 	inst.AnimState:SetBank("cay_kocho")
 	inst.AnimState:SetBuild("cay_kocho")
 	inst.AnimState:PlayAnimation("cay_kocho")
-
+	inst:AddTag("shelter")
 	if not TheWorld.ismastersim then
 		return inst
 	end
+	inst:AddTag("shelter")
 	inst.entity:SetPristine()
 	MakeSmallPropagator(inst)
 

@@ -41,6 +41,7 @@ end
 
 local function OnAttacked(inst, data)
 	if data.attacker ~= nil then
+	if data.attacker:HasTag("kochoseipet") then return end
 		if data.attacker.components.petleash ~= nil and data.attacker.components.petleash:IsPet(inst) then
 			inst.components.health:Kill()
 		elseif data.attacker.components.combat ~= nil then
@@ -114,6 +115,12 @@ local function m_checkLeaderExisting(inst)
 		return
 	else
 		inst.components.health:Kill()
+	end
+end
+
+local function OnHitOther(inst, other)
+	if other and other:HasTag("Kochoseipet") then 
+		inst.components.combat:GiveUp()
 	end
 end
 
@@ -234,6 +241,7 @@ local function fn()
 	inst:DoPeriodicTask(1, onPeriodicTask)
 	inst:DoPeriodicTask(1, m_checkLeaderExisting)
 	inst:ListenForEvent("attacked", OnAttacked)
+	inst.components.combat.onhitotherfn = OnHitOther
 
 	-- inst:ListenForEvent("stopfollowing",                        function(inst) inst.components.health:Kill() end)
 

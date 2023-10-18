@@ -969,6 +969,11 @@ local function OnAttacked(inst, data)
 	end
 end
 
+local function OnHitOther(inst, other)
+	if other and other:HasTag("Kochoseipet") then 
+		inst.components.combat:GiveUp()
+	end
+end
 --------------------------------------------------------------------------
 
 local function common_fn(bank, build, shadowsize, canfight, atriumstalker)
@@ -1000,11 +1005,13 @@ local function common_fn(bank, build, shadowsize, canfight, atriumstalker)
 
 	inst:AddTag("epic")
 	inst:AddTag("monster")
-	--    inst:AddTag("hostile")
+
 	inst:AddTag("scarytoprey")
-	--    inst:AddTag("largecreature")
-	--    inst:AddTag("stalker")
+
+	inst:AddTag("kochoseipet")
+
 	inst:AddTag("fossil")
+
 
 	if canfight then
 		inst:AddComponent("talker")
@@ -1117,6 +1124,7 @@ local function atrium_fn()
 	inst:DoPeriodicTask(0.5, onPeriodicTask)
 	inst:DoPeriodicTask(1, m_checkLeaderExisting)
 	inst:ListenForEvent("attacked", OnAttacked)
+    inst.components.combat.onhitotherfn = OnHitOther
 
 	--inst:ListenForEvent("stopfollowing", function(inst) inst.components.health:Kill()  end)
 

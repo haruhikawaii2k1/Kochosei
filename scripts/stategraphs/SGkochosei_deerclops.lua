@@ -32,7 +32,7 @@ local function SetLightColour(inst, val)
 end
 
 local AREAATTACK_MUST_TAGS = { "_combat" }
-local AREA_EXCLUDE_TAGS = { "INLIMBO", "notarget", "noattack", "flight", "invisible", "playerghost" }
+local AREA_EXCLUDE_TAGS = { "INLIMBO", "notarget", "noattack", "flight", "invisible", "playerghost", "player","kochoseipet" }
 local ICESPAWNTIME = 0.25
 
 local function DoSpawnIceSpike(inst, x, z)
