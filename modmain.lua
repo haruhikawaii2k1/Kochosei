@@ -121,7 +121,6 @@ for _, prefab in ipairs(listiteminv) do
 	local tex = prefab .. ".tex"
 	RegisterInventoryItemAtlas(_G.resolvefilepath(atlas), tex)
 end
--- Icon item ở đây không cần làm từng cái ở mỗi prefab nữa--
 
 PrefabFiles = {
 	"kochosei_apple_tree",
@@ -155,7 +154,7 @@ PrefabFiles = {
 	"kochosei_torigate",
 	"kochodragonfly",
 	"kochodeerclops",
-	"kochosei_umbrella", ---RAIDENFU---
+	"kochosei_umbrella",
 	"kochosei_demonlord",
 	"lucky_hammer",
 	"kochosei_ancient_books",
@@ -263,7 +262,6 @@ if TUNING.KOCHOSEI_CHECKMOD ~= 1 then
 	modimport("scripts/api_skins_soraaaaa") -- Không thấy modded nên dùng api đáng lẽ api cũ cơ
 end
 
---------------------------------------------
 
 ---- Tùy chỉnh item cho phép give clone ----
 
@@ -312,7 +310,7 @@ AddPlayerPostInit(function(inst)
 
 	inst:ListenForEvent("timerdone", kochospeed)
 end)
---- Cái này là buff đọc từ sách cổ đại ---
+
 
 --- Hồi sinh từ bướm ---
 local function CustomOnHauntkochosei(inst, haunter)
@@ -332,7 +330,6 @@ AddPrefabPostInit("butterfly", function(inst)
 	end
 	AddHauntableCustomReaction(inst, CustomOnHauntkochosei, true, false, true)
 end)
---- Hồi sinh từ bướm ---
 
 -- Boss Drop nơ siêu cấp--
 
@@ -547,3 +544,10 @@ ACTIONS.HAUNT.fn = function(act)
 	end 
 end
 ]]
+
+AddComponentPostInit("fishingrod", function(self)
+    function self:GetWaitTimes()
+        return self.minwaittime, self.maxwaittime
+    end
+end)
+

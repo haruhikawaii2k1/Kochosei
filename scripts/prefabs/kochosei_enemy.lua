@@ -188,6 +188,10 @@ local function OnExitWater(inst)
 	inst.AnimState:SetBuild("spider_water")
 end
 
+local function ondeath(inst)
+	inst.components.inventory:DropEverythingWithTag("weapon")
+end
+
 local function MakeMinion(prefab, tool, hat, master_postinit)
 	local assets = {}
 
@@ -297,7 +301,8 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
 
 		inst:SetBrain(brain)
 		inst:SetStateGraph("SGkochosei_enemy")
-
+		
+		inst:ListenForEvent("death", ondeath)
 		inst:ListenForEvent("attacked", OnAttacked)
 
 		inst:DoPeriodicTask(1, m_checkLeaderExisting)

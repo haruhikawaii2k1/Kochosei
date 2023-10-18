@@ -24,6 +24,7 @@ local RETARGET_CANT_TAGS = {
 	"INLIMBO",
 	"player",
 	"structure",
+	"Kochoseipet"
 }
 local function RetargetFn(inst)
 	local range = inst:GetPhysicsRadius(0) + 8
@@ -40,8 +41,11 @@ end
 local function OnHitOther(inst, data)
 	local other = data.target
 	if other ~= nil then
+		if other:HasTag("Kochoseipet") then 
+			inst.components.combat:GiveUp()
+		end
 		if not (other.components.health ~= nil and other.components.health:IsDead()) then
-			if other.components.freezable ~= nil then
+			if other.components.freezable ~= nil and not other:HasTag("Kochoseipet") then
 				other.components.freezable:AddColdness(2)
 			end
 			if other.components.temperature ~= nil then
@@ -57,6 +61,10 @@ local function OnHitOther(inst, data)
 		end
 	end
 end
+
+
+
+
 
 local function oncollapse(inst, other)
 	if other:IsValid() and other.components.workable ~= nil and other.components.workable:CanBeWorked() then
@@ -133,6 +141,7 @@ local function fn()
 	inst.Transform:SetFourFaced()
 
 	inst:AddTag("scarytoprey")
+	inst:AddTag("kochoseipet")
 
 	inst.AnimState:SetBank("deerclops")
 	inst.AnimState:SetBuild("deerclops_yule")
@@ -191,7 +200,10 @@ local function fn()
 	------------------------------------------
 	inst:AddComponent("explosiveresist")
 
-	------------------------------------------
+	inst:AddComponent("heater")
+	inst.components.heater.heat = -100
+	inst.components.heater:SetThermics(false, true)
+	--inst.components.heater.heat = 0
 	------------------------------------------
 
 	inst:AddComponent("lootdropper")

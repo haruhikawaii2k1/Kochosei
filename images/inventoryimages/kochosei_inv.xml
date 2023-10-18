@@ -11,6 +11,7 @@
         <Element name="kochosei_hat2.tex" u1="0.8759765625" v1="0.751953125" u2="0.9990234375" v2="0.998046875" />
         <Element name="kochosei_hat3.tex" u1="0.0009765625" v1="0.501953125" u2="0.1240234375" v2="0.748046875" />
         <Element name="kochosei_hatfl.tex" u1="0.1259765625" v1="0.501953125" u2="0.2490234375" v2="0.748046875" />
+		<Element name="kochosei_hatfl_skin.tex" u1="0.1259765625" v1="0.501953125" u2="0.2490234375" v2="0.748046875" />
         <Element name="kochosei_house_icon.tex" u1="0.2509765625" v1="0.501953125" u2="0.3740234375" v2="0.748046875" />
         <Element name="kochosei_lantern.tex" u1="0.3759765625" v1="0.501953125" u2="0.4990234375" v2="0.748046875" />
         <Element name="kochosei_purplemagic.tex" u1="0.5009765625" v1="0.501953125" u2="0.6240234375" v2="0.748046875" />

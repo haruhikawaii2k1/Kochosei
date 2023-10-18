@@ -2,7 +2,6 @@ require("behaviours/faceentity")
 require("behaviours/chaseandattack")
 require("behaviours/follow")
 require("behaviours/attackwall")
-require("behaviours/standstill")
 require("behaviours/leash")
 require("behaviours/runaway")
 
@@ -18,15 +17,11 @@ local START_FACE_DIST = 6
 local KEEP_FACE_DIST = 8
 
 local KEEP_WORKING_DIST = 14
-local SEE_WORK_DIST = 10
 
 local KITING_DIST = 3
 local STOP_KITING_DIST = 5
 
 local KEEP_DANCING_DIST = 3
-
-local DIG_TAGS = { "stump", "grave", "farm_debris", "snowpile" }
-local CHOP_TAGS = { "evergreens", "deciduoustree" }
 
 local function GetLeader(inst)
 	return inst.components.follower.leader

@@ -355,11 +355,21 @@ local function ontalk(inst, data)
 end
 
 -----------------------------------------------------------------------------
+local waitMin, waitMax
 
 local function OnEquipCustom(inst, data)
     if data.item:HasTag("kochosei_hat") then
         if inst:HasTag("scarytoprey") then
             inst:RemoveTag("scarytoprey")
+        end
+    end
+    if data.item:HasTag("fishingrod") then
+        local fishingrod = data.item.components.fishingrod
+        if fishingrod then
+            waitMin, waitMax = fishingrod:GetWaitTimes()
+            if waitMin and waitMax then
+                fishingrod:SetWaitTimes(waitMin * .5, waitMax * .5)
+            end
         end
     end
 end
@@ -369,6 +379,12 @@ local function OnUnequipCustom(inst, data)
         if data.item:HasTag("kochosei_hat") then
             if not inst:HasTag("scarytoprey") then
                 inst:AddTag("scarytoprey")
+            end
+        end
+        if data.item:HasTag("fishingrod") then
+            local fishingrod = data.item.components.fishingrod
+            if fishingrod and waitMin and waitMax then
+                fishingrod:SetWaitTimes(waitMin, waitMax)
             end
         end
     end
@@ -405,7 +421,6 @@ end
 local master_postinit = function(inst)
     inst.starting_inventory = start_inv[TheNet:GetServerGameMode()] or start_inv.default
 
-    -- choose which sounds this character will play
     inst.soundsname = "kochosei"
     inst.kochoseiindancing = 0
     inst.components.talker.ontalkfn = ontalk
