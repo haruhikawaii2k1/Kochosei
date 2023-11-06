@@ -1,10 +1,8 @@
 local Cuocdoiquabatcongdi = Class(function(self, inst)
-  self.inst = inst 
- end)
-local wifi = TUNING.KOCHOSEI_CHECKWIFI or 0
-local miohm = TUNING.KOCHOSEI_CHECKWIFI / 100 or 0
-local hat = TUNING.KOCHOSEI_CHECKWIFI*3 or 0
-local kochoseidef =  TUNING.KOCHOSEI_CHECKWIFI /1000 or 0
+    self.inst = inst
+end)
+local hat = TUNING.KOCHOSEI_CHECKWIFI * 2 or 0
+local kochoseidef = TUNING.KOCHOSEI_CHECKWIFI / 1000 or 0
 
 function Cuocdoiquabatcongdi:Hatitem()
     if self.inst:HasTag("kochoseihat") then
@@ -16,24 +14,18 @@ end
 
 function Cuocdoiquabatcongdi:Character()
     if self.inst:HasTag("kochosei") then
-        if kochoseidef  > TUNING.KOCHOSEI_ARMOR then
-            self.inst.components.health.externalabsorbmodifiers:SetModifier(self.inst, kochoseidef, "kocho_def_config") 
-            print("wifi hoat dong")
-        else
-            self.inst.components.health.externalabsorbmodifiers:SetModifier(self.inst, TUNING.KOCHOSEI_ARMOR, "kocho_def_config") 
-            print("wifi k hoat dong")
-        end
+        self.inst.components.health.externalabsorbmodifiers:SetModifier(self.inst,
+            math.max(kochoseidef, TUNING.KOCHOSEI_ARMOR) or 0, "kocho_def_config")
     end
 end
 
 function Cuocdoiquabatcongdi:Vukhi()
-    if self.inst.components.tool and miohm > 1.2 then
-        if self.inst:HasTag("miohm") then
-            self.inst.components.tool:SetAction(ACTIONS.MINE, miohm)
-            self.inst.components.tool:SetAction(ACTIONS.HAMMER, miohm)
-        end
-        if self.inst:HasTag("purplesword") then self.inst.components.tool:SetAction(ACTIONS.CHOP, miohm) end
+    local cangbang = math.max(1.2, (TUNING.KOCHOSEI_CHECKWIFI / 100))
+    if self.inst:HasTag("miohm") then
+        self.inst.components.tool:SetAction(ACTIONS.MINE, cangbang)
+        self.inst.components.tool:SetAction(ACTIONS.HAMMER, cangbang)
     end
+    if self.inst:HasTag("purplesword") then self.inst.components.tool:SetAction(ACTIONS.CHOP, cangbang) end
 end
 
 return Cuocdoiquabatcongdi

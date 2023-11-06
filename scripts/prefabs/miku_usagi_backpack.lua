@@ -9,54 +9,52 @@ local assets = {
 local prefabs = {
 	"ash",
 }
-
 local function onequip(inst, owner)
-	--  owner.AnimState:OverrideSymbol("miku_usagi_backpack", "swap_miku_usagi_backpack", "miku_usagi_backpack")
-	owner.AnimState:OverrideSymbol("swap_body", "swap_miku_usagi_backpack", "usagi")
-	owner.AnimState:OverrideSymbol("swap_body", "swap_miku_usagi_backpack", "swap_body")
+    owner.AnimState:OverrideSymbol("swap_body", "swap_miku_usagi_backpack", "usagi")
+    owner.AnimState:OverrideSymbol("swap_body", "swap_miku_usagi_backpack", "swap_body")
 
-	owner:AddTag("fastpicker")
-	owner:AddTag("fastpick")
-	owner:AddTag("expertchef")
-	if inst.components.container ~= nil then
-		inst.components.container:Open(owner)
-	end
+    if inst.components.container then
+        inst.components.container:Open(owner)
+    end
+
+    local fastpickerAdded = false
+    local expertchefAdded = false
+
+    if not owner:HasTag("fastpicker") and not owner:HasTag("fastpick") then
+        owner:AddTag("fastpicker")
+        owner:AddTag("fastpick")
+        fastpickerAdded = true
+    end
+
+    if not owner:HasTag("expertchef") then
+        owner:AddTag("expertchef")
+        expertchefAdded = true
+    end
+    owner.fastpickerAdded = fastpickerAdded
+    owner.expertchefAdded = expertchefAdded
 end
 
 local function onunequip(inst, owner)
-	owner:RemoveTag("fastpick")
-	owner:RemoveTag("fastpicker")
-	owner:RemoveTag("expertchef")
-	local skin_build = inst:GetSkinBuild()
-	owner.AnimState:ClearOverrideSymbol("swap_body")
-	owner.AnimState:ClearOverrideSymbol("miku_usagi_backpack")
-	if inst.components.container ~= nil then
-		inst.components.container:Close(owner)
-	end
+    local fastpickerAdded = owner.fastpickerAdded
+    local expertchefAdded = owner.expertchefAdded
+
+    if fastpickerAdded then
+        owner:RemoveTag("fastpick")
+        owner:RemoveTag("fastpicker")
+    end
+    if expertchefAdded then
+        owner:RemoveTag("expertchef")
+    end
+
+    local skin_build = inst:GetSkinBuild()
+    owner.AnimState:ClearOverrideSymbol("swap_body")
+    owner.AnimState:ClearOverrideSymbol("miku_usagi_backpack")
+
+    if inst.components.container then
+        inst.components.container:Close(owner)
+    end
 end
 
-local function onburnt(inst)
-	if inst.components.container ~= nil then
-		inst.components.container:DropEverything()
-		inst.components.container:Close()
-	end
-
-	SpawnPrefab("ash").Transform:SetPosition(inst.Transform:GetWorldPosition())
-
-	inst:Remove()
-end
-
-local function onignite(inst)
-	if inst.components.container ~= nil then
-		inst.components.container.canbeopened = false
-	end
-end
-
-local function onextinguish(inst)
-	if inst.components.container ~= nil then
-		inst.components.container.canbeopened = true
-	end
-end
 
 local function fn()
 	local inst = CreateEntity()
@@ -68,6 +66,7 @@ local function fn()
 	inst.entity:AddNetwork()
 
 	MakeInventoryPhysics(inst)
+	MakeInventoryFloatable(inst, "small", 0.1, 1.12)
 
 	inst.AnimState:SetBank("miku_usagi_backpack")
 	inst.AnimState:SetBuild("miku_usagi_backpack")
@@ -104,12 +103,7 @@ local function fn()
 	inst.components.container.skipclosesnd = true
 	inst.components.container.skipopensnd = true
 
-	MakeSmallBurnable(inst)
 	MakeSmallPropagator(inst)
-
-	inst.components.burnable:SetOnBurntFn(onburnt)
-	inst.components.burnable:SetOnIgniteFn(onignite)
-	inst.components.burnable:SetOnExtinguishFn(onextinguish)
 
 	inst:AddComponent("preserver")
 	inst.components.preserver:SetPerishRateMultiplier(TUNING.MIKU_USAGI_BACKPACK)

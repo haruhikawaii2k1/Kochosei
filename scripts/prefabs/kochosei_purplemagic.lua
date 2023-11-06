@@ -96,6 +96,7 @@ local function fn()
 	inst.AnimState:SetBuild("kochosei_purplemagic")
 	-- This is the animation name while item is on the ground.
 	inst.AnimState:PlayAnimation("idle")
+	MakeInventoryFloatable(inst, "small", 0.1, 1.12)
 
 	inst:AddTag("sharp")
 

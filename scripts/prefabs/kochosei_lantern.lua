@@ -187,6 +187,7 @@ local function fn()
 	inst.AnimState:SetBank("lantern")
 	inst.AnimState:SetBuild("kochosei_lantern")
 	inst.AnimState:PlayAnimation("idle_off")
+	MakeInventoryFloatable(inst, "small", 0.1, 1.12)
 
 	-- anim:SetBank("lantern")
 	-- anim:SetBuild("lantern")

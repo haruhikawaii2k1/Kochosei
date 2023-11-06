@@ -33,7 +33,7 @@ if TUNING.KOCHOSEI_CHECKMOD == 1 then
 			base_prefab = "kochosei",
 			build_name_override = "kochosei_snowmiku_skin1",
 			type = "base",
-			rarity = "Elegant",
+			rarity = "ModMade",
 			rarity_modifier = "Woven",
 			skip_item_gen = true,
 			skip_giftable_gen = true,

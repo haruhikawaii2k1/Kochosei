@@ -151,7 +151,7 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
 
 		inst:AddComponent("inspectable")
 		inst:AddComponent("locomotor")
-		inst.components.locomotor.runspeed = 8
+		inst.components.locomotor.runspeed = 12
 		inst.components.locomotor:SetTriggersCreep(false)
 		inst.components.locomotor.pathcaps = { allowocean = false }
 		inst.components.locomotor:SetSlowMultiplier(0.6)
@@ -185,7 +185,7 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
 
 		inst:ListenForEvent("death", m_killPet)
 
-		inst:DoPeriodicTask(1, m_checkLeaderExisting)
+	--	inst:DoPeriodicTask(1, m_checkLeaderExisting)
 
 		inst.LinkToPlayer = linktoplayer
 		if master_postinit ~= nil then

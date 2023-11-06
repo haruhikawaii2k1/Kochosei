@@ -28,6 +28,10 @@ TUNING.KOCHOSEI_PER_KILL = GetModConfigData("kocho_lv_perkill")
 TUNING.MIOHM_DURABILITY = GetModConfigData("kocho_miohm_dub")
 TUNING.MIOHM_DAMAGE_SPELL = GetModConfigData("kocho_miohm_damage_spell")
 TUNING.MIOHM_REPAIR = GetModConfigData("kocho_miohm_repair")
+
+TUNING.MIOHM_SAT_THUONG_PT_MAU = GetModConfigData("sat_thuong_pt_mau")
+TUNING.MIOHM_SAT_THUONG_PT_MAU_HOAT_DONG = GetModConfigData("sat_thuong_pt_mau_hoatdong")
+
 --Sword
 TUNING.KOCHO_SWORD_DAMAGE = GetModConfigData("kocho_sword_damage")
 TUNING.KOCHO_SWORD_DURABILITY = GetModConfigData("kocho_sword_dub")

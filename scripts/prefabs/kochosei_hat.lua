@@ -5,8 +5,8 @@ local assets = {
     Asset("ANIM", "anim/kochosei_hatfl.zip"),
     Asset("ANIM", "anim/ms_kochosei_hat2.zip"),
     Asset("ANIM", "anim/ms_kochosei_hat3.zip"),
-    Asset("ANIM", "anim/kochosei_hatfl_skin.zip"),
- --   Asset("ANIM", "anim/kochosei_hatfl_skin_drop.zip")
+    Asset("ANIM", "anim/kochosei_hatfl_skin.zip")
+    --   Asset("ANIM", "anim/kochosei_hatfl_skin_drop.zip")
 }
 --[[
 local function Onequip(inst, owner)
@@ -33,7 +33,8 @@ local hatMappings = {
     kochosei_hat1 = "kochosei_hat1",
     kochosei_hat2 = "kochosei_hat2",
     kochosei_hat3 = "kochosei_hat3",
-    kochosei_hatfl = "kochosei_hatfl",
+    kochosei_hatfl =
+    "kochosei_hatfl"
 }
 
 local function OnEquip(inst, owner)
@@ -54,8 +55,6 @@ local function OnEquip(inst, owner)
     owner.AnimState:Hide("HAIR_NOHAT")
     owner.AnimState:Hide("HAIR")
 end
-
-
 
 local function OnUnequip(inst, owner)
     local hatName = hatMappings[inst.prefab]
@@ -86,9 +85,10 @@ local function commonfn()
     inst.AnimState:PlayAnimation("anim")
     inst:AddTag("waterproofer")
     inst:AddTag("kochosei_hat")
+    inst:AddTag("bramble_resistant")
 
     MakeInventoryFloatable(inst, "small", 0.1, 1.12)
-
+    inst:AddTag("bramble_resistant")
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
@@ -98,7 +98,13 @@ local function commonfn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("armor")
-    inst.components.armor:InitCondition(TUNING.KOCHO_HAT1_DURABILITY + (TUNING.KOCHOSEI_CHECKWIFI * 2), TUNING.KOCHO_HAT1_ABSORPTION)
+    if type(TUNING.KOCHO_HAT1_DURABILITY) == "number" then
+        inst.components.armor:InitCondition(TUNING.KOCHO_HAT1_DURABILITY + (TUNING.KOCHOSEI_CHECKWIFI * 2),
+            TUNING.KOCHO_HAT1_ABSORPTION)
+    else
+        inst.components.armor:InitIndestructible(TUNING.KOCHO_HAT1_ABSORPTION)
+        inst.components.armor.condition = 999
+    end
     inst:AddComponent("cuocdoiquabatcongdi")
     inst.components.cuocdoiquabatcongdi:Hatitem()
 
@@ -173,6 +179,6 @@ STRINGS.RECIPE_DESC.KOCHOSEI_HAT3 = "Armor hat"
 STRINGS.NAMES.KOCHOSEI_HATFL = "Kochosei Hat"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.KOCHOSEI_HATFL = "No more worrying about headaches, but something else is coming :>"
 STRINGS.RECIPE_DESC.KOCHOSEI_HATFL = "No more worrying about headaches, but something else is coming :>"
-return Prefab("kochosei_hat1", kochosei_hat1, assets), Prefab("kochosei_hat2", kochosei_hat2, assets), Prefab("kochosei_hat3", kochosei_hat3, assets),
+return Prefab("kochosei_hat1", kochosei_hat1, assets), Prefab("kochosei_hat2", kochosei_hat2, assets),
+    Prefab("kochosei_hat3", kochosei_hat3, assets),
     Prefab("kochosei_hatfl", kochosei_hatfl, assets)
-

@@ -13,13 +13,10 @@ local function fn()
 
 	MakeInventoryPhysics(inst)
 	MakeHauntableLaunch(inst)
-
+    MakeInventoryFloatable(inst, "small", 0.1, 1.12)
 	inst.AnimState:SetBank("kocho_lotus")
 	inst.AnimState:SetBuild("kocho_lotus")
 	inst.AnimState:PlayAnimation("idle")
-
-	inst:AddTag("cattoy")
-	inst:AddTag("billfood")
 
 	inst.entity:SetPristine()
 	if not TheWorld.ismastersim then

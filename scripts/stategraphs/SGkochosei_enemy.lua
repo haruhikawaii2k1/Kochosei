@@ -348,8 +348,8 @@ local states = {
 
 		onenter = function(inst)
 			inst.Physics:Stop()
-
 			inst.AnimState:PlayAnimation("death")
+			inst.components.inventory:DropEverything(true)
 		end,
 
 		timeline = {

@@ -281,7 +281,7 @@ end
 if TUNING.KOCHOSEI_WICK2 ~= 1 then
 	AddCharacterRecipe(
 		"kocho_book_fish",
-		{ Ingredient("papyrus", 2), Ingredient("pondfish", 2) },
+		{Ingredient("papyrus", 2), Ingredient("oceanfishingbobber_ball", 2)},	
 		TECH.NONE,
 		{ builder_tag = "kochosei", product = "book_fish" },
 		{ "CHARACTER" }
@@ -289,7 +289,7 @@ if TUNING.KOCHOSEI_WICK2 ~= 1 then
 
 	AddCharacterRecipe(
 		"kocho_book_rain",
-		{ Ingredient("papyrus", 8) },
+		{Ingredient("papyrus", 2), Ingredient("goose_feather", 2)}, 		
 		TECH.NONE,
 		{ builder_tag = "kochosei", product = "book_rain" },
 		{ "CHARACTER" }
@@ -297,7 +297,7 @@ if TUNING.KOCHOSEI_WICK2 ~= 1 then
 
 	AddCharacterRecipe(
 		"kocho_book_moon",
-		{ Ingredient("papyrus", 1), Ingredient("moonrocknugget", 20) },
+		{Ingredient("papyrus", 2), Ingredient("opalpreciousgem", 1), Ingredient("moonbutterflywings", 2)},
 		TECH.NONE,
 		{ builder_tag = "kochosei", product = "book_moon" },
 		{ "CHARACTER" }
@@ -305,14 +305,14 @@ if TUNING.KOCHOSEI_WICK2 ~= 1 then
 
 	AddCharacterRecipe(
 		"kocho_book_silviculture",
-		{ Ingredient("papyrus", 6), Ingredient("log", 60) },
+		{Ingredient("papyrus", 2), Ingredient("livinglog", 1)},		
 		TECH.NONE,
 		{ builder_tag = "kochosei", product = "book_silviculture" },
 		{ "CHARACTER" }
 	)
 	AddCharacterRecipe(
 		"kocho_book_horticulture_upgraded",
-		{ Ingredient("papyrus", 5), Ingredient("spoiled_food", 40) },
+		{Ingredient("book_horticulture", 1), Ingredient("featherpencil", 1), Ingredient("papyrus", 2)},	
 		TECH.NONE,
 		{ builder_tag = "kochosei", product = "book_horticulture_upgraded" },
 		{ "CHARACTER" }
@@ -320,7 +320,7 @@ if TUNING.KOCHOSEI_WICK2 ~= 1 then
 
 	AddCharacterRecipe(
 		"kocho_book_fire",
-		{ Ingredient("log", 20) },
+		{Ingredient("book_brimstone", 1), Ingredient("featherpencil", 1), Ingredient("papyrus", 2)},
 		TECH.NONE,
 		{ builder_tag = "kochosei", product = "book_fire" },
 		{ "CHARACTER" }
@@ -328,12 +328,13 @@ if TUNING.KOCHOSEI_WICK2 ~= 1 then
 
 	AddCharacterRecipe(
 		"kocho_book_tentacles",
-		{ Ingredient("papyrus", 2), Ingredient("tentaclespots", 3) },
+		{Ingredient("papyrus", 2), Ingredient("tentaclespots", 1)},				
 		TECH.NONE,
 		{ builder_tag = "kochosei", product = "book_tentacles" },
 		{ "CHARACTER" }
 	)
 end
+
 AddCharacterRecipe(
 	"kocho_polly_rogershat",
 	{ Ingredient("silk", 10) },
@@ -468,7 +469,7 @@ AddCharacterRecipe(
 
 AddCharacterRecipe(
 	"kochosei_hatfl",
-	{ Ingredient("flowerhat", 1), Ingredient("moonglass", 50), Ingredient("hivehat", 1) },
+	{ Ingredient("flowerhat", 1), Ingredient("moonglass", 25), Ingredient("hivehat", 1),Ingredient("purebrilliance", 4) },
 
 	TECH.NONE,
 	{ atlas = "images/inventoryimages/kochosei_inv.xml", image = "kochosei_hatfl.tex", builder_tag = "kochosei" },

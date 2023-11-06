@@ -28,7 +28,6 @@ local function TurnOn(inst)
         end
         if not IsDay() then
             inst.fire.entity:SetParent(owner.entity)
-
         end
     end
 end
@@ -113,9 +112,9 @@ local function freezeSpell(inst, target)
 
     if target.components.freezable ~= nil then
         target:PushEvent("attacked", {
-            attacker=attacker,
-            damage=20,
-            weapon=inst
+            attacker = attacker,
+            damage = 20,
+            weapon = inst
         })
         if target.components.health then
             target.components.health:DoDelta(-TUNING.MIOHM_DAMAGE_SPELL)
@@ -266,7 +265,7 @@ local function fn()
     inst:AddTag("kochoseiweapon")
     inst:AddTag("miohm")
     inst:AddTag("lightningrod")
-
+    MakeInventoryFloatable(inst, "small", 0.1, 1.12)
     -- Glow in the Dark!
     inst.entity:AddLight()
     inst.Light:Enable(true) -- originally was false.
@@ -285,7 +284,6 @@ local function fn()
     inst.components.weapon:SetDamage(TUNING.MIOHM_DAMAGE)
     inst.components.weapon:SetOnAttack(onattack)
     inst.components.weapon:SetRange(1, 8)
-    inst.components.weapon:SetProjectile(nil)
 
     inst:AddComponent("tool")
     inst.components.tool:SetAction(ACTIONS.MINE, 1.2)

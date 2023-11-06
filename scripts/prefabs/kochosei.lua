@@ -24,14 +24,14 @@ TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.KOCHOSEI = {
 }
 
 TUNING.STARTING_ITEM_IMAGE_OVERRIDE.kochosei_lantern = {
-    image="kochosei_lantern.tex"
+    image = "kochosei_lantern.tex"
 }
 
 TUNING.STARTING_ITEM_IMAGE_OVERRIDE.kochosei_hat2 = {
-    image="kochosei_hat2.tex"
+    image = "kochosei_hat2.tex"
 }
 TUNING.STARTING_ITEM_IMAGE_OVERRIDE.kochosei_apple = {
-    image="kochosei_apple.tex"
+    image = "kochosei_apple.tex"
 }
 
 local start_inv = {}
@@ -106,62 +106,62 @@ end
 local wlist = require("util/weighted_list")
 
 local talklist = wlist({
-    talk1=1,
-    talk2=2,
-    talk3=3,
-    talk4=4,
-    talk5=5,
-    talk6=6,
-    talk7=7,
-    talk8=8,
-    talk9=9,
-    talk10=10,
-    talk11=11,
-    talk12=12,
-    talk13=13,
-    talk14=14,
-    talk15=15
+    talk1 = 1,
+    talk2 = 2,
+    talk3 = 3,
+    talk4 = 4,
+    talk5 = 5,
+    talk6 = 6,
+    talk7 = 7,
+    talk8 = 8,
+    talk9 = 9,
+    talk10 = 10,
+    talk11 = 11,
+    talk12 = 12,
+    talk13 = 13,
+    talk14 = 14,
+    talk15 = 15
 })
 local emotesoundlist = {
-    emote="emote",
-    emoteXL_waving1="wave", -- wave
-    emoteXL_facepalm="facepalm", -- facepalm
-    research="joy", -- joy
-    emoteXL_sad="cry", -- cry
-    emoteXL_annoyed="no", -- nosay
-    emoteXL_waving4="rude", -- rude
-    emote_pre_sit1="squat", -- squat
-    emote_pre_sit2="sit", -- sit
-    emoteXL_angry="angry", -- angry
-    emoteXL_happycheer="happy", -- happy
-    emoteXL_bonesaw="bonesaw", -- bonesaw
-    emoteXL_kiss="kiss", -- kiss
-    pose=wlist({
-        pose1=1,
-        pose2=1,
-        pose3=1
-    }), -- pose
-    emote_fistshake="fistshake", -- fistshake
-    emote_flex="flex", -- flex
-    emoteXL_pre_dance7="step", -- MY GODFATHER --
-    emoteXL_pre_dance0="dance", -- dance
-    emoteXL_pre_dance8="robot", -- robot
-    emoteXL_pre_dance6="chicken", -- chicken
-    emote_swoon="swoon", -- swoon
-    carol=wlist({
-        carol1=1,
-        carol2=2,
-        carol3=3,
-        carol4=4,
-        carol5=5
-    }), -- carol
-    emote_slowclap="slowclap", -- slowclap
-    emote_shrug="shrug", -- shrug
-    emote_laugh="laugh", -- laugh
-    emote_jumpcheer="cheer", -- cheer
-    emote_impatient="impatient", -- impatient
-    eye_rub_vo="sleepy", -- sleepy
-    emote_yawn="yawn" -- yawn
+    emote = "emote",
+    emoteXL_waving1 = "wave",      -- wave
+    emoteXL_facepalm = "facepalm", -- facepalm
+    research = "joy",              -- joy
+    emoteXL_sad = "cry",           -- cry
+    emoteXL_annoyed = "no",        -- nosay
+    emoteXL_waving4 = "rude",      -- rude
+    emote_pre_sit1 = "squat",      -- squat
+    emote_pre_sit2 = "sit",        -- sit
+    emoteXL_angry = "angry",       -- angry
+    emoteXL_happycheer = "happy",  -- happy
+    emoteXL_bonesaw = "bonesaw",   -- bonesaw
+    emoteXL_kiss = "kiss",         -- kiss
+    pose = wlist({
+        pose1 = 1,
+        pose2 = 1,
+        pose3 = 1
+    }),                             -- pose
+    emote_fistshake = "fistshake",  -- fistshake
+    emote_flex = "flex",            -- flex
+    emoteXL_pre_dance7 = "step",    -- MY GODFATHER --
+    emoteXL_pre_dance0 = "dance",   -- dance
+    emoteXL_pre_dance8 = "robot",   -- robot
+    emoteXL_pre_dance6 = "chicken", -- chicken
+    emote_swoon = "swoon",          -- swoon
+    carol = wlist({
+        carol1 = 1,
+        carol2 = 2,
+        carol3 = 3,
+        carol4 = 4,
+        carol5 = 5
+    }),                            -- carol
+    emote_slowclap = "slowclap",   -- slowclap
+    emote_shrug = "shrug",         -- shrug
+    emote_laugh = "laugh",         -- laugh
+    emote_jumpcheer = "cheer",     -- cheer
+    emote_impatient = "impatient", -- impatient
+    eye_rub_vo = "sleepy",         -- sleepy
+    emote_yawn = "yawn"            -- yawn
 }
 local HEAL_MUST_TAGS = {
     "player"
@@ -287,23 +287,26 @@ local function onnewstate(inst, data)
 
         inst.SoundEmitter:KillSound("kochoseibgm")
         inst.SoundEmitter:KillSound("kochoseitalk")
-        inst.components.sanity.dapperness = inst.components.sanity.dapperness - inst.kochoseiindancing * kochoseidancingsanity / 60
+        inst.components.sanity.dapperness = inst.components.sanity.dapperness -
+            inst.kochoseiindancing * kochoseidancingsanity / 60
         inst.kochoseiindancing = 0
         inst:RemoveEventCallback("newstate", onnewstate)
     end
 end
 
 local function onemote(inst, data)
-    local soundname = data.soundoverride or (type(data.anim) == "table" and (type(data.anim[1]) == "table" and data.anim[1][1] or data.anim[1]))
-                          or (type(data.anim) == "string" and data.anim) or "emote"
+    local soundname = data.soundoverride or
+        (type(data.anim) == "table" and (type(data.anim[1]) == "table" and data.anim[1][1] or data.anim[1])) or
+        (type(data.anim) == "string" and data.anim) or "emote"
     local loop = data.loop
-    local sound = "emote"
-    sound = emotesoundlist[soundname] or "emote"
+    local sound = emotesoundlist[soundname] or "emote"
 
     if soundname == "carol" or sound == "dance" or sound == "step" or sound == "robot" or sound == "chicken" then
-        inst.components.sanity.dapperness = inst.components.sanity.dapperness - inst.kochoseiindancing * kochoseidancingsanity / 60
+        inst.components.sanity.dapperness = inst.components.sanity.dapperness -
+            inst.kochoseiindancing * kochoseidancingsanity / 60
         inst.kochoseiindancing = (sound == "dance") and 1 or 1.5
-        inst.components.sanity.dapperness = inst.components.sanity.dapperness + inst.kochoseiindancing * kochoseidancingsanity / 60
+        inst.components.sanity.dapperness = inst.components.sanity.dapperness +
+            inst.kochoseiindancing * kochoseidancingsanity / 60
         if not inst.components.sanityaura then
             inst:AddComponent("sanityaura") -- 回SAN光环
         end
@@ -313,14 +316,27 @@ local function onemote(inst, data)
             inst.emotefn:Cancel()
             inst.emotefn = nil
         end
-
         inst.emotefn = inst:DoTaskInTime(1, emoteplants) -- happytime
-        KochoseiSound(inst, sound, nil, "kochoseibgm")
+        local x, y, z = inst.Transform:GetWorldPosition()
+        local players = FindPlayersInRange(x, y, z, 10, true)
+        local otherKochoseiInEmoteState = false
+        for i, v in ipairs(players) do
+            if v ~= inst and v:HasTag("kochosei") and v.sg and v.sg.currentstate.name == "emote" then
+                otherKochoseiInEmoteState = true
+                break
+            end
+        end
+
+        if not otherKochoseiInEmoteState then
+            KochoseiSound(inst, sound, nil, "kochoseibgm")
+        end
     else
         KochoseiSound(inst, sound, nil)
     end
+
     inst:DoTaskInTime(3, emoteplantsfix)
 end
+
 
 --[[---------------------------------Level Miomhm---------------------
 local function IsValidVictim(victim)
@@ -342,9 +358,9 @@ end
 --]]
 
 local ghosttalklist = wlist({
-    ghosttalk1=1,
-    ghosttalk2=1,
-    ghosttalk3=1
+    ghosttalk1 = 1,
+    ghosttalk2 = 1,
+    ghosttalk3 = 1
 })
 local function ontalk(inst, data)
     if not inst:HasTag("playerghost") then
@@ -366,7 +382,7 @@ local function OnEquipCustom(inst, data)
     if data.item:HasTag("fishingrod") then
         local fishingrod = data.item.components.fishingrod
         if fishingrod then
-            waitMin, waitMax = fishingrod:GetWaitTimes()
+            waitMin, waitMax = data.item.components.fishingrod.minwaittime, data.item.components.fishingrod.maxwaittime
             if waitMin and waitMax then
                 fishingrod:SetWaitTimes(waitMin * .5, waitMax * .5)
             end
@@ -410,10 +426,31 @@ local function OnHitOther(inst, data)
     local item = inst.components.combat:GetWeapon()
     if item and item:HasTag("kochoseiweapon") then
         local target = data.target
-        if target and target.components.health then
-            local phantrammau = target:HasTag("epic") and 1 or 4
-            local hoatdongkhihp = target:HasTag("epic") and 100000 or 5000
-            inst.components.sttptmau:Satthuong(target, phantrammau, false, false, hoatdongkhihp)
+        if target and target:HasTag("epic") and target.components.health then
+            inst.components.sttptmau:Satthuong(target, TUNING.MIOHM_SAT_THUONG_PT_MAU, false, false,
+                TUNING.MIOHM_SAT_THUONG_PT_MAU_HOAT_DONG)
+        end
+    end
+end
+
+local function phandamge(inst, data)
+    if data and data.afflicter and data.afflicter:IsValid() and data.afflicter.components.health and not data.afflicter.components.health:IsDead() then
+        local killer = data.afflicter.components.follower and data.afflicter.components.follower:GetLeader() or
+            data.afflicter:HasTag("player")
+            and data.afflicter or nil
+        if killer and killer:HasTag("player") and killer ~= inst then
+            killer.components.health:DoDelta(3 * data.amount, nil, nil, true, killer, true)
+        end
+    end
+end
+
+local function chungtakphaidatungladongdoisao(inst, data)
+    if data and data.afflicter and data.afflicter:IsValid() and data.afflicter.components.health and not data.afflicter.components.health:IsDead() then
+        local killer = data.afflicter.components.follower and data.afflicter.components.follower:GetLeader() or
+            data.afflicter:HasTag("player")
+            and data.afflicter or nil
+        if killer and killer:HasTag("player") and killer ~= inst then
+            killer.components.health:Kill()
         end
     end
 end
@@ -444,43 +481,24 @@ local master_postinit = function(inst)
     inst.customidleanim = "idle_wilson"
     inst.OnLoad = onload
 
-    inst:AddComponent("kochoseimain") -- Giết ếch, giết df, giết bướm, nó lỗi thì xóa dòng này
-    inst:AddComponent("sttptmau") -- Sát thương theo pt máu kiểm tra hàm OnHitOther
+    inst:AddComponent("kochoseimain")        -- Giết ếch, giết df, giết bướm, nó lỗi thì xóa dòng này
+
+    inst:AddComponent("sttptmau")            -- Sát thương theo pt máu kiểm tra hàm OnHitOther
 
     inst:AddComponent("cuocdoiquabatcongdi") -- Wifi không nên thế
     inst.components.cuocdoiquabatcongdi:Character()
 
     inst:ListenForEvent("emote", onemote)
-    ------------
     inst:ListenForEvent("equip", OnEquipCustom)
     inst:ListenForEvent("unequip", OnUnequipCustom)
-    ------------
-
     inst:ListenForEvent("ms_respawnedfromghost", onbecamehuman)
     inst:ListenForEvent("death", onbecameghost)
-    inst:ListenForEvent("death", function(inst, data)
-        if data and data.afflicter and data.afflicter:IsValid() and data.afflicter.components.health and not data.afflicter.components.health:IsDead() then
-            local killer = data.afflicter.components.follower and data.afflicter.components.follower:GetLeader() or data.afflicter:HasTag("player")
-                               and data.afflicter or nil
-            if killer and killer:HasTag("player") and killer ~= inst then
-                killer.components.health:Kill()
-            end
-        end
-    end)
-    inst:ListenForEvent("healthdelta", function(inst, data)
-        if data and data.afflicter and data.afflicter:IsValid() and data.afflicter.components.health and not data.afflicter.components.health:IsDead() then
-            local killer = data.afflicter.components.follower and data.afflicter.components.follower:GetLeader() or data.afflicter:HasTag("player")
-                               and data.afflicter or nil
-            if killer and killer:HasTag("player") and killer ~= inst then
-                killer.components.health:DoDelta(3 * data.amount, nil, nil, true, killer, true)
-            end
-        end
-    end)
-
-    inst.wlist = wlist
-    -- inst:ListenForEvent("killed", onkilledmiohm)
+    inst:ListenForEvent("death", chungtakphaidatungladongdoisao)
+    inst:ListenForEvent("healthdelta", phandamge)
     inst:ListenForEvent("picksomething", onpick)
     inst:ListenForEvent("onhitother", OnHitOther)
+
+    inst.wlist = wlist
     ---------------------------Kén ăn------------------
     local inedibles = {}
     local old_CanEat = inst.components.eater.CanEat
@@ -492,41 +510,36 @@ local master_postinit = function(inst)
         end
         return old_CanEat(self, food_inst)
     end
-    ---------------------------Kén ăn------------------
-    -------------Bướm chết ở gần bị trừ sanity----------------------
-    -- inst._onentitydeathfn = function(src, data) apdungtrungphat(inst, data) end
-    -- inst:ListenForEvent("entity_death", inst._onentitydeathfn, TheWorld)
-    -------------Bướm chết ở gần bị trừ sanity----------------------
 end
 -- Không dùng khi có modded được phát hiện--
 if TUNING.KOCHOSEI_CHECKMOD ~= 1 then
     Kochoseiapi.MakeCharacterSkin("kochosei", "kochosei_none", {
-        name="Kochosei",
-        des="o((>ω< ))o",
-        quotes="<3 Hora hora",
-        rarity="Character",
-        skins={
-            normal_skin="kochosei",
-            ghost_skin="ghost_kochosei_build"
+        name = "Kochosei",
+        des = "o((>ω< ))o",
+        quotes = "<3 Hora hora",
+        rarity = "Character",
+        skins = {
+            normal_skin = "kochosei",
+            ghost_skin = "ghost_kochosei_build"
         },
-        skin_tags={
+        skin_tags = {
             "BASE",
             "kochosei",
             "CHARACTER"
         },
-        build_name_override="kochosei"
+        build_name_override = "kochosei"
     })
 
     Kochoseiapi.MakeCharacterSkin("kochosei", "kochosei_snowmiku_skin1", {
-        name="Kochosei cosplay Miku",
-        des="o((>ω< ))o",
-        quotes="Ai đó đã phải làm việc như trâu để có skin này. Congratulation",
-        rarity="Elegant",
-        skins={
-            normal_skin="kochosei_snowmiku_skin1",
-            ghost_skin="ghost_kochosei_build"
+        name = "Kochosei cosplay Miku",
+        des = "o((>ω< ))o",
+        quotes = "Ai đó đã phải làm việc như trâu để có skin này. Congratulation",
+        rarity = "Elegant",
+        skins = {
+            normal_skin = "kochosei_snowmiku_skin1",
+            ghost_skin = "ghost_kochosei_build"
         },
-        skin_tags={
+        skin_tags = {
             "BASE",
             "kochosei",
             "CHARACTER",

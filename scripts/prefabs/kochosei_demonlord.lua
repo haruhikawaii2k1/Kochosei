@@ -107,7 +107,7 @@ local function fn()
 	inst.AnimState:PlayAnimation("idle")
 
 	inst:AddTag("sharp")
-
+	MakeInventoryFloatable(inst, "small", 0.1, 1.12)
 	-- Glow in the Dark!
 	inst.entity:AddLight()
 	inst.Light:Enable(true) -- originally was false.

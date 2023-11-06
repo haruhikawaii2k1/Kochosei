@@ -48,7 +48,7 @@ local function fn()
 	inst:AddComponent("weapon")
 
 	inst:AddComponent("projectile")
-	inst.components.projectile:SetSpeed(15)
+	inst.components.projectile:SetSpeed(30)
 	inst.components.projectile:SetCanCatch(false)
 	inst.components.projectile:SetHoming(true)
 

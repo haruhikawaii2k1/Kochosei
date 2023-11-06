@@ -97,7 +97,7 @@ function kochosei_enemy_brain_b:OnStart()
 			end,
 			"Leader In Range",
 			PriorityNode({
-				DoAction(self.inst, PickUpAction, "pick up", true),
+			--	DoAction(self.inst, PickUpAction, "pick up", true),
 			}, 0.25)
 		),
 
