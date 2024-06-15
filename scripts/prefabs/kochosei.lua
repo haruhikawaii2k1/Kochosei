@@ -5,7 +5,9 @@ local assets = {
     Asset("SOUND", "sound/kochosei_voice.fsb"),
     Asset("ANIM", "anim/kochosei.zip"),
     Asset("ANIM", "anim/ghost_kochosei_build.zip"),
-    Asset("ANIM", "anim/kochosei_snowmiku_skin1.zip")
+    Asset("ANIM", "anim/kochosei_snowmiku_skin1.zip"),
+	    Asset("ANIM", "anim/kochosei_skin_shinku_notfull.zip"),
+		    Asset("ANIM", "anim/kochosei_skin_shinku_full.zip")
 }
 
 -- Your character's stats
@@ -229,8 +231,13 @@ end
 -- This initializes for both the server and client. Tags can be added here.
 local common_postinit = function(inst)
     inst:AddTag("kochosei")
+	inst:AddTag("masterchef")
     inst:AddTag("puppeteer")
     inst:AddTag("reader")
+	inst:AddTag("quagmire_farmhand")
+	inst:AddTag("fastpicker")
+    inst:AddTag("fastpick")  
+	inst:AddTag("expertchef")
     inst.MiniMapEntity:SetIcon("kochosei.tex")
     --  inst.AnimState:AddOverrideBuild("wendy_channel")
     --  inst.AnimState:AddOverrideBuild("player_idles_wendy")
@@ -334,9 +341,42 @@ local function onemote(inst, data)
         KochoseiSound(inst, sound, nil)
     end
 
-    inst:DoTaskInTime(3, emoteplantsfix)
+  --  inst:DoTaskInTime(3, emoteplantsfix) --giảm thời gian emote là 3s
+end
+--Getkochomap
+function IsForestBiomeAtPoint(x, y, z)
+	if TheWorld.Map:IsVisualGroundAtPoint(x, y, z) and TheWorld.Map:GetTileAtPoint(x, y, z) == 6  then --check nó nằm trên phạm vi bản đồ
+		--local node = TheWorld.Map:FindNodeAtPoint(x, y, z) -- câu lệnh tìm node này không hiểu lắm nên cook
+		--return node ~= nil and node.tags ~= nil and table.contains(node.tags, not cherryruins and "cherryarea" or "cherryruinsarea")
+		return true
+	end
+	return false
 end
 
+local MAPREVEAL_SCALE = 128
+local MAPREVEAL_STEPS = 4
+
+local function GetKochoMap(inst)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local stone = TheSim:FindFirstEntityWithTag("kochosei_fuji_tree")
+	if stone ~= nil then
+		x, y, z = stone.Transform:GetWorldPosition()
+	else
+		return
+	end
+	
+	for x2 = x - MAPREVEAL_SCALE, x + MAPREVEAL_SCALE, MAPREVEAL_STEPS do
+		for z2 = z - MAPREVEAL_SCALE, z + MAPREVEAL_SCALE, MAPREVEAL_STEPS do
+			if IsForestBiomeAtPoint(x2, 0, z2) then
+				inst.player_classified.MapExplorer:RevealArea(x2, 0, z2)
+			end
+		end
+	end
+end
+
+local function OnNewSpawn(inst)
+	inst:DoTaskInTime(1, GetKochoMap)
+end
 
 --[[---------------------------------Level Miomhm---------------------
 local function IsValidVictim(victim)
@@ -374,6 +414,12 @@ end
 local waitMin, waitMax
 
 local function OnEquipCustom(inst, data)
+local checksin =    inst.components.skinner:Kochosei_GetSkinName()
+if checksin and checksin == "kochosei_skin_shinku_full" then
+    inst.AnimState:ClearOverrideSymbol("swap_hat")
+    inst.AnimState:ClearOverrideSymbol("swap_body")
+
+end
     if data.item:HasTag("kochosei_hat") then
         if inst:HasTag("scarytoprey") then
             inst:RemoveTag("scarytoprey")
@@ -458,6 +504,7 @@ end
 local master_postinit = function(inst)
     inst.starting_inventory = start_inv[TheNet:GetServerGameMode()] or start_inv.default
 
+    inst.OnNewSpawn = OnNewSpawn
     inst.soundsname = "kochosei"
     inst.kochoseiindancing = 0
     inst.components.talker.ontalkfn = ontalk
@@ -470,6 +517,7 @@ local master_postinit = function(inst)
     inst.components.combat.externaldamagemultipliers:SetModifier(inst, TUNING.KOCHOSEI_DAMAGE, "kocho_damage_config") -- Damage multiplier (optional)
 
     inst.components.sanity.dapperness = -5 / 60
+	
 
     inst.components.petleash:SetMaxPets(TUNING.KOCHOSEI_SLAVE_MAX_FIX)
 
@@ -533,10 +581,42 @@ if TUNING.KOCHOSEI_CHECKMOD ~= 1 then
     Kochoseiapi.MakeCharacterSkin("kochosei", "kochosei_snowmiku_skin1", {
         name = "Kochosei cosplay Miku",
         des = "o((>ω< ))o",
-        quotes = "Ai đó đã phải làm việc như trâu để có skin này. Congratulation",
+        quotes = "Miku chan Ohayo!",
         rarity = "Elegant",
         skins = {
             normal_skin = "kochosei_snowmiku_skin1",
+            ghost_skin = "ghost_kochosei_build"
+        },
+        skin_tags = {
+            "BASE",
+            "kochosei",
+            "CHARACTER",
+            "ICE"
+        }
+    })
+    Kochoseiapi.MakeCharacterSkin("kochosei", "kochosei_skin_shinku_notfull", {
+        name = "Kochosei cosplay Shinku",
+        des = "o((>ω< ))o",
+        quotes = "Shinku chan, Xinh xinh! o((>ω< ))o",
+        rarity = "Elegant",
+        skins = {
+            normal_skin = "kochosei_skin_shinku_notfull",
+            ghost_skin = "ghost_kochosei_build"
+        },
+        skin_tags = {
+            "BASE",
+            "kochosei",
+            "CHARACTER",
+            "ICE"
+        }
+    })
+    Kochoseiapi.MakeCharacterSkin("kochosei", "kochosei_skin_shinku_full", {
+        name = "Kochosei cosplay Shinku",
+        des = "o((>ω< ))o",
+        quotes = "Shinku chan, Xinh xinh! o((>ω< ))o",
+        rarity = "Elegant",
+        skins = {
+            normal_skin = "kochosei_skin_shinku_full",
             ghost_skin = "ghost_kochosei_build"
         },
         skin_tags = {

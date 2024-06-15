@@ -148,9 +148,7 @@ local function checklight(inst)
     else
         if inst.firestest == nil then
             inst.firestest = {}
-            for i, fx_prefab in ipairs(inst:GetSkinName() == nil and {
-                "torchfire"
-            } or SKIN_FX_PREFAB[inst:GetSkinName()] or {}) do
+            for i, fx_prefab in ipairs(inst:GetSkinName() == nil and {"torchfire"} or SKIN_FX_PREFAB[inst:GetSkinName()] or {}) do
                 local fx = SpawnPrefab(fx_prefab)
                 local fx2 = SpawnPrefab(fx_prefab)
                 local fx3 = SpawnPrefab(fx_prefab)

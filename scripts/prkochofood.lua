@@ -94,7 +94,11 @@ local prkochofood = {
                 end
                 eater.components.timer:StartTimer("kochobufffood", 120)
                 eater.AnimState:SetScale(2.5, 2.5)
-                eater.components.health.externalabsorbmodifiers:SetModifier(inst, 0.2, "kocho_def_buff_food")
+                eater.components.health.externalabsorbmodifiers:SetModifier(eater, 0.35, "kocho_def_buff_food")
+				eater.components.hunger:SetMax(666)
+				eater.components.health:SetMaxHealth(666)
+				eater.components.sanity:SetMax(666)
+				eater:AddComponent("planarentity")
             end
         end,
     },

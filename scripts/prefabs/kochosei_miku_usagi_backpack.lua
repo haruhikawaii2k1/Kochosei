@@ -38,11 +38,11 @@ local function onunequip(inst, owner)
     local fastpickerAdded = owner.fastpickerAdded
     local expertchefAdded = owner.expertchefAdded
 
-    if fastpickerAdded then
+    if fastpickerAdded and not owner:HasTag("kochosei") then
         owner:RemoveTag("fastpick")
         owner:RemoveTag("fastpicker")
     end
-    if expertchefAdded then
+    if expertchefAdded and not owner:HasTag("kochosei") then
         owner:RemoveTag("expertchef")
     end
 

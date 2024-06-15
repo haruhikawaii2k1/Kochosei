@@ -40,7 +40,7 @@ local function fn()
 	inst.entity:SetPristine()
 
 	inst:AddComponent("tool")
-	inst.components.tool:SetAction(ACTIONS.CHOP, 1.2)
+	inst.components.tool:SetAction(ACTIONS.CHOP, 4)
 
 	if type(TUNING.KOCHO_SWORD_DURABILITY) == "number" then
 		inst:AddComponent("finiteuses")

@@ -500,3 +500,39 @@ AddCharacterRecipe(
 
 	{ "CHARACTER" }
 )
+
+
+-- seed craft
+AddCharacterRecipe(
+	"kochosei_premium_seed_packet",
+	{ Ingredient("goldnugget", 6), Ingredient("papyrus", 1) },
+	TECH.NONE,
+	{ builder_tag = "kochosei", product = "yotc_seedpacket_rare" },
+	{ "CHARACTER" }
+)
+
+AddCharacterRecipe(
+	"kochosei_medium_seed_packet",
+	{ Ingredient("goldnugget", 3) },
+	TECH.NONE,
+	{ builder_tag = "kochosei", product = "yotc_seedpacket" },
+	{ "CHARACTER" }
+)
+
+--kitcoon craft
+AddCharacterRecipe(
+	"kochosei_ticoon",
+	{ Ingredient("goldnugget", 10) },
+	TECH.NONE,
+	{ builder_tag = "kochosei", product = "ticoon_builder" },
+	{ "CHARACTER" }
+)
+
+--FOOD craft
+AddCharacterRecipe(
+	"kochosei_butter",
+	{ Ingredient("honey", 20) },
+	TECH.NONE,
+	{ builder_tag = "kochosei", product = "butter" },
+	{ "CHARACTER" }
+)

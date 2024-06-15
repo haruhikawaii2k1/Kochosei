@@ -7,12 +7,19 @@ Thank you for using this mod, you can use the config button below and let me kno
 	
 ]]
 author = "Mio, dinhkarate, Haruhi Kawaii"
-version = "4.0.7"
+version = "4.0.19"
 forumthread = ""
 
 folder_name = folder_name or "workshop-"
-if not folder_name:find("workshop-") then
+if folder_name:match("2978066706") then
+    name = "Kochosei Bản Test"
+elseif
+    folder_name:match("2733891656")
+then
+    name = "Kochosei in Onmyoji"
+else
     name = "Test Local"
+    --?
 end
 
 api_version = 10

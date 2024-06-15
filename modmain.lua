@@ -20,6 +20,7 @@ local listmodneedcheck = {
 TUNING.KOCHOSEI_CHECKWIFI_CONFIG = GetModConfigData("kochosei_va_waifu") -- Này là wifi
 TUNING.KOCHOSEI_CHECKMOD = nil
 TUNING.KOCHOSEI_CHECKWIFI = 0                                            -- Wifi mà, không phải waifu, nó là 0 vì nó nên như thế )
+                                                                         -- ?
 
 local modsToLoad = _G.KnownModIndex:GetModsToLoad()
 for _, v in ipairs(modsToLoad) do
@@ -96,7 +97,7 @@ local listiteminv = {
     "kochosei_ancient_books",
     "kochosei_christmast_torch1",
 }
--- Icon item ở đây không cần làm từng cái ở mỗi prefab nữa--
+-- Icon item ở đây không cần làm từng cái ở mỗi prefab nữa --
 for _, prefab in ipairs(kochofood) do
     local atlas = "images/inventoryimages/kochofood.xml"
     local tex = prefab .. ".tex"
@@ -115,37 +116,38 @@ PrefabFiles = {
     "kochosei_apple_plantables",
     "kochosei",
     "kochosei_none",
-    "miohm",
-    "kocho_bearger",
-    "kochotambourin",
+    "kochosei_miohm",
+    "kochosei_bearger",
+    "kochosei_kochotambourin",
     "kochosei_hat",
     "kochosei_lantern",
     "kochosei_streetlight",
     "kochosei_streetlight1_musicbox",
     "kochosei_enemy",
     "kochosei_enemyb",
-    "lavaarena_blooms_kocho",
+    "kochosei_lavaarena_blooms_kocho",
     "kochosei_house",
     "kochosei_purplemagic",
     "kochosei_magicbubble",
-    "miku_usagi_backpack",
-    "kocho_purplesword",
-    "kocho_lotus_flower",
-    "kocho_lotus",
-    "kocho_lotus2",
-    "kocho_miku_cos",
-    "kochofood",
-    "kocho_stalk",
+    "kochosei_miku_usagi_backpack",
+    "kochosei_purplesword",
+    "kochosei_lotus_flower",
+    "kochosei_lotus",
+    "kochosei_lotus2",
+    "kochosei_decor",
+    "kochosei_food",
+    "kochosei_stalk",
     "kochosei_wishlamp",
     "kochosei_torigate",
-    "kochodragonfly",
-    "kochodeerclops",
+    "kochosei_dragonfly",
+    "kochosei_deerclops",
     "kochosei_umbrella",
     "kochosei_demonlord",
-    "lucky_hammer",
+    "kochosei_lucky_hammer",
     "kochosei_ancient_books",
-    "bienbao", -- "kochosei_enemy_d" Mio k cho dung nua
+    "kochosei_bienbao", -- "kochosei_enemy_d" Mio k cho dung nua
     "kochosei_christmast_torch1",
+	"kochosei_moonstorm_ground_lightning_fx",
 }
 
 local skin_modes = {
@@ -269,13 +271,11 @@ AddPrefabPostInitAny(function(inst)
     end
 end)
 
---[[
 AddComponentPostInit("skinner",function(self)
 	function self:Kochosei_GetSkinName()
 		return self.skin_name
 	end
 end)
-	--]]
 
 --- Cái này là buff đọc từ sách cổ đại ---
 local function kochospeed(inst, data)
@@ -286,13 +286,18 @@ end
 local function bufffood(inst, data)
     if data.name == "kochobufffood" then
         inst.AnimState:SetScale(1, 1)
-        -- inst.components.combat.externaldamagemultipliers:RemoveModifier(inst, "kocho_damage_buff_food")
+		inst.components.health:SetMaxHealth(TUNING.KOCHOSEI_HEALTH)
+		inst.components.hunger:SetMax(TUNING.KOCHOSEI_HUNGER)
+		inst.components.sanity:SetMax(TUNING.KOCHOSEI_SANITY)
         inst.components.health.externalabsorbmodifiers:RemoveModifier(inst, "kocho_def_buff_food")
+		if inst.components.planarentity then
+			inst:RemoveComponent("planarentity")
+		end
     end
 end
 
 
-AddPlayerPostInit(function(inst)
+AddPrefabPostInit("kochosei", function(inst)
     if not TheWorld.ismastersim then
         return inst
     end
@@ -300,7 +305,6 @@ AddPlayerPostInit(function(inst)
     if not inst.components.timer then
         inst:AddComponent("timer")
     end
-
     inst:ListenForEvent("timerdone", kochospeed)
     inst:ListenForEvent("timerdone", bufffood)
 end)
@@ -362,27 +366,6 @@ AddPrefabPostInit("kochosei_hatfl", function(inst)
     end
     inst:AddComponent("planardefense")
     inst.components.planardefense:SetBaseDefense(TUNING.ARMOR_LUNARPLANT_PLANAR_DEF)
-end)
-
-local function OnDeploy(inst, pt, deployer)
-    local flower = SpawnPrefab("planted_flower")
-    if flower then
-        flower:PushEvent("growfrombutterfly")
-        flower.Transform:SetPosition(pt:Get())
-        inst.components.stackable:Get():Remove()
-        TheWorld:PushEvent("CHEVO_growfrombutterfly",{target=flower,doer=deployer})
-        if deployer and deployer.SoundEmitter then
-            deployer.SoundEmitter:PlaySound("dontstarve/common/plant")
-        end
-    end
-end
-
-AddPrefabPostInit("seeds", function(inst)
-    if not TheWorld.ismastersim then
-        return inst
-    end
-    inst:AddComponent("deployable")
-    inst.components.deployable.ondeploy = OnDeploy
 end)
 
 
@@ -592,4 +575,20 @@ AddComponentPostInit("fishingrod", function(self)
 		return self.minwaittime, self.maxwaittime
 	end
 end)
---]]
+
+
+AddStategraphState("wilson",GLOBAL.State{
+	name = "tillconcomio",
+	onenter = function(inst)
+		inst.sg:GoToState("till", 0.2) --'2 seconds, but you can change this into whatever you want'
+	end,
+})
+
+----lam chua xong 
+
+AddStategraphActionHandler("wilson",GLOBAL.ActionHandler(GLOBAL.ACTIONS.TILL,function(inst)
+            return inst:HasTag("kochosei") and "tillconcomio" or  "till_start"   end))
+AddStategraphActionHandler("wilson_client",GLOBAL.ActionHandler(GLOBAL.ACTIONS.TILL,function(inst)
+            return inst:HasTag("kochosei") and "tillconcomio" or  "till_start"   end))
+				
+--]]			

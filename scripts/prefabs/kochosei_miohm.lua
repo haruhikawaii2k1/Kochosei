@@ -1,6 +1,8 @@
 local assets = {
     Asset("ANIM", "anim/miohm.zip"),
-    Asset("ANIM", "anim/swap_miohm.zip")
+    Asset("ANIM", "anim/swap_miohm.zip"),
+    Asset("ANIM", "anim/swap_kochosei_purplebattleaxe.zip"),
+    Asset("ANIM", "anim/kochosei_purplebattleaxe.zip")
 }
 
 local function onattack(inst, attacker, target)
@@ -42,7 +44,13 @@ local function TurnOff(inst)
 end
 
 local function OnEquip(inst, owner)
-    owner.AnimState:OverrideSymbol("swap_object", "swap_miohm", "swap_miohm")
+	local skin_build = inst:GetSkinBuild()
+	if skin_build ~= nil then
+		owner:PushEvent("equipskinneditem", inst:GetSkinName())
+		owner.AnimState:OverrideSymbol("swap_object", skin_build or "swap_kochosei_purplebattleaxe", "swap_kochosei_purplebattleaxe")
+	else
+		owner.AnimState:OverrideSymbol("swap_object", "swap_miohm", "swap_miohm")
+	end
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
     if IsDay() then
@@ -183,8 +191,15 @@ local function aoeSpell(inst, target, caster)
     if target.components.health and target.components.health.currenthealth > 100000 then
         target.components.health:DoDelta(-damage)
     end
-    local lightning = SpawnPrefab("lightning")
+    local lightning = SpawnPrefab("moonstorm_lightning")
     lightning.Transform:SetPosition(x, y, z)
+	local lightningPrefab = "kochosei_moonstorm_ground_lightning_fx"
+	local numLightnings = 5
+
+for i = 1, numLightnings do
+    local lightning = SpawnPrefab(lightningPrefab)
+    lightning.Transform:SetPosition(x, y, z)
+end
 
     if not inst.components.timer:TimerExists("miohmcrabking") then
         local freeze_fx = SpawnPrefab("crabking_feeze")
@@ -204,7 +219,8 @@ end
 local function applyupgrades(inst, data)
     local max_upgrades = TUNING.KOCHOSEI_MAX_LEVEL + (TUNING.KOCHOSEI_CHECKWIFI or 0)
     local upgrades = math.min(inst.levelmiohm, max_upgrades)
-    inst.components.weapon:SetDamage(upgrades + TUNING.MIOHM_DAMAGE)
+ --   inst.components.weapon:SetDamage(upgrades + TUNING.MIOHM_DAMAGE)
+	inst.components.planardamage:SetBaseDamage(upgrades + TUNING.MIOHM_DAMAGE)
 end
 
 local function OnSave(inst, data)
@@ -284,6 +300,10 @@ local function fn()
     inst.components.weapon:SetDamage(TUNING.MIOHM_DAMAGE)
     inst.components.weapon:SetOnAttack(onattack)
     inst.components.weapon:SetRange(1, 8)
+	
+
+	inst:AddComponent("planardamage")
+
 
     inst:AddComponent("tool")
     inst.components.tool:SetAction(ACTIONS.MINE, 1.2)
@@ -343,7 +363,16 @@ local function fn()
 
     return inst
 end
-
+     Kochoseiapi.MakeItemSkin("miohm","swap_kochosei_purplebattleaxe",{
+        name = "Purple Battle Axe",
+        atlas = "images/inventoryimages/kochosei_purplebattleaxe_icon.xml",
+        image = "kochosei_purplebattleaxe_icon",
+        build = "kochosei_purplebattleaxe",
+        bank = "kochosei_purplebattleaxe",
+        basebuild = "miohm",
+        basebank = "miohm",
+    })
+	
 STRINGS.NAMES.MIOHM = "MioHM"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.MIOHM = "Woaaah, i want it!! XD"
 STRINGS.RECIPE_DESC.MIOHM = "Electric hammer"

@@ -33,8 +33,7 @@ local hatMappings = {
     kochosei_hat1 = "kochosei_hat1",
     kochosei_hat2 = "kochosei_hat2",
     kochosei_hat3 = "kochosei_hat3",
-    kochosei_hatfl =
-    "kochosei_hatfl"
+    kochosei_hatfl ="kochosei_hatfl"
 }
 
 local function OnEquip(inst, owner)
@@ -52,8 +51,6 @@ local function OnEquip(inst, owner)
 
     owner.AnimState:Show("HAT")
     owner.AnimState:Show("HAIR_HAT")
-    owner.AnimState:Hide("HAIR_NOHAT")
-    owner.AnimState:Hide("HAIR")
 end
 
 local function OnUnequip(inst, owner)
