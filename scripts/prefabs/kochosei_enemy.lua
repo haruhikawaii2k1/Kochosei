@@ -121,13 +121,17 @@ local function m_checkLeaderExisting(inst)
         inst.sg:GoToState("cry")
     end
 end
+local function Kochosei_enemy(dude)
+    return dude:HasTag("kochosei_enemy") and not dude.components.health:IsDead()
+end
 
 local function OnAttacked(inst, data)
     if data.attacker ~= nil then
         if data.attacker.components.petleash ~= nil and data.attacker.components.petleash:IsPet(inst) then
             m_killPet(inst)
         elseif data.attacker.components.combat ~= nil then
-            inst.components.combat:SuggestTarget(data.attacker)
+            inst.components.combat:SetTarget(data.attacker)
+            inst.components.combat:ShareTarget(data.attacker, 40, Kochosei_enemy, 3)
         end
     end
 end
@@ -248,7 +252,7 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
             return inst
         end
         inst:AddComponent("inspectable")
-
+		inst.needtostop = 0
         inst:AddComponent("locomotor")
         inst.components.locomotor.runspeed = 12
         inst.components.locomotor:SetSlowMultiplier(0.6)
@@ -299,7 +303,10 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
 
         inst:ListenForEvent("equip", OnEquipCustom)
         inst:ListenForEvent("unequip", OnUnequipCustom)
-
+        inst:AddComponent("workmultiplier")
+		inst.components.workmultiplier:AddMultiplier(ACTIONS.CHOP,   TUNING.BUFF_WORKEFFECTIVENESS_MODIFIER, inst)
+		inst.components.workmultiplier:AddMultiplier(ACTIONS.MINE,   TUNING.BUFF_WORKEFFECTIVENESS_MODIFIER, inst)
+		inst.components.workmultiplier:AddMultiplier(ACTIONS.HAMMER, TUNING.BUFF_WORKEFFECTIVENESS_MODIFIER, inst)
         --inst:DoPeriodicTask(1, m_checkLeaderExisting)
 
         inst.LinkToPlayer = linktoplayer

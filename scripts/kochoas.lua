@@ -67,7 +67,11 @@ RemapSoundEvent("dontstarve/characters/kochosei/death_voice", "kochosei_voice/so
 RemapSoundEvent("dontstarve/characters/kochosei/carol", "kochosei_voice/sound/carol")
 RemapSoundEvent("dontstarve/characters/kochosei/pose", "kochosei_voice/sound/pose")
 RemapSoundEvent("kochosei_streetlight1_musicbox/play", "kochosei_streetlight1_musicbox/sound/play")
-RemapSoundEvent("kochosei_streetlight1_musicbox/end", "kochosei_streetlight1_musicbox/sound/end")
+RemapSoundEvent("dontstarve/wilson/eat", "")
+
+
+
+RemapSoundEvent("kochosei_streetlight1_musicbox/end", "kochosei_streetlight1_musicbox/sound/play")
 
 AddMinimapAtlas("images/map_icons/kochosei.xml")
 AddMinimapAtlas("minimap/miku_usagi_backpack.xml")

@@ -80,6 +80,19 @@ local function OnUnequip(inst, owner)
 	end
 	TurnOff(inst, owner)
 end
+local function onUse(inst, owner)
+    owner = inst.components.inventoryitem.owner or owner
+    local pets = owner.components.petleash:GetPets()
+    
+    for _, pet in pairs(pets) do
+		if not pet.needtostop then pet.needtostop = 0 end
+        pet.needtostop = 1 - pet.needtostop
+    end
+
+    owner.components.talker:Say("Đã đổi trạng thái clone")
+    
+    return false -- Ngăn không cho item biến mất sau khi sử dụng
+end
 
 local function fn()
 	local inst = CreateEntity()
@@ -144,6 +157,10 @@ local function fn()
 	inst.components.equippable.dapperness = 0.033
 
 	inst:AddComponent("inventoryitem")
+	
+	inst:AddComponent("useableitem") -- Đổi trạngt thái clone
+	inst.components.useableitem:SetOnUseFn(onUse)
+
 
 	return inst
 end
