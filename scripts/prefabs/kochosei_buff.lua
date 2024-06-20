@@ -37,9 +37,11 @@ local function OnDetached(inst, target)
 end
 
 local function OnExtendedBuff(inst)
-	if inst.bufftask ~= nil then
-		inst.bufftask:Cancel()
-		inst.bufftask = inst:DoTaskInTime(60, OnKillBuff) --  1 phút màu mè bắt đầu
+	local buffTaskKey = inst.prefab == "elysia_3_buff" and "bufftask_3" or inst.prefab == "elysia_4_buff" and "bufftask_4" or "bufftask"
+
+	if inst[buffTaskKey] then
+		inst[buffTaskKey]:Cancel()
+		inst[buffTaskKey] = inst:DoTaskInTime(60, OnKillBuff) -- 1 phút màu mè bắt đầu
 	end
 end
 
@@ -73,17 +75,6 @@ local function OnDetached_3(inst, target)
 	inst:Remove()
 end
 
-local function onhitsida(inst, data)
-	local target = data.target
-	if target == nil then
-		return
-	end
-	target.sohit = (target.sohit or 0) + 0.1
-	if target ~= nil and target:IsValid() and target.components.combat ~= nil then
-		target.components.combat.externaldamagetakenmultipliers:SetModifier(target, target.sohit, "sidanay")
-	end
-end
-
 local function OnAttached_4(inst, target)
 	inst.entity:SetParent(target.entity)
 	inst.Transform:SetPosition(0, 0, 0) --in case of loading
@@ -91,23 +82,23 @@ local function OnAttached_4(inst, target)
 		inst.components.debuff:Stop()
 	end, target)
 
-	target:ListenForEvent("onhitother", onhitsida)
-
+	target.tangst = true
 	inst.bufftask_4 = inst:DoTaskInTime(60, OnKillBuff) --  1 phút màu mè bắt đầu
 end
 
 local function OnDetached_4(inst, target)
-	if target ~= nil then
-		target:RemoveEventCallback("onhitother", onhitsida)
+	if target and target.tangst and target.sohit then
+		target.tangst = false
+		target.sohit = 1
 	end
 	inst:Remove()
 end
 
-local function bufffn()
+local function common()
 	local inst = CreateEntity()
 
 	if not TheWorld.ismastersim then
-		--Not meant for client!
+		-- Not meant for client!
 		inst:DoTaskInTime(0, inst.Remove)
 		return inst
 	end
@@ -120,64 +111,20 @@ local function bufffn()
 	inst:AddTag("CLASSIFIED")
 
 	inst:AddComponent("debuff")
-	inst.components.debuff:SetAttachedFn(OnAttached)
-	inst.components.debuff:SetDetachedFn(OnDetached)
+	return inst
+end
+
+local function create_elysia_buff(onAttached, onDetached)
+	local inst = common()
+	inst.components.debuff:SetAttachedFn(onAttached)
+	inst.components.debuff:SetDetachedFn(onDetached)
 	inst.components.debuff:SetExtendedFn(OnExtendedBuff)
 	inst.components.debuff.keepondespawn = true
 
 	return inst
 end
 
-local function bufffn_3()
-	local inst = CreateEntity()
+return Prefab("elysia_2_buff", function() return create_elysia_buff(OnAttached, OnDetached) end, nil, buff_prefabs),
+Prefab("elysia_3_buff", function() return create_elysia_buff(OnAttached_3, OnDetached_3) end, nil, buff_prefabs),
+Prefab("elysia_4_buff", function() return create_elysia_buff(OnAttached_4, OnDetached_4) end, nil, buff_prefabs)
 
-	if not TheWorld.ismastersim then
-		--Not meant for client!
-		inst:DoTaskInTime(0, inst.Remove)
-		return inst
-	end
-
-	inst.entity:AddTransform()
-	--[[Non-networked entity]]
-
-	inst.persists = false
-
-	inst:AddTag("CLASSIFIED")
-
-	inst:AddComponent("debuff")
-	inst.components.debuff:SetAttachedFn(OnAttached_3)
-	inst.components.debuff:SetDetachedFn(OnDetached_3)
-	inst.components.debuff:SetExtendedFn(OnExtendedBuff)
-	inst.components.debuff.keepondespawn = true
-
-	return inst
-end
-
-local function bufffn_4()
-	local inst = CreateEntity()
-
-	if not TheWorld.ismastersim then
-		--Not meant for client!
-		inst:DoTaskInTime(0, inst.Remove)
-		return inst
-	end
-
-	inst.entity:AddTransform()
-	--[[Non-networked entity]]
-
-	inst.persists = false
-
-	inst:AddTag("CLASSIFIED")
-
-	inst:AddComponent("debuff")
-	inst.components.debuff:SetAttachedFn(OnAttached_4)
-	inst.components.debuff:SetDetachedFn(OnDetached_4)
-	inst.components.debuff:SetExtendedFn(OnExtendedBuff)
-	inst.components.debuff.keepondespawn = true
-
-	return inst
-end
-
-return Prefab("elysia_2_buff", bufffn, nil, buff_prefabs),
-	Prefab("elysia_3_buff", bufffn_3, nil, buff_prefabs),
-	Prefab("elysia_4_buff", bufffn_4, nil, buff_prefabs)

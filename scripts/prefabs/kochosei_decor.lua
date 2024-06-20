@@ -82,29 +82,40 @@ local function fnback()
 end
 
 local KHONG_TAG = { "player", "FX", "playerghost", "NOCLICK", "DECOR", "INLIMBO", "epic" }
-local CAN_TAG = { "shadowcreature", "monster", "frog" }
+local CAN_TAG = { "shadowcreature", "monster", "frog"}
+local function checkfl(inst)
+	local follower = inst.components.follower
+	if follower ~= nil then
+		local leader = follower:GetLeader()
+		if leader and leader:HasTag("player") then
+			return true
+		end
+	end
+	if follower == nil then
+		return false
+	end
+end
 
 local function thithet(inst)
 	local x, y, z = inst.Transform:GetWorldPosition()
 	local ents = TheSim:FindEntities(x, y, z, RANGE_CUA_CAY_THAN_KY, nil, KHONG_TAG, CAN_TAG)
 
 	for i, v in ipairs(ents) do
-		if v.components.health then
-			local follower = v.components.follower
-			if not follower or not follower.leader then
-				v.components.health:Kill()
-			elseif follower.leader:HasTag("player") then
-				-- Đối tượng có leader và leader là người chơi, không gọi :Kill()
-			else
+		if v.components.health and v.components.combat then
+			if not checkfl(v) then
 				v.components.health:Kill()
 			end
 		end
-		if v.components.burnable and v.components.burnable:IsBurning() and v:HasTag("structure") then
-			v.components.burnable:Extinguish()
-		end
 	end
-	local players = FindPlayersInRange(x, y, z, RANGE_CUA_CAY_THAN_KY, true)
+end
 
+
+
+local function lam_kho_item(inst)
+	local x, y, z = inst.Transform:GetWorldPosition()
+	local ents = TheSim:FindEntities(x, y, z, RANGE_CUA_CAY_THAN_KY, nil, KHONG_TAG, CAN_TAG)
+
+	local players = FindPlayersInRange(x, y, z, RANGE_CUA_CAY_THAN_KY, true)
 	for _, player in pairs(players) do
 		player.components.temperature:SetTemperature(TUNING.BOOK_TEMPERATURE_AMOUNT)
 		--	player.components.moisture:SetMoistureLevel(0)
@@ -196,6 +207,9 @@ local function OnLightningStrike(inst)
 	inst._lightning_drop_task = inst:DoTaskInTime(20 * FRAMES, DropLightningItems, items_to_drop)
 end
 
+local function on_find_fire(inst, firePos)
+	inst.components.wateryprotection:SpreadProtectionAtPoint(firePos:Get())
+end
 local function cay_kocho()
 	local inst = CreateEntity()
 	inst.entity:AddTransform()
@@ -248,11 +262,27 @@ local function cay_kocho()
 
 	inst:AddComponent("hauntable")
 	inst.components.hauntable:SetOnHauntFn(CustomOnHauntkochosei)
+
 	inst:AddComponent("lightningblocker")
 	inst.components.lightningblocker:SetBlockRange(TUNING.SHADE_CANOPY_RANGE)
 	inst.components.lightningblocker:SetOnLightningStrike(OnLightningStrike)
 
 	inst:DoPeriodicTask(1, thithet)
+	inst:DoPeriodicTask(5, lam_kho_item)
+
+	inst:AddComponent("firedetector")
+	inst.components.firedetector:SetOnFindFireFn(on_find_fire)
+	inst.components.firedetector.range = RANGE_CUA_CAY_THAN_KY
+	inst.components.firedetector.detectPeriod = 3
+	inst.components.firedetector.fireOnly = true
+	inst.components.firedetector:Activate(true)
+
+	inst:AddComponent("wateryprotection")
+	inst.components.wateryprotection.extinguishheatpercent = TUNING.FIRESUPPRESSOR_EXTINGUISH_HEAT_PERCENT
+	inst.components.wateryprotection.temperaturereduction = TUNING.FIRESUPPRESSOR_TEMP_REDUCTION
+	inst.components.wateryprotection.witherprotectiontime = TUNING.FIRESUPPRESSOR_PROTECTION_TIME
+	inst.components.wateryprotection.addcoldness = TUNING.FIRESUPPRESSOR_ADD_COLDNESS
+	inst.components.wateryprotection:AddIgnoreTag("player")
 	return inst
 end
 
@@ -332,13 +362,13 @@ STRINGS.NAMES.KOCHO_MIKU_BACK = "Backpack For Clone"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.KOCHO_MIKU_BACK = "o((>ω< ))o"
 STRINGS.RECIPE_DESC.KOCHO_MIKU_BACK = "Are you too lazy and don't want to work?"
 
-STRINGS.NAMES.KOCHOSEI_FUJI_TREE = "Cây đ Gì Thần Kỳ v~"
+STRINGS.NAMES.KOCHOSEI_FUJI_TREE = "Cây Đ Gì Thần Kỳ v~"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.KOCHOSEI_FUJI_TREE =
 	"Cây đang thi công, xin lỗi đã làm phiền, mong quý vị thông cảm, chưa biết khi nào xong nhưng sắp xong rồi ヾ(•ω•`)o\nDinh last visited: 20/01/2024"
 STRINGS.NAMES.KOCHOSEI_OC_CMNDAO = "Cái Gì Đó...Giống Như Ốc Đảo"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.KOCHOSEI_OC_CMNDAO = "Có cá ở dưới hồ không nhỉ?"
 
 return Prefab("common/inventory/kocho_miku_cos", fn, Assets),
-	Prefab("common/inventory/kocho_miku_back", fnback, Assets),
-	Prefab("kochosei_fuji_tree", cay_kocho, Assets, prefabs),
-	Prefab("kochosei_oc_cmndao", oc_cmndao, Assets, prefabs)
+Prefab("common/inventory/kocho_miku_back", fnback, Assets),
+Prefab("kochosei_fuji_tree", cay_kocho, Assets, prefabs),
+Prefab("kochosei_oc_cmndao", oc_cmndao, Assets, prefabs)

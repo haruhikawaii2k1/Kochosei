@@ -99,6 +99,7 @@ local listiteminv = {
 	"kochosei_ancient_books",
 	"kochosei_christmast_torch1",
 }
+
 -- Icon item ở đây không cần làm từng cái ở mỗi prefab nữa --
 for _, prefab in ipairs(kochofood) do
 	local atlas = "images/inventoryimages/kochofood.xml"
@@ -180,10 +181,10 @@ local function namngua(inst)
 	elseif
 		not (
 			inst.sg:HasStateTag("sleeping")
-			or inst.sg:HasStateTag("bedroll")
-			or inst.sg:HasStateTag("tent")
-			or inst.sg:HasStateTag("waking")
-			or inst.sg:HasStateTag("drowning")
+				or inst.sg:HasStateTag("bedroll")
+				or inst.sg:HasStateTag("tent")
+				or inst.sg:HasStateTag("waking")
+				or inst.sg:HasStateTag("drowning")
 		)
 	then
 		if inst.sg:HasStateTag("jumping") then
@@ -294,15 +295,26 @@ local function bufffood(inst, data)
 	end
 end
 
+local function OnHitOther(inst, data)
+	local target = data.target
+	if  target ~= nil and target.components.health and target.components.combat and  target:IsValid() and target.components.combat and inst.tangst  then
+		inst.sohit = (inst.sohit or 1) + 0.1
+		target.components.combat.externaldamagetakenmultipliers:SetModifier(target, inst.sohit, "sidanay")
+	end
+end
+
 AddPlayerPostInit(function(inst)
 	if not TheWorld.ismastersim then
 		return inst
 	end
-
+	inst.tangst = false
+	inst.sohit = 1
 	if not inst.components.timer then
 		inst:AddComponent("timer")
 	end
 	inst:ListenForEvent("timerdone", bufffood)
+	inst:ListenForEvent("onhitother", OnHitOther)
+
 end)
 
 --- Hồi sinh từ bướm ---
@@ -311,9 +323,7 @@ local function CustomOnHauntkochosei(inst, haunter)
 		if inst.components.health then
 			inst.components.health:Kill()
 		end -- Tôi năm nay 80 tuổi nhưng chưa thấy ai độc ác như này, hồi sinh bằng bứm ạ
-		haunter:PushEvent("respawnfromghost", {
-			source = inst,
-		})
+		haunter:PushEvent("respawnfromghost", {	source = inst,})
 	end
 end
 
@@ -403,6 +413,36 @@ AddPrefabPostInit("kochosei_hatfl", function(inst)
 	inst.components.planardefense:SetBaseDefense(TUNING.ARMOR_LUNARPLANT_PLANAR_DEF)
 end)
 
+
+local allclone = {
+	"kochosei_enemy",
+	"kochodragonfly",
+	"dinhcutenhathematroi",
+	"kochodeerclops",
+	"kocho_bearger"
+}
+local function OnHitOther(inst, data)
+	local target = data.target
+	if  target ~= nil and target.components.health and target.components.combat then
+		if target:HasTag("epic") then
+			inst.components.sttptmau:Satthuong(target, TUNING.MIOHM_SAT_THUONG_PT_MAU, false, false, TUNING.MIOHM_SAT_THUONG_PT_MAU_HOAT_DONG)
+		else
+			inst.components.sttptmau:Satthuong(target, TUNING.MIOHM_SAT_THUONG_PT_MAU, false, false, 1000)
+		end
+	end
+end
+
+for _, v in ipairs(allclone) do
+	AddPrefabPostInit(v, function(inst)
+		if not TheWorld.ismastersim then
+			return inst
+		end
+		inst:AddComponent("sttptmau") 
+		
+		inst.components.health:StartRegen(TUNING.SHADOWWAXWELL_HEALTH_REGEN, TUNING.SHADOWWAXWELL_HEALTH_REGEN_PERIOD)
+		inst:ListenForEvent("onhitother", OnHitOther)
+	end)
+end
 --------Wick đó----------
 -- https://forums.kleientertainment.com/forums/topic/69732-dont-use-addingredientvalues-in-mods/#comment-806510
 -- NOTE: If the thing already had a tag with the same name, you will still overwrite the old value, unless keepoldvalues is true. E.g if fish already had a tag seafood with value 0.5 and now you use this function with value 1, the result will be 1.

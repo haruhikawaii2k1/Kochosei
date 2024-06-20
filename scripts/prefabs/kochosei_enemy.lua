@@ -318,7 +318,9 @@ local function MakeMinion(prefab, tool, hat, master_postinit)
     end
 
     STRINGS.NAMES.KOCHOSEI_ENEMY = "Kochosei Clone"
-    STRINGS.CHARACTERS.GENERIC.DESCRIBE.KOCHOSEI_ENEMY = "ヾ(•ω•`)o"
+    STRINGS.CHARACTERS.GENERIC.DESCRIBE.KOCHOSEI_ENEMY = "Có muốn ăn gì hem?"
+    STRINGS.NAMES.KOCHOSEI_ENEMYB = "Kochosei Clone"
+    STRINGS.CHARACTERS.GENERIC.DESCRIBE.KOCHOSEI_ENEMYB = "Đang tìm gì đó bạn?"
 
     return Prefab(prefab, fn, assets, prefabs)
 end

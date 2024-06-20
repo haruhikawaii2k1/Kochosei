@@ -50,21 +50,23 @@ local function haru(inst)
 	fx.Transform:SetPosition(x + dist * math.cos(theta), 0, z + dist * math.sin(theta))
 end
 
---[[Mio Không Phê Duyệt
-local function kochoOnNewSpawn(inst)
-    local season = TheWorld.state.season
-    local food = nil
-    if season == "winter" then
-        food = SpawnPrefab("kochofood_bunreal")
-    elseif season == "summer" then
-        food = SpawnPrefab("kochofood_grape_juice")
-    end
 
-    if food and inst.components.inventory then
-        inst.components.inventory:GiveItem(food)
-    end
+local function givefood(inst)
+	local season = TheWorld.state.season
+	local food = nil
+	if season == "winter" then
+		food = SpawnPrefab("kochofood_bunreal")
+	elseif season == "summer" then
+		food = SpawnPrefab("kochofood_grape_juice")  
+	elseif season == "spring" then
+		food = SpawnPrefab("kochosei_umbrella")
+	end
+
+	if food and inst.components.inventory then
+		inst.components.inventory:GiveItem(food)
+	end
 end
---]]
+
 
 local function onbecamehuman(inst)
 	inst.components.locomotor:SetExternalSpeedMultiplier(inst, "kochosei_speed_mod", 1.25)
@@ -279,7 +281,7 @@ local function onnewstate(inst, data)
 		inst.SoundEmitter:KillSound("kochoseibgm")
 		inst.SoundEmitter:KillSound("kochoseitalk")
 		inst.components.sanity.dapperness = inst.components.sanity.dapperness
-			- inst.kochoseiindancing * kochoseidancingsanity / 60
+		- inst.kochoseiindancing * kochoseidancingsanity / 60
 		inst.kochoseiindancing = 0
 		inst:RemoveEventCallback("newstate", onnewstate)
 	end
@@ -295,7 +297,7 @@ local function onemote(inst, data)
 
 	if soundname == "carol" or sound == "dance" or sound == "step" or sound == "robot" or sound == "chicken" then
 		inst.components.sanity.dapperness = inst.components.sanity.dapperness
-			- inst.kochoseiindancing * kochoseidancingsanity / 60
+		- inst.kochoseiindancing * kochoseidancingsanity / 60
 		inst.kochoseiindancing = (sound == "dance") and 1 or 1.5
 		inst.components.sanity.dapperness = inst.components.sanity.dapperness
 			+ inst.kochoseiindancing * kochoseidancingsanity / 60
@@ -361,6 +363,8 @@ end
 
 local function OnNewSpawn(inst)
 	inst:DoTaskInTime(1, GetKochoMap)
+	inst:DoTaskInTime(3, givefood)
+
 end
 
 --[[---------------------------------Level Miomhm---------------------
@@ -450,25 +454,17 @@ local function OnHitOther(inst, data)
 	local item = inst.components.combat:GetWeapon()
 	local target = data.target
 	if item ~= nil and item:HasTag("kochoseiweapon") and target ~= nil and target.components.health and target.components.combat then
-			if target:HasTag("epic") then
-			inst.components.sttptmau:Satthuong(target, TUNING.MIOHM_SAT_THUONG_PT_MAU, false, false, TUNING.MIOHM_SAT_THUONG_PT_MAU_HOAT_DONG)
-			else
-			inst.components.sttptmau:Satthuong(target, TUNING.MIOHM_SAT_THUONG_PT_MAU*2, false, false, TUNING.MIOHM_SAT_THUONG_PT_MAU_HOAT_DONG)
+		if target:HasTag("epic") then
+			inst.components.sttptmau:SatthuongWP(target, TUNING.MIOHM_SAT_THUONG_PT_MAU*2, false, false, TUNING.MIOHM_SAT_THUONG_PT_MAU_HOAT_DONG)
+		else
+			inst.components.sttptmau:SatthuongWP(target, TUNING.MIOHM_SAT_THUONG_PT_MAU*5, false, false, 1000)
 		end
 	end
 end
 
 local function phandamge(inst, data)
-	if
-		data
-		and data.afflicter
-		and data.afflicter:IsValid()
-		and data.afflicter.components.health
-		and not data.afflicter.components.health:IsDead()
-	then
-		local killer = data.afflicter.components.follower and data.afflicter.components.follower:GetLeader()
-			or data.afflicter:HasTag("player") and data.afflicter
-			or nil
+	if	data and data.afflicter	and data.afflicter:IsValid()	and data.afflicter.components.health	and not data.afflicter.components.health:IsDead()	then
+		local killer = data.afflicter.components.follower and data.afflicter.components.follower:GetLeader() or data.afflicter:HasTag("player") and data.afflicter	or nil
 		if killer and killer:HasTag("player") and killer ~= inst then
 			killer.components.health:DoDelta(3 * data.amount, nil, nil, true, killer, true)
 		end
@@ -476,16 +472,8 @@ local function phandamge(inst, data)
 end
 
 local function chungtakphaidatungladongdoisao(inst, data)
-	if
-		data
-		and data.afflicter
-		and data.afflicter:IsValid()
-		and data.afflicter.components.health
-		and not data.afflicter.components.health:IsDead()
-	then
-		local killer = data.afflicter.components.follower and data.afflicter.components.follower:GetLeader()
-			or data.afflicter:HasTag("player") and data.afflicter
-			or nil
+	if	data and data.afflicter	and data.afflicter:IsValid()and data.afflicter.components.health and not data.afflicter.components.health:IsDead()	then
+		local killer = data.afflicter.components.follower and data.afflicter.components.follower:GetLeader()or data.afflicter:HasTag("player") and data.afflicter or nil
 		if killer and killer:HasTag("player") and killer ~= inst then
 			killer.components.health:Kill()
 		end

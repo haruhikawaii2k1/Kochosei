@@ -44,14 +44,15 @@ local function TurnOff(inst)
 end
 
 local function OnEquip(inst, owner)
+
+	local spell = SpawnPrefab("electricchargedfx")
+	spell.Transform:SetPosition(owner.Transform:GetWorldPosition())
+		
+		
 	local skin_build = inst:GetSkinBuild()
 	if skin_build ~= nil then
 		owner:PushEvent("equipskinneditem", inst:GetSkinName())
-		owner.AnimState:OverrideSymbol(
-			"swap_object",
-			skin_build or "swap_kochosei_purplebattleaxe",
-			"swap_kochosei_purplebattleaxe"
-		)
+		owner.AnimState:OverrideSymbol("swap_object",skin_build or "swap_kochosei_purplebattleaxe",	"swap_kochosei_purplebattleaxe")
 	else
 		owner.AnimState:OverrideSymbol("swap_object", "swap_miohm", "swap_miohm")
 	end

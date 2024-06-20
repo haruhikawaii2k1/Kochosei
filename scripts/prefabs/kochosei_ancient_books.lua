@@ -6,23 +6,6 @@ local assets = {
 	Asset("IMAGE", "images/inventoryimages/elysia_scmn_pell.tex"),
 }
 
-local prefabs = {
-	"shadow_pillar_spell",
-	"reticuleaoe",
-	"reticuleaoeping",
-	"reticuleaoecctarget",
-
-	"shadow_trap",
-	"reticuleaoe_1_6",
-	"reticuleaoeping_1_6",
-	"reticuleaoesummontarget_1",
-
-	"shadowworker",
-	"shadowprotector",
-	"reticuleaoe_1d2_12",
-	"reticuleaoeping_1d2_12",
-	"reticuleaoesummontarget_1d2",
-}
 
 local IDLE_SOUND_VOLUME = 0.5
 
@@ -124,15 +107,6 @@ end
 local function CheckMaxSanity(doer, minionprefab)
 	return _CheckMaxSanity(doer.components.sanity, minionprefab)
 end
-
-local function ShouldRepeatCastWorker(inst, doer)
-	return _CheckMaxSanity(doer.replica.sanity, "shadowworker")
-end
-
-local function ShouldRepeatCastProtector(inst, doer)
-	return _CheckMaxSanity(doer.replica.sanity, "shadowprotector")
-end
-
 local function WorkerSpellFn(inst, doer, pos)
 	if inst.components.fueled:IsEmpty() then
 		return false, "NO_FUEL"
@@ -189,14 +163,9 @@ local SPELLS = {
 		label = STRINGS.SPELLS.KOCHOSEI_ELYSIA_1,
 		onselect = function(inst)
 			inst.components.spellbook:SetSpellName(STRINGS.SPELLS.KOCHOSEI_ELYSIA_1)
-			inst.components.aoetargeting:SetDeployRadius(0)
-			inst.components.aoetargeting:SetShouldRepeatCastFn(ShouldRepeatCastWorker)
-			inst.components.aoetargeting.reticule.reticuleprefab = "reticuleaoe_1d2_12"
-			inst.components.aoetargeting.reticule.pingprefab = "reticuleaoeping_1d2_12"
 			if TheWorld.ismastersim then
-				inst.components.aoetargeting:SetTargetFX("reticuleaoesummontarget_1d2")
 				inst.components.aoespell:SetSpellFn(WorkerSpellFn)
-				inst.components.spellbook:SetSpellFn(nil)
+				
 			end
 		end,
 		execute = StartAOETargeting,
@@ -209,14 +178,9 @@ local SPELLS = {
 		label = STRINGS.SPELLS.KOCHOSEI_ELYSIA_2,
 		onselect = function(inst)
 			inst.components.spellbook:SetSpellName(STRINGS.SPELLS.KOCHOSEI_ELYSIA_2)
-			inst.components.aoetargeting:SetDeployRadius(0)
-			inst.components.aoetargeting:SetShouldRepeatCastFn(ShouldRepeatCastProtector)
-			inst.components.aoetargeting.reticule.reticuleprefab = "reticuleaoe_1d2_12"
-			inst.components.aoetargeting.reticule.pingprefab = "reticuleaoeping_1d2_12"
 			if TheWorld.ismastersim then
-				inst.components.aoetargeting:SetTargetFX("reticuleaoesummontarget_1d2")
 				inst.components.aoespell:SetSpellFn(ProtectorSpellFn)
-				inst.components.spellbook:SetSpellFn(nil)
+			
 			end
 		end,
 		execute = StartAOETargeting,
@@ -229,14 +193,9 @@ local SPELLS = {
 		label = STRINGS.SPELLS.KOCHOSEI_ELYSIA_3,
 		onselect = function(inst)
 			inst.components.spellbook:SetSpellName(STRINGS.SPELLS.KOCHOSEI_ELYSIA_3)
-			inst.components.aoetargeting:SetDeployRadius(0)
-			inst.components.aoetargeting:SetShouldRepeatCastFn(nil)
-			inst.components.aoetargeting.reticule.reticuleprefab = "reticuleaoe_1_6"
-			inst.components.aoetargeting.reticule.pingprefab = "reticuleaoeping_1_6"
 			if TheWorld.ismastersim then
-				inst.components.aoetargeting:SetTargetFX("reticuleaoesummontarget_1")
 				inst.components.aoespell:SetSpellFn(TrapSpellFn)
-				inst.components.spellbook:SetSpellFn(nil)
+				
 			end
 		end,
 		execute = StartAOETargeting,
@@ -249,14 +208,9 @@ local SPELLS = {
 		label = STRINGS.SPELLS.KOCHOSEI_ELYSIA_4,
 		onselect = function(inst)
 			inst.components.spellbook:SetSpellName(STRINGS.SPELLS.KOCHOSEI_ELYSIA_4)
-			inst.components.aoetargeting:SetDeployRadius(0)
-			inst.components.aoetargeting:SetShouldRepeatCastFn(nil)
-			inst.components.aoetargeting.reticule.reticuleprefab = "reticuleaoe_1_6"
-			inst.components.aoetargeting.reticule.pingprefab = "reticuleaoeping_1_6"
 			if TheWorld.ismastersim then
-				inst.components.aoetargeting:SetTargetFX("reticuleaoecctarget")
 				inst.components.aoespell:SetSpellFn(PillarsSpellFn)
-				inst.components.spellbook:SetSpellFn(nil)
+			
 			end
 		end,
 		execute = StartAOETargeting,
@@ -264,27 +218,7 @@ local SPELLS = {
 		normal = "elysia_4.tex",
 		widget_scale = ICON_SCALE,
 		hit_radius = ICON_RADIUS,
-	},
-	--[[{
-		label = STRINGS.SPELLS.SHADOW_TOPHAT,
-		onselect = function(inst)
-			inst.components.spellbook:SetSpellName(STRINGS.SPELLS.SHADOW_TOPHAT)
-			if TheWorld.ismastersim then
-				inst.components.aoespell:SetSpellFn(nil)
-				inst.components.spellbook:SetSpellFn(TopHatSpellFn)
-			end
-		end,
-		execute = function(inst)
-			local inventory = ThePlayer.replica.inventory
-			if inventory ~= nil then
-				inventory:CastSpellBookFromInv(inst)
-			end
-		end,
-		atlas = "images/inventoryimages/elysia_scmn_pell.xml",
-		normal = "shadow_tophat.tex",
-		widget_scale = ICON_SCALE,
-		hit_radius = ICON_RADIUS,
-	},]]
+	}
 }
 
 local function OnOpenSpellBook(inst)
@@ -367,30 +301,6 @@ local function startclosingsounds(inst)
 	onanimover(inst)
 end
 
-local function onturnon(inst)
-	if inst.isfloating then
-		return
-	end
-	inst.isfloating = true
-	if inst._activetask ~= nil then
-		return
-	end
-	stopclosingsounds(inst)
-	if inst.AnimState:IsCurrentAnimation("proximity_loop") then
-		--In case other animations were still in queue
-		local t = inst.AnimState:GetCurrentAnimationTime()
-		inst.AnimState:PlayAnimation("proximity_loop", true)
-		inst.AnimState:SetTime(t)
-	else
-		inst.AnimState:PlayAnimation("proximity_pre")
-		inst.AnimState:PushAnimation("proximity_loop", true)
-	end
-	if not inst.SoundEmitter:PlayingSound("idlesound") then
-		inst.SoundEmitter:PlaySound("dontstarve/common/together/book_maxwell/active_LP", "idlesound")
-		inst.SoundEmitter:SetVolume("idlesound", IDLE_SOUND_VOLUME)
-	end
-end
-
 local function onturnoff(inst, instant)
 	if instant then
 		inst.AnimState:PlayAnimation("idle")
@@ -412,62 +322,6 @@ local function onturnoff(inst, instant)
 	inst.AnimState:PushAnimation("proximity_pst")
 	inst.AnimState:PushAnimation("idle", false)
 	startclosingsounds(inst)
-end
-
-local function IsPlayerInRange(inst, range)
-	local x, y, z = inst.Transform:GetWorldPosition()
-	local closestdsq = math.huge
-	range = range * range
-	for i, v in ipairs(AllPlayers) do
-		if v:HasTag("shadowmagic") and not (v.components.health:IsDead() or v:HasTag("playerghost")) then
-			local dsq = v:GetDistanceSqToPoint(x, y, z)
-			if dsq < range then
-				return true
-			elseif dsq < closestdsq then
-				closestdsq = dsq
-			end
-		end
-	end
-	return false, closestdsq
-end
-
-local function UpdateFloatNear(inst, farfn)
-	local isnear, closestdsq = IsPlayerInRange(inst, inst.isfloating and 3 or 2)
-	if isnear then
-		onturnon(inst)
-	else
-		onturnoff(inst)
-		if closestdsq >= 100 then
-			--switch to slower task period
-			inst._floattask:Cancel()
-			inst._floattask = inst:DoPeriodicTask(1, farfn)
-		end
-	end
-end
-
-local function UpdateFloatFar(inst)
-	if IsPlayerInRange(inst, 8) then
-		--switch to faster task period
-		inst._floattask:Cancel()
-		inst._floattask = inst:DoPeriodicTask(0.1, UpdateFloatNear, 0.5, UpdateFloatFar)
-	end
-end
-
-local function OnEntitySleep(inst)
-	if inst._floattask ~= nil then
-		inst._floattask:Cancel()
-		inst._floattask = nil
-	end
-	onturnoff(inst, true)
-end
-
-local function OnEntityWake(inst)
-	if
-		inst._floattask == nil
-		and not (inst.components.inventoryitem:IsHeld() or inst.components.fueled:IsEmpty() or inst:IsAsleep())
-	then
-		inst._floattask = inst:DoPeriodicTask(0.1, UpdateFloatNear, 0, UpdateFloatFar)
-	end
 end
 
 local function doneact(inst)
@@ -535,10 +389,6 @@ local function OnFuelDepleted(inst)
 		onturnoff(inst)
 	end
 end
-
-local topocket = OnEntitySleep
-local toground = OnEntityWake
-
 --------------------------------------------------------------------------
 
 --------------------------------------------------------------------------
@@ -577,8 +427,7 @@ local function fn()
 	inst.components.aoetargeting.reticule.invalidcolour = { 0.5, 0, 0, 1 }
 	inst.components.aoetargeting.reticule.ease = true
 	inst.components.aoetargeting.reticule.mouseenabled = true
-	inst.components.aoetargeting.reticule.twinstickmode = 1
-	inst.components.aoetargeting.reticule.twinstickrange = 8
+	inst.components.aoetargeting:SetRange(20)
 
 	inst.playfuelsound = net_event(inst.GUID, "waxwelljournal.playfuelsound")
 
@@ -590,9 +439,6 @@ local function fn()
 
 		return inst
 	end
-
-	inst.scrapbook_fueled_rate = SpellCost(TUNING.WAXWELLJOURNAL_SPELL_COST.SHADOW_PILLARS)
-	inst.scrapbook_fueled_uses = true
 
 	inst.swap_build = "book_maxwell"
 
@@ -617,10 +463,6 @@ local function fn()
 	MakeSmallPropagator(inst)
 	inst._activetask = nil
 	inst._soundtasks = {}
-	inst:ListenForEvent("onputininventory", topocket)
-	inst:ListenForEvent("ondropped", toground)
-	inst.OnEntitySleep = OnEntitySleep
-	inst.OnEntityWake = OnEntityWake
 
 	inst.castsound = "maxwell_rework/shadow_magic/cast"
 

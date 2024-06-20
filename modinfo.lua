@@ -7,7 +7,7 @@ Thank you for using this mod, you can use the config button below and let me kno
 	
 ]]
 author = "Mio, dinhkarate, Haruhi Kawaii"
-version = "7.0.19"
+version = "7.0.22"
 forumthread = ""
 
 folder_name = folder_name or "workshop-"
